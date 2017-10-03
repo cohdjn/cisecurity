@@ -1,4 +1,4 @@
-# security
+# redhat7/security
 #
 # Implements Center of Internet Security security controls.
 #
@@ -15,34 +15,20 @@
 # @param selinux_type [Enum['targeted','minimum','mls']] Desired state of selinux type. Default value: 'targeted'.
 # @param secure_terminals [Array[String]] List of terminals considered safe for root to log into directly. Default value: ['console','tty1','tty2','tty3','tty4','tty5','tty6','tty7','tty8','tty9','tty10','tty11','ttyS0']
 
-class cisecurity::packages (
+class cisecurity::redhat7::security (
 
-  Enum['enabled','disabled'] $aslr                          = 'enabled',
-  String $banner_message_text                               = 'Authorized uses only. All activity may be monitored and reported.',
-  String $bootloader_password                               = 'grub.pbkdf2.sha512.10000.9218D397421145AC7721CB920B48CF0B1F435052D4CAA3AD838DB8C6E89ADAB8E5A4CA493608A6307D69877163668690158CAF8421F6411E0F720DC711C111C9.605342B230DA20A2761831CA8C2EA2E645F183CF4EA8A7E65FFCA686E53955380F26E948DA66F063FB00051B8ACDECB1D38F00E4595CB915FF12049F78FB1E3A',
-  Enum['enabled','disabled'] $configure_system_acct_nologin = 'enabled',
-  String $issue                                             = 'puppet:///modules/cisecurity/banners/issue',
-  String $issue_net                                         = 'puppet:///modules/cisecurity/banners/issue.net',
-  Enum['enabled','disabled'] $restricted_core_dumps         = 'enabled',
-  Enum['enabled','disabled'] $single_user_authentication    = 'enabled',
-  String $motd                                              = 'puppet:///modules/cisecurity/banners/motd',
-  Enum['enforcing','permissive','disabled'] $selinux        = 'enforcing',
-  Enum['targeted','minimum','mls'] $selinux_type            = 'targeted',
-  Array[String] $secure_terminals                          = [
-    'console',
-    'tty1',
-    'tty2',
-    'tty3',
-    'tty4',
-    'tty5',
-    'tty6',
-    'tty7',
-    'tty8',
-    'tty9',
-    'tty10',
-    'tty11',
-    'ttyS0',
-                                                              ]
+  Enum['enabled','disabled'] $aslr,
+  String $banner_message_text,
+  String $bootloader_password,
+  Enum['enabled','disabled'] $configure_system_acct_nologin,
+  String $issue,
+  String $issue_net,
+  Enum['enabled','disabled'] $restricted_core_dumps,
+  Enum['enabled','disabled'] $single_user_authentication,
+  String $motd,
+  Enum['enforcing','permissive','disabled'] $selinux,
+  Enum['targeted','minimum','mls'] $selinux_type,
+  Array[String] $secure_terminals,
 ) {
 
   if $bootloader_password != '' {
@@ -52,7 +38,7 @@ class cisecurity::packages (
       superuser => true,
     }
 
-    exec { "grub2-mkconfig -o ${grubcfg}":
+    exec { "grub2-mkconfig -o ${::grubcfg}":
       path        => [ '/usr/sbin', '/sbin', '/usr/bin', '/bin' ],
       refreshonly => true,
       subscribe   => Grub_user['root'],
@@ -64,7 +50,7 @@ class cisecurity::packages (
       superuser => true,
     }
 
-    exec { "grub2-mkconfig -o ${grubcfg}":
+    exec { "grub2-mkconfig -o ${::grubcfg}":
       path        => [ '/usr/sbin', '/sbin', '/usr/bin', '/bin' ],
       refreshonly => true,
       subscribe   => Grub_user['root'],
@@ -143,7 +129,7 @@ class cisecurity::packages (
 
     $bannerconfig = {
       'banner-message-enable' => 'true',
-      'banner_message_text'   => $gdm_banner_text
+      'banner_message_text'   => $::gdm_banner_text
     }
     $bannerconfig.each | String $setting, String $value | {
       ini_setting { "${gdm_banner_file} add ${setting}":

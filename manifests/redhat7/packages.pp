@@ -1,4 +1,4 @@
-# packages
+# redhat7/packages
 #
 # Implements Center of Internet Security package controls.
 #
@@ -27,37 +27,37 @@
 # @param yum_gpg_keys_required_signers [String] A regex specifying what to look for with respect to installed GPG keys. Default value: '/redhat/'.
 # @param yum_repo_enforce_gpgcheck [Enum['enabled','disabled'a]] Whether GPG checks should be globally enabled on all repos. Default value: 'enabled'.
 
-class cisecurity::packages (
-  Enum['enabled','disabled'] $aide                            = 'enabled',
-  String $aide_cron_start_hour                                = '5',
-  String $aide_cron_start_minute                              = '0',
-  Enum['installed','uninstalled'] $firewalld                  = 'installed',
-  Enum['installed','uninstalled'] $logrotate                  = 'installed',
-  Enum['installed','uninstalled'] $mcstrans                   = 'uninstalled',
-  Enum['installed','uninstalled'] $openldap_clients           = 'uninstalled',
-  Enum['installed','uninstalled'] $prelink                    = 'uninstalled',
-  Enum['installed','uninstalled'] $rsh                        = 'uninstalled',
-  Enum['installed','uninstalled'] $setroubleshoot             = 'uninstalled',
-  Enum['installed','uninstalled'] $talk                       = 'uninstalled',
-  Enum['installed','uninstalled'] $tcp_wrappers               = 'installed',
-  Enum['installed','uninstalled'] $telnet                     = 'uninstalled',
-  Enum['installed','uninstalled'] $x_windows                  = 'uninstalled',
-  Enum['installed','uninstalled'] $ypbind                     = 'uninstalled',
-  Enum['installed','uninstalled'] $yum_auto_update            = 'installed',
-  Enum['check','download','apply'] $yum_auto_update_action    = 'apply',
-  String $yum_auto_update_email_from                          = 'root',
-  String $yum_auto_update_email_to                            = 'root',
-  Array[String] $yum_auto_update_exclude                      = [],
-  Boolean $yum_auto_update_notify_email                       = true,
+class cisecurity::redhat7::packages (
+  Enum['enabled','disabled'] $aide,
+  String $aide_cron_start_hour,
+  String $aide_cron_start_minute,
+  Enum['installed','uninstalled'] $firewalld,
+  Enum['installed','uninstalled'] $logrotate,
+  Enum['installed','uninstalled'] $mcstrans,
+  Enum['installed','uninstalled'] $openldap_clients,
+  Enum['installed','uninstalled'] $prelink,
+  Enum['installed','uninstalled'] $rsh,
+  Enum['installed','uninstalled'] $setroubleshoot,
+  Enum['installed','uninstalled'] $talk,
+  Enum['installed','uninstalled'] $tcp_wrappers,
+  Enum['installed','uninstalled'] $telnet,
+  Enum['installed','uninstalled'] $x_windows,
+  Enum['installed','uninstalled'] $ypbind,
+  Enum['installed','uninstalled'] $yum_auto_update,
+  Enum['check','download','apply'] $yum_auto_update_action,
+  String $yum_auto_update_email_from,
+  String $yum_auto_update_email_to,
+  Array[String] $yum_auto_update_exclude,
+  Boolean $yum_auto_update_notify_email,
   Enum[
     'default',
     'minimal',
     'minimal-security',
     'minimal-security-severity:Critical',
     'security',
-    'security-severity:Critical'] $yum_auto_update_update_cmd = 'default',
-  String $yum_gpg_keys_required_signers                       = '/redhat/',
-  Enum['enabled','disabled'] $yum_repo_enforce_gpgcheck       = 'enabled',
+    'security-severity:Critical'] $yum_auto_update_update_cmd,
+  String $yum_gpg_keys_required_signers,
+  Enum['enabled','disabled'] $yum_repo_enforce_gpgcheck,
 ) {
 
   # Private variables.

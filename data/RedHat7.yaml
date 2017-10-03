@@ -1,0 +1,228 @@
+---
+cisecurity::redhat7::filesystem::configure_umask_default: 'enabled'
+cisecurity::redhat7::filesystem::cramfs: 'disabled'
+cisecurity::redhat7::filesystem::dev_shm_mount_options:
+  - 'noexec'
+  - 'nodev'
+  - 'nosuid'
+cisecurity::redhat7::filesystem::freevxfs: 'disabled'
+cisecurity::redhat7::filesystem::harden_system_file_perms: 'enabled'
+cisecurity::redhat7::filesystem::hfs: 'disabled'
+cisecurity::redhat7::filesystem::hfsplus: 'disabled'
+cisecurity::redhat7::filesystem::home_mount_options:
+  - 'nodev'
+cisecurity::redhat7::filesystem::jffs2: 'disabled'
+cisecurity::redhat7::filesystem::remediate_log_file_perms: 'enabled'
+cisecurity::redhat7::filesystem::remediate_ungrouped_files: 'enabled'
+cisecurity::redhat7::filesystem::remediate_unowned_files: 'enabled'
+cisecurity::redhat7::filesystem::remediate_world_writable_dirs: 'enabled'
+cisecurity::redhat7::filesystem::remediate_world_writable_files: 'enabled'
+cisecurity::redhat7::filesystem::removable_media_mount_options:
+  - 'noexec'
+  - 'nodev'
+  - 'nosuid'
+cisecurity::redhat7::filesystem::removable_media_partitions: []
+cisecurity::redhat7::filesystem::squashfs: 'disabled'
+cisecurity::redhat7::filesystem::tmp_mount_options:
+  - 'mode=1777'
+  - 'astrictatime'
+  - 'noexec'
+  - 'nodev'
+  - 'nosuid'
+cisecurity::redhat7::filesystem::udf: 'disabled'
+cisecurity::redhat7::filesystem::umask_default: '027'
+cisecurity::redhat7::filesystem::ungrouped_files_replacement_group: 'root'
+cisecurity::redhat7::filesystem::unowned_files_replacement_owner: 'root'
+cisecurity::redhat7::filesystem::var_mount_options:
+  - 'defaults'
+cisecurity::redhat7::filesystem::var_log_audit_mount_options:
+  - 'defaults'
+cisecurity::redhat7::filesystem::var_log_mount_options:
+  - 'defaults'
+cisecurity::redhat7::filesystem::var_tmp_mount_options:
+  - 'bind'
+cisecurity::redhat7::filesystem::vfat: 'disabled'
+
+cisecurity::redhat7::network::dccp: 'disabled'
+cisecurity::redhat7::network::hosts_allow: 'puppet:///modules/cisecurity/tcp_wrappers/hosts.allow'
+cisecurity::redhat7::network::hosts_deny: 'puppet:///modules/cisecurity/tcp_wrappers/hosts.deny'
+cisecurity::redhat7::network::ipv4_forwarding: 'disabled'
+cisecurity::redhat7::network::ipv4_icmp_redirects: 'disabled'
+cisecurity::redhat7::network::ipv4_ignore_icmp_bogus_responses: 'enabled'
+cisecurity::redhat7::network::ipv4_ignore_icmp_broadcasts: 'enabled'
+cisecurity::redhat7::network::ipv4_log_suspicious_packets: 'enabled'
+cisecurity::redhat7::network::ipv4_reverse_path_filtering: 'enabled'
+cisecurity::redhat7::network::ipv4_secure_redirects: 'disabled'
+cisecurity::redhat7::network::ipv4_send_redirects: 'disabled'
+cisecurity::redhat7::network::ipv4_source_routing: 'disabled'
+cisecurity::redhat7::network::ipv4_tcp_syncookies: 'enabled'
+cisecurity::redhat7::network::ipv6: 'disabled'
+cisecurity::redhat7::network::ipv6_accept_router_advertisements: 'disabled'
+cisecurity::redhat7::network::ipv6_packet_redirects: 'disabled'
+cisecurity::redhat7::network::rds: 'disabled'
+cisecurity::redhat7::network::sctp: 'disabled'
+cisecurity::redhat7::network::tipc: 'disabled'
+cisecurity::redhat7::network::wireless_interfaces: 'disabled'
+
+cisecurity::redhat7::packages::aide: 'enabled'
+cisecurity::redhat7::packages::aide_cron_start_hour: '5'
+cisecurity::redhat7::packages::aide_cron_start_minute: '0'
+cisecurity::redhat7::packages::firewalld: 'installed'
+cisecurity::redhat7::packages::logrotate: 'installed'
+cisecurity::redhat7::packages::mcstrans: 'uninstalled'
+cisecurity::redhat7::packages::openldap_clients: 'uninstalled'
+cisecurity::redhat7::packages::prelink: 'uninstalled'
+cisecurity::redhat7::packages::rsh: 'uninstalled'
+cisecurity::redhat7::packages::setroubleshoot: 'uninstalled'
+cisecurity::redhat7::packages::talk: 'uninstalled'
+cisecurity::redhat7::packages::tcp_wrappers: 'installed'
+cisecurity::redhat7::packages::telnet: 'uninstalled'
+cisecurity::redhat7::packages::x_windows: 'uninstalled'
+cisecurity::redhat7::packages::ypbind: 'uninstalled'
+cisecurity::redhat7::packages::yum_auto_update: 'installed'
+cisecurity::redhat7::packages::yum_auto_update_action: 'apply'
+cisecurity::redhat7::packages::yum_auto_update_email_from: 'root'
+cisecurity::redhat7::packages::yum_auto_update_email_to: 'root'
+cisecurity::redhat7::packages::yum_auto_update_exclude: []
+cisecurity::redhat7::packages::yum_auto_update_notify_email: true
+cisecurity::redhat7::packages::yum_auto_update_update_cmd: 'default'
+cisecurity::redhat7::packages::yum_gpg_keys_required_signers: '/redhat/'
+cisecurity::redhat7::packages::yum_repo_enforce_gpgcheck: 'enabled'
+
+cisecurity::redhat7::pam::account_lockout_enforcement: 'enabled'
+cisecurity::redhat7::pam::account_lockout_attempts: 5
+cisecurity::redhat7::pam::account_lockout_time: 900
+cisecurity::redhat7::pam::inactive_account_lockout: 'enabled'
+cisecurity::redhat7::pam::inactive_account_lockout_days: 30
+cisecurity::redhat7::pam::password_aging: 'enabled'
+cisecurity::redhat7::pam::password_aging_max_days: 90
+cisecurity::redhat7::pam::password_aging_min_days: 7
+cisecurity::redhat7::pam::password_aging_warn_days: 7
+cisecurity::redhat7::pam::password_enforcement: 'enabled'
+cisecurity::redhat7::pam::password_min_length: 14
+cisecurity::redhat7::pam::password_num_digits: -1
+cisecurity::redhat7::pam::password_num_lowercase: -1
+cisecurity::redhat7::pam::password_num_uppercase: -1
+cisecurity::redhat7::pam::password_num_other_chars: -1
+cisecurity::redhat7::pam::password_max_attempts: 3
+cisecurity::redhat7::pam::password_num_remembered: 5
+cisecurity::redhat7::pam::root_primary_group: 'root'
+cisecurity::redhat7::pam::wheel: 'enabled'
+
+cisecurity::redhat7::security::aslr: 'enabled'
+cisecurity::redhat7::security::banner_message_text: 'Authorized uses only. All activity may be monitored and reported.'
+cisecurity::redhat7::security::bootloader_password: 'grub.pbkdf2.sha512.10000.9218D397421145AC7721CB920B48CF0B1F435052D4CAA3AD838DB8C6E89ADAB8E5A4CA493608A6307D69877163668690158CAF8421F6411E0F720DC711C111C9.605342B230DA20A2761831CA8C2EA2E645F183CF4EA8A7E65FFCA686E53955380F26E948DA66F063FB00051B8ACDECB1D38F00E4595CB915FF12049F78FB1E3A'
+cisecurity::redhat7::security::configure_system_acct_nologin: 'enabled'
+cisecurity::redhat7::security::issue: 'puppet:///modules/cisecurity/banners/issue'
+cisecurity::redhat7::security::issue_net: 'puppet:///modules/cisecurity/banners/issue.net'
+cisecurity::redhat7::security::restricted_core_dumps: 'enabled'
+cisecurity::redhat7::security::single_user_authentication: 'enabled'
+cisecurity::redhat7::security::motd: 'puppet:///modules/cisecurity/banners/motd'
+cisecurity::redhat7::security::selinux: 'enforcing'
+cisecurity::redhat7::security::selinux_type: 'targeted'
+cisecurity::redhat7::security::secure_terminals:
+  - 'console'
+  - 'tty1'
+  - 'tty2'
+  - 'tty3'
+  - 'tty4'
+  - 'tty5'
+  - 'tty6'
+  - 'tty7'
+  - 'tty8'
+  - 'tty9'
+  - 'tty10'
+  - 'tty11'
+  - 'ttyS0'
+
+cisecurity::redhat7::services::auditd_action_mail_acct: 'root'
+cisecurity::redhat7::services::auditd_admin_space_left_action: 'halt'
+cisecurity::redhat7::services::auditd_configure_rules: 'enabled'
+cisecurity::redhat7::services::auditd_max_log_file: 8
+cisecurity::redhat7::services::auditd_max_log_file_action: 'keep_logs'
+cisecurity::redhat7::services::auditd_space_left_action: 'email'
+cisecurity::redhat7::services::auditd_configure_boot_auditing: 'enabled'
+cisecurity::redhat7::services::autofs: 'disabled'
+cisecurity::redhat7::services::avahi_daemon: 'disabled'
+cisecurity::redhat7::services::chargen_dgram: 'disabled'
+cisecurity::redhat7::services::chargen_stream: 'disabled'
+cisecurity::redhat7::services::configure_auditd: 'enabled'
+cisecurity::redhat7::services::configure_cron: 'enabled'
+cisecurity::redhat7::services::configure_postfix: 'enabled'
+cisecurity::redhat7::services::configure_rsyslog: 'enabled'
+cisecurity::redhat7::services::configure_sshd: 'enabled'
+cisecurity::redhat7::services::configure_time: 'enabled'
+cisecurity::redhat7::services::cups: 'disabled'
+cisecurity::redhat7::services::daytime_dgram: 'disabled'
+cisecurity::redhat7::services::daytime_stream: 'disabled'
+cisecurity::redhat7::services::dhcpd: 'disabled'
+cisecurity::redhat7::services::discard_dgram: 'disabled'
+cisecurity::redhat7::services::discard_stream: 'disabled'
+cisecurity::redhat7::services::dovecot: 'disabled'
+cisecurity::redhat7::services::echo_dgram: 'disabled'
+cisecurity::redhat7::services::echo_stream: 'disabled'
+cisecurity::redhat7::services::httpd: 'disabled'
+cisecurity::redhat7::services::inetd: 'disabled'
+cisecurity::redhat7::services::named: 'disabled'
+cisecurity::redhat7::services::nfs: 'disabled'
+cisecurity::redhat7::services::ntalk: 'disabled'
+cisecurity::redhat7::services::ntp_service_restrictions:
+  - '-4 default kod nomodify notrap nopeer noquery'
+  - '-6 default kod nomodify notrap nopeer noquery'
+  - '127.0.0.1'
+  - '-6 ::1'
+cisecurity::redhat7::services::rexec: 'disabled'
+cisecurity::redhat7::services::rhnsd: 'disabled',
+cisecurity::redhat7::services::rlogin: 'disabled'
+cisecurity::redhat7::services::rpcbind: 'disabled'
+cisecurity::redhat7::services::rsh: 'disabled'
+cisecurity::redhat7::services::rsyncd: 'disabled'
+cisecurity::redhat7::services::rsyslog_remote_servers:
+  - name: 'log.domain.com'
+    port: 514
+cisecurity::redhat7::services::slapd: 'disabled'
+cisecurity::redhat7::services::smb: 'disabled'
+cisecurity::redhat7::services::snmpd: 'disabled'
+cisecurity::redhat7::services::sshd_banner_file: '/etc/issue.net'
+cisecurity::redhat7::services::sshd_client_alive_count_max: 4
+cisecurity::redhat7::services::sshd_client_alive_interval: 300
+cisecurity::redhat7::services::sshd_hostbased_authentication: 'no'
+cisecurity::redhat7::services::sshd_ignore_rhosts: 'yes'
+cisecurity::redhat7::services::sshd_login_grace_time: 60
+cisecurity::redhat7::services::sshd_log_level: 'INFO'
+cisecurity::redhat7::services::sshd_max_auth_tries: 4
+cisecurity::redhat7::services::sshd_permit_empty_passwords: 'no'
+cisecurity::redhat7::services::sshd_permit_root_login: 'no'
+cisecurity::redhat7::services::sshd_permitted_ciphers:
+  - 'aes256-ctr'
+  - 'aes192-ctr'
+  - 'aes128-ctr'
+  - 'aes256-gcm@openssh.com'
+  - 'aes128-gcm@openssh.com'
+  - 'chacha20-poly1305@openssh.com'
+cisecurity::redhat7::services::sshd_permitted_macs:
+  - 'hmac-sha2-512-etm@openssh.com'
+  - 'hmac-sha2-256-etm@openssh.com'
+  - 'umac-128-etm@openssh.com'
+  - 'hmac-sha2-512'
+  - 'hmac-sha2-256'
+  - 'umac-128@openssh.com'
+  - 'curve25519-sha256@libssh.org'
+  - 'diffie-hellman-group-exchange-sha256'
+cisecurity::redhat7::services::sshd_permit_user_environment: 'no'
+cisecurity::redhat7::services::sshd_protocol: 2
+cisecurity::redhat7::services::sshd_x11_forwarding: 'no'
+cisecurity::redhat7::services::squid: 'disabled'
+cisecurity::redhat7::services::telnet: 'disabled'
+cisecurity::redhat7::services::tftp: 'disabled'
+cisecurity::redhat7::services::tftp_server: 'disabled'
+cisecurity::redhat7::services::time_dgram: 'disabled'
+cisecurity::redhat7::services::time_service_provider: 'ntp'
+cisecurity::redhat7::services::time_service_servers:
+ -  '0.rhel.pool.ntp.org',
+ -  '1.rhel.pool.ntp.org',
+ -  '2.rhel.pool.ntp.org',
+ -  '3.rhel.pool.ntp.org',
+cisecurity::redhat7::services::time_stream: 'disabled'
+cisecurity::redhat7::services::vsftpd: 'disabled'
+cisecurity::redhat7::services::ypserv: 'disabled'

@@ -1,4 +1,4 @@
-# filesystem
+# redhat7/filesystem
 #
 # Implements Center of Internet Security filesystem controls.
 #
@@ -30,34 +30,34 @@
 # @param var_tmp_mount_options [Array[String]] Specifies the mount options for /var/tmp. Default value: ['bind'].
 # @param vfat [Enum['enabled','disabled']] Whether vfat should be enabled. Default value: 'disabled'.
 
-class cisecurity::filesystem (
-  Enum['enabled','disabled'] $configure_umask_default        = 'enabled',
-  Enum['enabled','disabled'] $cramfs                         = 'disabled',
-  Array[String] $dev_shm_mount_options                       = ['noexec','nodev','nosuid'],
-  Enum['enabled','disabled'] $freevxfs                       = 'disabled',
-  Enum['enabled','disabled'] $harden_system_file_perms       = 'enabled',
-  Enum['enabled','disabled'] $hfs                            = 'disabled',
-  Enum['enabled','disabled'] $hfsplus                        = 'disabled',
-  Array[String] $home_mount_options                          = ['nodev'],
-  Enum['enabled','disabled'] $jffs2                          = 'disabled',
-  Enum['enabled','disabled'] $remediate_log_file_perms       = 'enabled',
-  Enum['enabled','disabled'] $remediate_ungrouped_files      = 'enabled',
-  Enum['enabled','disabled'] $remediate_unowned_files        = 'enabled',
-  Enum['enabled','disabled'] $remediate_world_writable_dirs  = 'enabled',
-  Enum['enabled','disabled'] $remediate_world_writable_files = 'enabled',
-  Array[String] $removable_media_mount_options               = ['noexec','nodev','nosuid'],
-  Array[String] $removable_media_partitions                  = [],
-  Enum['enabled','disabled'] $squashfs                       = 'disabled',
-  Array[String] $tmp_mount_options                           = ['mode=1777','astrictatime','noexec','nodev','nosuid'],
-  Enum['enabled','disabled'] $udf                            = 'disabled',
-  String[3] $umask_default                                   = '027',
-  String $ungrouped_files_replacement_group                  = 'root',
-  String $unowned_files_replacement_owner                    = 'root',
-  Array[String] $var_mount_options                           = ['defaults'],
-  Array[String] $var_log_audit_mount_options                 = ['defaults'],
-  Array[String] $var_log_mount_options                       = ['defaults'],
-  Array[String] $var_tmp_mount_options                       = ['bind'],
-  Enum['enabled','disabled'] $vfat                           = 'disabled',
+class cisecurity::redhat7::filesystem (
+  Enum['enabled','disabled'] $configure_umask_default,
+  Enum['enabled','disabled'] $cramfs,
+  Array[String] $dev_shm_mount_options,
+  Enum['enabled','disabled'] $freevxfs,
+  Enum['enabled','disabled'] $harden_system_file_perms,
+  Enum['enabled','disabled'] $hfs,
+  Enum['enabled','disabled'] $hfsplus,
+  Array[String] $home_mount_options,
+  Enum['enabled','disabled'] $jffs2,
+  Enum['enabled','disabled'] $remediate_log_file_perms,
+  Enum['enabled','disabled'] $remediate_ungrouped_files,
+  Enum['enabled','disabled'] $remediate_unowned_files,
+  Enum['enabled','disabled'] $remediate_world_writable_dirs,
+  Enum['enabled','disabled'] $remediate_world_writable_files,
+  Array[String] $removable_media_mount_options,
+  Array[String] $removable_media_partitions,
+  Enum['enabled','disabled'] $squashfs,
+  Array[String] $tmp_mount_options,
+  Enum['enabled','disabled'] $udf,
+  String[3] $umask_default,
+  String $ungrouped_files_replacement_group,
+  String $unowned_files_replacement_owner,
+  Array[String] $var_mount_options,
+  Array[String] $var_log_audit_mount_options,
+  Array[String] $var_log_mount_options,
+  Array[String] $var_tmp_mount_options,
+  Enum['enabled','disabled'] $vfat,
 ) {
 
   # Private variables.
@@ -95,7 +95,7 @@ class cisecurity::filesystem (
         file_line { $filesystem:
           ensure  => absent,
           path    => '/etc/modprobe.d/CIS.conf',
-          line    => "install $filesystem /bin/true",
+          line    => "install ${filesystem} /bin/true",
           require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
         }
       }
@@ -103,7 +103,7 @@ class cisecurity::filesystem (
         file_line { $filesystem:
           ensure  => present,
           path    => '/etc/modprobe.d/CIS.conf',
-          line    => "install $filesystem /bin/true",
+          line    => "install ${filesystem} /bin/true",
           require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
         }
       }
@@ -209,7 +209,7 @@ class cisecurity::filesystem (
       remounts => false,
     }
   }
-  
+
   $removable_media_partitions.each | String $partition | {
     mount { $partition:
       ensure   => present,

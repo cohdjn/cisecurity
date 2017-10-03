@@ -1,5 +1,5 @@
 {
-  "name": "djn-cisecurity",
+  "name": "cohdjn-cisecurity",
   "version": "0.1.0",
   "author": "David Nelson",
   "summary": "Configures Linux systems to Center for Internet Security Linux hardening standard."

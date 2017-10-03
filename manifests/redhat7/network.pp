@@ -1,4 +1,4 @@
-# network
+# redhat7/network
 #
 # Implements Center of Internet Security network controls.
 #
@@ -23,27 +23,27 @@
 # @param tipc [Enum['enabled','disabled']] Whether TIPC protocol is enabled on the system. Default value: 'disabled'.
 # @param wireless_interfaces [Enum['enabled','disabled']] Whether the system utilizes wireless interfaces. Default value: 'disabled'.
 
-class cisecurity::network (
-  $dccp                              = 'disabled',
-  $hosts_allow                       = 'puppet:///modules/cisecurity/tcp_wrappers/hosts.allow',
-  $hosts_deny                        = 'puppet:///modules/cisecurity/tcp_wrappers/hosts.deny',
-  $ipv4_forwarding                   = 'disabled',
-  $ipv4_icmp_redirects               = 'disabled',
-  $ipv4_ignore_icmp_bogus_responses  = 'enabled',
-  $ipv4_ignore_icmp_broadcasts       = 'enabled',
-  $ipv4_log_suspicious_packets       = 'enabled',
-  $ipv4_reverse_path_filtering       = 'enabled',
-  $ipv4_secure_redirects             = 'disabled',
-  $ipv4_send_redirects               = 'disabled',
-  $ipv4_source_routing               = 'disabled',
-  $ipv4_tcp_syncookies               = 'enabled',
-  $ipv6                              = 'disabled',
-  $ipv6_accept_router_advertisements = 'disabled',
-  $ipv6_packet_redirects             = 'disabled',
-  $rds                               = 'disabled',
-  $sctp                              = 'disabled',
-  $tipc                              = 'disabled',
-  $wireless_interfaces               = 'disabled',
+class cisecurity::redhat7::network (
+  Enum['enabled','disabled'] $dccp,
+  String $hosts_allow,
+  String $hosts_deny,
+  Enum['enabled','disabled'] $ipv4_forwarding,
+  Enum['enabled','disabled'] $ipv4_icmp_redirects,
+  Enum['enabled','disabled'] $ipv4_ignore_icmp_bogus_responses,
+  Enum['enabled','disabled'] $ipv4_ignore_icmp_broadcasts,
+  Enum['enabled','disabled'] $ipv4_log_suspicious_packets,
+  Enum['enabled','disabled'] $ipv4_reverse_path_filtering,
+  Enum['enabled','disabled'] $ipv4_secure_redirects,
+  Enum['enabled','disabled'] $ipv4_send_redirects,
+  Enum['enabled','disabled'] $ipv4_source_routing,
+  Enum['enabled','disabled'] $ipv4_tcp_syncookies,
+  Enum['enabled','disabled'] $ipv6,
+  Enum['enabled','disabled'] $ipv6_accept_router_advertisements,
+  Enum['enabled','disabled'] $ipv6_packet_redirects,
+  Enum['enabled','disabled'] $rds,
+  Enum['enabled','disabled'] $sctp,
+  Enum['enabled','disabled'] $tipc,
+  Enum['enabled','disabled'] $wireless_interfaces,
 ) {
 
   # Private variables.
@@ -59,14 +59,14 @@ class cisecurity::network (
       file_line { $protocol:
         ensure  => absent,
         path    => '/etc/modprobe.d/CIS.conf',
-        line    => "install $protocol /bin/true",
+        line    => "install ${protocol} /bin/true",
         require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
       }
     } else {
       file_line { $protocol:
         ensure  => present,
         path    => '/etc/modprobe.d/CIS.conf',
-        line    => "install $protocol /bin/true",
+        line    => "install ${protocol} /bin/true",
         require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
       }
     }
@@ -74,28 +74,28 @@ class cisecurity::network (
 
   if $ipv4_forwarding == 'enabled' {
     sysctl { 'net.ipv4.ip_forward':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.ip_forward':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_ignore_icmp_bogus_responses == 'enabled' {
     sysctl { 'net.ipv4.icmp_ignore_bogus_error_responses':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.icmp_ignore_bogus_error_responses':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
@@ -103,236 +103,236 @@ class cisecurity::network (
 
   if $ipv4_ignore_icmp_broadcasts == 'enabled' {
     sysctl { 'net.ipv4.icmp_echo_ignore_broadcasts':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.icmp_echo_ignore_broadcasts':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_icmp_redirects == 'enabled' {
     sysctl { 'net.ipv4.conf.all.accept_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.accept_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.conf.all.accept_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.accept_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_log_suspicious_packets == 'enabled' {
     sysctl { 'net.ipv4.conf.all.log_martians':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.log_martians':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.conf.all.log_martians':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.log_martians':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_send_redirects == 'enabled' {
     sysctl { 'net.ipv4.conf.all.send_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.send_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.conf.all.send_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.send_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_reverse_path_filtering == 'enabled' {
     sysctl { 'net.ipv4.conf.all.rp_filter':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.rp_filter':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.conf.all.rp_filter':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.rp_filter':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_secure_redirects == 'enabled' {
     sysctl { 'net.ipv4.conf.all.secure_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.secure_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.conf.all.secure_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.secure_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_source_routing == 'enabled' {
     sysctl { 'net.ipv4.conf.all.accept_source_route':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.accept_source_route':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.conf.all.accept_source_route':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv4.conf.default.accept_source_route':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv4_tcp_syncookies == 'enabled' {
     sysctl { 'net.ipv4.tcp_syncookies':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv4.tcp_syncookies':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv6_accept_router_advertisements == 'enabled' {
     sysctl { 'net.ipv6.conf.all.accept_ra':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv6.conf.default.accept_ra':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv6.conf.all.accept_ra':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv6.conf.default.accept_ra':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv6_packet_redirects == 'enabled' {
     sysctl { 'net.ipv6.conf.all.accept_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv6.conf.default.accept_redirects':
-      ensure => present,
-      value  => '1',
+      ensure  => present,
+      value   => '1',
       comment => 'Setting managed by Puppet.'
     }
   } else {
     sysctl { 'net.ipv6.conf.all.accept_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
     sysctl { 'net.ipv6.conf.default.accept_redirects':
-      ensure => present,
-      value  => '0',
+      ensure  => present,
+      value   => '0',
       comment => 'Setting managed by Puppet.'
     }
   }
 
   if $ipv6 == 'enabled' {
     file_line { 'ipv6':
-      ensure => present,
-      path   => '/etc/modprobe.d/CIS.conf',
-      line   => 'options ipv6 disable=0',
+      ensure  => present,
+      path    => '/etc/modprobe.d/CIS.conf',
+      line    => 'options ipv6 disable=0',
       require => File[ ['/etc/modprobe.d'], File['/etc/modprobe.d/CIS.conf'] ]
     }
   } else {
     file_line { 'ipv6':
-      ensure => present,
-      path   => '/etc/modprobe.d/CIS.conf',
-      line   => 'options ipv6 disable=1',
+      ensure  => present,
+      path    => '/etc/modprobe.d/CIS.conf',
+      line    => 'options ipv6 disable=1',
       require => [ File['/etc/modprobe.d'], File['/etc/modprobe.d/CIS.conf'] ]
     }
   }

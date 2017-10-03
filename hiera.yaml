@@ -1,0 +1,16 @@
+---
+version: 5
+
+defaults:
+  datadir: data
+  data_hash: yaml_data
+
+hierarchy:
+  - name: 'Node Name'
+    path: 'nodes/%{facts.trusted.certname}.yaml'
+
+  - name: 'Operating System'
+    path: '%{facts.os.name}%{facts.os.release.major}.yaml'
+
+  - name: 'common'
+    path: 'common.yaml'

@@ -4,11 +4,22 @@
 
 class cisecurity {
 
-  include "cisecurity::filesystem"
-  include "cisecurity::services"
-  include "cisecurity::packages"
-  include "cisecurity::security"
-  include "cisecurity::pam"
-  include "cisecurity::network"
+  $osfamily = downcase($facts['os']['family'])
+  $osreleasemajor = $facts['os']['release']['major']
+  $osrelease = "${osfamily}${osreleasemajor}"
+
+  case $osrelease {
+    'redhat7': {
+      include 'cisecurity::redhat7::filesystem'
+      include 'cisecurity::redhat7::services'
+      include 'cisecurity::redhat7::packages'
+      include 'cisecurity::redhat7::security'
+      include 'cisecurity::redhat7::pam'
+      include 'cisecurity::redhat7::network'
+    }
+    default: {
+      fail ("${osrelease} is not supported by cisecurity module.")
+    }
+  }
 
 }

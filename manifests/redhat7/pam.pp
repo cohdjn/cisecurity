@@ -1,4 +1,4 @@
-# pam
+# redhat7/pam
 #
 # Implements Center of Internet Security PAM controls.
 #
@@ -22,27 +22,27 @@
 # @param root_primary_group [String] The GID or name of root's primary group. Default value: 'root'.
 # @param wheel [Enum['enabled','disabled']] Whether to require membership in wheel to su to root. Default value: 'enabled'.
 
-class cisecurity::pam (
+class cisecurity::redhat7::pam (
 
-  Enum['enabled','disabled'] $account_lockout_enforcement = 'enabled',
-  Integer $account_lockout_attempts                       = 5,
-  Integer $account_lockout_time                           = 900,
-  Enum['enabled','disabled'] $inactive_account_lockout    = 'enabled',
-  Integer $inactive_account_lockout_days                  = 30,
-  Enum['enabled','disabled'] $password_aging              = 'enabled',
-  Integer $password_aging_max_days                        = 90,
-  Integer $password_aging_min_days                        = 7,
-  Integer $password_aging_warn_days                       = 7,
-  Enum['enabled','disabled'] $password_enforcement        = 'enabled',
-  Integer $password_min_length                            = 14,
-  Integer $password_num_digits                            = -1,
-  Integer $password_num_lowercase                         = -1,
-  Integer $password_num_uppercase                         = -1,
-  Integer $password_num_other_chars                       = -1,
-  Integer $password_max_attempts                          = 3,
-  Integer $password_num_remembered                        = 5,
-  String $root_primary_group                              = 'root',
-  Enum['enabled','disabled'] $wheel                       = 'enabled',
+  Enum['enabled','disabled'] $account_lockout_enforcement,
+  Integer $account_lockout_attempts,
+  Integer $account_lockout_time,
+  Enum['enabled','disabled'] $inactive_account_lockout,
+  Integer $inactive_account_lockout_days,
+  Enum['enabled','disabled'] $password_aging,
+  Integer $password_aging_max_days,
+  Integer $password_aging_min_days,
+  Integer $password_aging_warn_days,
+  Enum['enabled','disabled'] $password_enforcement,
+  Integer $password_min_length,
+  Integer $password_num_digits,
+  Integer $password_num_lowercase,
+  Integer $password_num_uppercase,
+  Integer $password_num_other_chars,
+  Integer $password_max_attempts,
+  Integer $password_num_remembered,
+  String $root_primary_group,
+  Enum['enabled','disabled'] $wheel,
 ) {
 
   user { 'root':
@@ -52,8 +52,8 @@ class cisecurity::pam (
 
   if $inactive_account_lockout == 'enabled' {
     exec { "useradd -D -f ${inactive_account_lockout_days}":
-      path    => [ '/sbin', '/bin' ],
-      unless  => "test $(useradd -D | grep INACTIVE)=='INACTIVE=${inactive_lockout_days}'!eq'INACTIVE=${inactive_lockout_days}' ",
+      path   => [ '/sbin', '/bin' ],
+      unless => "useradd -D | grep INACTIVE | grep ${::inactive_lockout_days}",
     }
   }
 
@@ -155,7 +155,7 @@ class cisecurity::pam (
       }
     }
   }
-  
+
   if $account_lockout_enforcement == 'enabled' {
     pam { 'password-auth pam_faillock.so 1':
       ensure    => present,
