@@ -34,9 +34,9 @@ class cisecurity::redhat7::network (
   $protocol_list.each | String $protocol | {
     if getvar($protocol) == 'disabled' {
       file_line { $protocol:
-        ensure  => present,
-        path    => '/etc/modprobe.d/CIS.conf',
-        line    => "install ${protocol} /bin/true",
+        ensure => present,
+        path   => '/etc/modprobe.d/CIS.conf',
+        line   => "install ${protocol} /bin/true",
       }
     }
   }
@@ -179,9 +179,9 @@ class cisecurity::redhat7::network (
 
   if $ipv6 == 'disabled' {
     file_line { 'ipv6':
-      ensure  => present,
-      path    => '/etc/modprobe.d/CIS.conf',
-      line    => 'options ipv6 disable=0',
+      ensure => present,
+      path   => '/etc/modprobe.d/CIS.conf',
+      line   => 'options ipv6 disable=0',
     }
   }
 

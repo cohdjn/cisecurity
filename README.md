@@ -62,9 +62,9 @@ All parameters for the `cisecurity` module are broken down into various classes 
 
 If you modify an `Enum['enabled','disabled']` parameter to something other than the default, the module will not autocorrect the desired state of the system.  You will need to go to that system and manually change the configuration to whatever you want it to be.  cisecurity is designed to only enforce the controls in the benchmark and will not make assumptions of what you want a system's configuration to look like when you deviate.
 
-**Exception:** For parameters in the `cisecurity::services` class, if you modify an `Enum['installed','uninstalled']` parameter, the module will honor the setting and attempt to start/stop and enable/disable the specified package.
+**Exception:** For parameters in the `cisecurity::services` class, if you modify an `Enum['installed','uninstalled','ignored']` parameter, the module will honor the setting and attempt to start/stop and enable/disable the specified package.
 
-For parameters in the `cisecurity::packages` class, if you modify an `Enum['installed','uninstalled']` parameter, the module will attempt to install or purge the specified package.
+For parameters in the `cisecurity::packages` class, if you modify an `Enum['installed','uninstalled','ignored']` parameter, the module will attempt to install or purge the specified package.
 
 #### Class cisecurity::filesystem
 
@@ -412,7 +412,7 @@ Determines if the TIPC protocol will be allowed.
 
 ##### `aide`
 * Default value: `'installed'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 1.3.1
 
 Determines if AIDE will be installed.
@@ -435,91 +435,91 @@ A cron-styled minute when AIDE will run its daily check.
 
 ##### `firewalld`
 * Default value: `'installed'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 3.6.1
 
 Determines if firewalld will be installed.
 
 ##### `logrotate`
 * Default value: `'installed'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 4.3
 
 Determines if logrotate will be installed.
 
 ##### `mcstrans`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 1.6.1.5
 
 Determines if the MCS Translation Service will be installed.
 
 ##### `openldap_clients`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.3.5
 
 Determines if the LDAP client will be installed.
 
 ##### `prelink`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 3.6.1
 
 Determines if prelink will be installed.
 
 ##### `rsh`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.2.17
 
 Determines if the rsh server will be installed.
 
 ##### `setroubleshoot`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 1.6.1.4
 
 Determines if setroubleshoot will be installed.
 
 ##### `talk`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.2.18
 
 Determines if talk will be installed.
 
 ##### `tcp_wrappers`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 3.4.1
 
 Determines if the TCP Wrappers will be installed.
 
 ##### `telnet`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.3.4
 
 Determines if the telnet client will be installed.
 
 ##### `x11_org`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.2.2
 
 Determines if X Windows will be installed.
 
 ##### `ypbind`
 * Default value: `'uninstalled'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.3.1
 
 Determines if the NIS Client will be installed.
 
 ##### `yum_auto_update`
 * Default value: `'installed'`
-* Data type: `Enum['installed','uninstalled']`
+* Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 1.8
 * Related: `yum_auto_update_action`, `yum_auto_update_email_from`, `yum_auto_update_email_to`, `yum_auto_update_exclude`, `yum_auto_update_notify_email`, `yum_auto_update_update_cmd`
 

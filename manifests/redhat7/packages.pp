@@ -3,22 +3,22 @@
 # Implements Center of Internet Security package controls.
 
 class cisecurity::redhat7::packages (
-  Enum['installed','uninstalled'] $aide,
+  Enum['installed','uninstalled','ignored'] $aide,
   String $aide_cron_start_hour,
   String $aide_cron_start_minute,
-  Enum['installed','uninstalled'] $firewalld,
-  Enum['installed','uninstalled'] $logrotate,
-  Enum['installed','uninstalled'] $mcstrans,
-  Enum['installed','uninstalled'] $openldap_clients,
-  Enum['installed','uninstalled'] $prelink,
-  Enum['installed','uninstalled'] $rsh,
-  Enum['installed','uninstalled'] $setroubleshoot,
-  Enum['installed','uninstalled'] $talk,
-  Enum['installed','uninstalled'] $tcp_wrappers,
-  Enum['installed','uninstalled'] $telnet,
-  Enum['installed','uninstalled'] $x11_org,
-  Enum['installed','uninstalled'] $ypbind,
-  Enum['installed','uninstalled'] $yum_auto_update,
+  Enum['installed','uninstalled','ignored'] $firewalld,
+  Enum['installed','uninstalled','ignored'] $logrotate,
+  Enum['installed','uninstalled','ignored'] $mcstrans,
+  Enum['installed','uninstalled','ignored'] $openldap_clients,
+  Enum['installed','uninstalled','ignored'] $prelink,
+  Enum['installed','uninstalled','ignored'] $rsh,
+  Enum['installed','uninstalled','ignored'] $setroubleshoot,
+  Enum['installed','uninstalled','ignored'] $talk,
+  Enum['installed','uninstalled','ignored'] $tcp_wrappers,
+  Enum['installed','uninstalled','ignored'] $telnet,
+  Enum['installed','uninstalled','ignored'] $x11_org,
+  Enum['installed','uninstalled','ignored'] $ypbind,
+  Enum['installed','uninstalled','ignored'] $yum_auto_update,
   Enum['check','download','apply'] $yum_auto_update_action,
   String $yum_auto_update_email_from,
   String $yum_auto_update_email_to,
@@ -82,6 +82,9 @@ class cisecurity::redhat7::packages (
         package { $package:
           ensure  => purged,
         }
+      }
+      'ignored': {
+        notice ("Will not attempt to install or uninstall ${package} because it's being ignored.")
       }
       default: {
         fail ("The setting for ${package} must be either 'installed' or 'uninstalled'.")

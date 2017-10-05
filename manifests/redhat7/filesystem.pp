@@ -59,9 +59,9 @@ class cisecurity::redhat7::filesystem (
   $filesystem_list.each | String $filesystem | {
     if getvar($filesystem) == 'disabled' {
       file_line { $filesystem:
-        ensure  => present,
-        path    => '/etc/modprobe.d/CIS.conf',
-        line    => "install ${filesystem} /bin/true",
+        ensure => present,
+        path   => '/etc/modprobe.d/CIS.conf',
+        line   => "install ${filesystem} /bin/true",
       }
     }
   }
@@ -110,10 +110,10 @@ class cisecurity::redhat7::filesystem (
 
   if !empty($var_tmp_mount_options) {
     mount { '/var/tmp':
-      ensure   => mounted,
-      device   => '/tmp',
-      fstype   => 'none',
-      options  => $var_tmp_mount_options,
+      ensure  => mounted,
+      device  => '/tmp',
+      fstype  => 'none',
+      options => $var_tmp_mount_options,
     }
   }
 
