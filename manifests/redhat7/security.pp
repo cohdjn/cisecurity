@@ -49,12 +49,6 @@ class cisecurity::redhat7::security (
       password  => $bootloader_password,
       superuser => true,
     }
-
-    exec { 'grub2-mkconfig -o /etc/grub2/grub.cfg':
-      path        => [ '/usr/sbin', '/sbin', '/usr/bin', '/bin' ],
-      refreshonly => true,
-      subscribe   => Grub_user['root'],
-    }
   }
 
   if $aslr == 'enabled' {
