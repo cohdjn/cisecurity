@@ -199,13 +199,13 @@ cisecurity::redhat7::services::slapd: 'disabled'
 cisecurity::redhat7::services::smb: 'disabled'
 cisecurity::redhat7::services::snmpd: 'disabled'
 cisecurity::redhat7::services::sshd_banner_file: '/etc/issue.net'
-cisecurity::redhat7::services::sshd_client_alive_count_max: 4
-cisecurity::redhat7::services::sshd_client_alive_interval: 300
+cisecurity::redhat7::services::sshd_client_alive_count_max: '4'
+cisecurity::redhat7::services::sshd_client_alive_interval: '300'
 cisecurity::redhat7::services::sshd_hostbased_authentication: 'no'
 cisecurity::redhat7::services::sshd_ignore_rhosts: 'yes'
-cisecurity::redhat7::services::sshd_login_grace_time: 60
+cisecurity::redhat7::services::sshd_login_grace_time: '60'
 cisecurity::redhat7::services::sshd_log_level: 'INFO'
-cisecurity::redhat7::services::sshd_max_auth_tries: 4
+cisecurity::redhat7::services::sshd_max_auth_tries: '4'
 cisecurity::redhat7::services::sshd_permit_empty_passwords: 'no'
 cisecurity::redhat7::services::sshd_permit_root_login: 'no'
 cisecurity::redhat7::services::sshd_permitted_ciphers:

@@ -888,8 +888,8 @@ Determines what action to take when the system detects it's starting to get low 
 Determines whether the rules defined in the benchmark are applied.
 
 ##### `auditd_max_log_file`
-* Default value: `8`
-* Data type: `Integer`
+* Default value: `'8'`
+* Data type: `String`
 * Implements: Control 4.1.1.1
 * Related: `configure_auditd`
 
@@ -1196,16 +1196,16 @@ Enables or disables SNMP services.
 Provides the location where SSH will send the login banner from.
 
 ##### `sshd_client_alive_count_max`
-* Default value: `4`
-* Data type: `Integer`
+* Default value: `'4'`
+* Data type: `String`
 * Implements: Control 5.2.13
 * Related: `configure_sshd`
 
 Sets the number of client alive messages sshd will send without receiving messages back from the client.
 
 ##### `sshd_client_alive_interval`
-* Default value: `300`
-* Data type: `Integer`
+* Default value: `'300'`
+* Data type: `String`
 * Implements: Control 5.2.13
 * Related: `configure_sshd`
 
@@ -1228,8 +1228,8 @@ Specifies whether `rhosts` or `/etc/hosts.equiv` authentication together with su
 Specifies that `.rhosts` and `.shosts` will not be used in `RhostsRSAAuthentication` or `HostbasedAuthentication`.
 
 ##### `sshd_login_grace_time`
-* Default value: `60`
-* Data type: `Integer`
+* Default value: `'60'`
+* Data type: `String`
 * Implements: Control 5.2.14
 * Related: `configure_sshd`
 
@@ -1244,8 +1244,8 @@ Amount of time (in seconds) when the server disconnects if the user has not succ
 Sets the verbosity level that is used when logging messages.
 
 ##### `sshd_max_auth_tries`
-* Default value: `4`
-* Data type: `Integer`
+* Default value: `'4'`
+* Data type: `String`
 * Implements: Control 5.2.5
 * Related: `configure_sshd`
 
