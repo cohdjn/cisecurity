@@ -74,13 +74,17 @@ class cisecurity::redhat7::packages (
     $uscore_package = regsubst($package, '-', '_')
     case getvar($uscore_package) {
       'installed': {
-        package { $package:
-          ensure  => present,
+        unless Package[$package] {
+          package { $package:
+            ensure  => present,
+          }
         }
       }
       'uninstalled': {
-        package { $package:
-          ensure  => purged,
+        unless Package[$package] {
+          package { $package:
+            ensure  => purged,
+          }
         }
       }
       'ignored': {
