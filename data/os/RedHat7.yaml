@@ -110,7 +110,7 @@ cisecurity::redhat7::pam::wheel: 'enabled'
 
 cisecurity::redhat7::security::aslr: 'enabled'
 cisecurity::redhat7::security::banner_message_text: 'Authorized uses only. All activity may be monitored and reported.'
-cisecurity::redhat7::security::bootloader_password: 'grub.pbkdf2.sha512.10000.D70F156A2B5B64EFD3CCA279A1C6B20B50CADA6A63606DB338E57AEA11A230E9E38CF67EA99C4C8A85B3B17E58783D4E22E0C9410463F6BBACB609A95C23391E.FFB5800B562FADEBF692B84E0CFD5E372EB07A80CE5E7FA95AADFE2ADCEC4DA1F1CA4BC7FDC537EDFC9FFD689C7A793ABBC1E44E87558DCD8F44A335FA433086'
+cisecurity::redhat7::security::bootloader_password: 'grub.pbkdf2.sha512.10000.591F2E100EEB9BE5E99D66C181E950E73E1710841650907772F567DDFA9FD2554322701DF40A2A702F9DA4CE45A00DC5623F11E9368DD3712A2B9D9B3284AD7B.318890153D24A5BD38AE4928CD4ACE0A5AD52E5C9927A11EF0019E9773DBF5102A65355A4F7A709CC440547802FE5758F0E67604C35A10EB7E5DC9C0076A751E'
 cisecurity::redhat7::security::configure_system_acct_nologin: 'enabled'
 cisecurity::redhat7::security::home_directories_perm: = '0750'
 cisecurity::redhat7::security::issue: 'puppet:///modules/cisecurity/redhat7/banners/issue'
