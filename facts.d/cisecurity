@@ -7,7 +7,169 @@ BEGIN {
     print "---" >YamlFile
     print "cisecurity:" >>YamlFile
 
-    # Find world writable directories.
+    # accounts_with_blank_passwords
+    FS=":"
+    FoundUsers = 0
+    Cmd = "cat /etc/shadow"
+    while ((Cmd | getline) > 0) {
+        if ($2 == "") {
+            if (FoundUsers == 0) {
+                print "  accounts_with_blank_passwords:" >>YamlFile
+            }
+            print "    - " $1 >>YamlFile
+            FoundUsers = 1
+        }
+    }
+    if (FoundUsers == 0) {
+        print "  accounts_with_blank_passwords: []" >>YamlFile
+    }
+
+    # accounts_with_uid_zero
+    FS="[ \t]+"
+    FoundUsers = 0
+    Cmd = "cat /etc/passwd"
+    while ((Cmd | getline) > 0) {
+        if ($3 == 0) {
+            if (FoundUsers == 0) {
+                print "  accounts_with_uid_zero:" >>YamlFile
+            }
+            print "    - " $1 >>YamlFile
+            FoundUsers = 1
+        }
+    }
+    if (FoundUsers == 0) {
+        print "  accounts_with_uid_zero: []" >>YamlFile
+    }
+
+    # installed_packages
+    FS="[ \t]+"
+    print "  installed_packages:" >>YamlFile
+    Cmd = "rpm -qa --queryformat '[%{NAME} %{VERSION}-%{RELEASE}\n]'"
+    while ((Cmd | getline ) > 0) {
+        print "    " $1 ": " $2 >>YamlFile
+    }
+
+    # package_system_file_variances
+    FS="[ \t]+"
+    Found = 0
+    Cmd = "rpm -Va --nomtime --nosize --nomd5 --nolinkto"
+    while ((Cmd | getline ) > 0) {
+        if ($2 != "c") {
+            if (Found == 0) {
+                print "  package_system_file_variances:" >>YamlFile
+            }
+            Found = 1
+            print "    " $2 ": '" $1 "'" >>YamlFile
+        }
+    }
+    if (Found == 0) {
+        print "  package_system_file_variances: []" >>YamlFile
+    }
+
+    # redhat_gpg_key_present
+    FS="[ \t]+"
+    Rc = system("rpm -q gpg-pubkey --qf '%{SUMMARY}\n' | grep 'release key' | grep 'security@redhat.com' >/dev/null 2>&1")
+    if (Rc == 0) {
+        print "  redhat_gpg_key_present: true" >>YamlFile
+    } else {
+        print "  redhat_gpg_key_present: false" >>YamlFile
+    }
+
+    # root_path
+    FS=":"
+    print "  root_path:" >>YamlFile
+    Cmd = "sed 's/:/\\n/g' <<< \"$PATH\""
+    while ((Cmd | getline) > 0) {
+        print "    - " $1 >>YamlFile
+    }
+
+    # subscriptions
+    FS=":"
+    print "  subscriptions:" >>YamlFile
+    Cmd = "subscription-manager list | awk '(NR>4)'"
+    while ((Cmd | getline ) > 0) {
+        gsub(/\s/, "", $1)
+        gsub(/^\s*/, "", $2)
+        if ($1 != "") {
+            print "    " tolower($1) ": \"" $2 "\"" >>YamlFile
+	}
+    }
+
+    # suid_sgid_files
+    FS="[ \t]+"
+    print "  suid_sgid_files:" >>YamlFile
+    Cmd1 = "df -l | grep -v tmpfs | awk '(NR>1)'"
+    while ((Cmd1 | getline ) > 0) {
+        Cmd2 = "find " $6 " -xdev \\( -perm -4000 -o -perm -2000 \\) -type f 2>/dev/null"
+        while ((Cmd2 | getline ) > 0) {
+            print "    - " $1 >>YamlFile
+        }
+    }
+
+    # system_accounts_with_valid_shell
+    FS=":"
+    Found = 0
+    Cmd = "egrep -v \"^\\+\" /etc/passwd"
+    while ((Cmd | getline ) > 0) {
+        if ($1 != "root" && $1 != "sync" && $1 != "shutdown" && $1 != "halt" && $3 < 1000 && $7 != "/sbin/nologin" && $7 != "/bin/false") {
+            if (Found == 0) {
+                print "  system_accounts_with_valid_shell:" >>YamlFile
+            }
+            Found = 1
+            print "    - " $1 >>YamlFile
+        }
+    }
+    if (Found == 0) {
+        print "  system_accounts_with_valid_shell: []" >>YamlFile
+    }
+
+    # unconfined_daemons
+    FS="[ \t]+"
+    Found = 0
+    Cmd = "ps -eZ | egrep \"initlc\" | egrep -vw \"tr|ps|egrep|bash|awk\" | tr ':' ' ' | awk '{ print $NF }'"
+    while ((Cmd | getline ) > 0) {
+        if (Found == 0) {
+            print "  unconfined_daemons:" >>YamlFile
+        }
+        Found = 1
+        print $1 >>YamlFile
+    }
+    if (Found == 0) {
+        print "  unconfined_daemons: []" >>YamlFile
+    }
+
+    # ungrouped_files
+    FS="[ \t]+"
+    FoundFiles = 0
+    Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nogroup"
+    while ((Cmd | getline ) > 0) {
+        if (FoundFiles == 0) {
+            print "  ungrouped_files:" >>YamlFile
+        }
+        print "    - " $1 >>YamlFile
+        FoundFiles = 1
+    }
+    if (FoundFiles == 0) {
+        print "  ungrouped_files: []" >>YamlFile
+    }
+
+    # unowned_files
+    FS="[ \t]+"
+    FoundFiles = 0
+    Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nouser"
+    while ((Cmd | getline ) > 0) {
+        if (FoundFiles == 0) {
+            print "  unowned_files:" >>YamlFile
+        }
+        print "    - " $1 >>YamlFile
+        FoundFiles = 1
+    }
+    if (FoundFiles == 0) {
+        print "  unowned_files: []" >>YamlFile
+    }
+
+    # world_writable_dirs
+    FS="[ \t]+"
     FoundDirs = 0
     Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\) 2>/dev/null"
     while ((Cmd | getline ) > 0) {
@@ -21,7 +183,23 @@ BEGIN {
         print "  world_writable_dirs: []" >>YamlFile
     }
 
-    # Get all yum repositories.
+    # world_writable_files
+    FS="[ \t]+"
+    FoundFiles = 0
+    Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -0002 2>/dev/null"
+    while ((Cmd | getline ) > 0) {
+        if (FoundFiles == 0) {
+            print "  world_writable_files:" >>YamlFile
+        }
+        print "    - " $1 >>YamlFile
+        FoundFiles = 1
+    }
+    if (FoundFiles == 0) {
+        print "  world_writable_files: []" >>YamlFile
+    }
+
+    # yum_enabled_repos
+    FS="[ \t]+"
     print "  yum_enabled_repos:" >>YamlFile
     Cmd = "yum repolist enabled"
     while ((Cmd | getline ) > 0) {
@@ -39,182 +217,13 @@ BEGIN {
         }
     }
 
-    # Report on yum repos with gpgcheck disabled.
+    # yum_repos_gpg_check_consistent
+    FS="[ \t]+"
     Rc = system("grep gpgcheck /etc/yum.repos.d/*.repo | grep 0")
     if (Rc == 1) {
         print "  yum_repos_gpgcheck_consistent: true" >>YamlFile
     } else {
         print "  yum_repos_gpgcheck_consistent: false" >>YamlFile
-    }
-
-    # Get all GPG keys that rpm knows about.
-    FS="|"
-    print "  gpg_keys:" >>YamlFile
-    Cmd = "rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release}|%{summary}\n'"
-    while ((Cmd | getline ) > 0) {
-        print "    " $1 ": " $2 >>YamlFile
-    }
-
-    # Get the status of subscription-manager.
-    FS=":"
-    print "  subscriptions:" >>YamlFile
-    Cmd = "subscription-manager list | awk '(NR>4)'"
-    while ((Cmd | getline ) > 0) {
-        gsub(/\s/, "", $1)
-        gsub(/^\s*/, "", $2)
-        if ($1 != "") {
-            print "    " tolower($1) ": \"" $2 "\"" >>YamlFile
-	}
-    }
-
-    # Get all unconfined running daemons.
-    Found = 0
-    Cmd = "ps -eZ | egrep \"initlc\" | egrep -vw \"tr|ps|egrep|bash|awk\" | tr ':' ' ' | awk '{ print $NF }'"
-    while ((Cmd | getline ) > 0) {
-        if (Found == 0) {
-            print "  unconfined_daemons:" >>YamlFile
-        }
-        Found = 1
-        print $1 >>YamlFile
-    }
-    if (Found == 0) {
-        print "  unconfined_daemons: []" >>YamlFile
-    }
-
-    # Get all packages installed on the system.
-    FS=" "
-    print "  installed_packages:" >>YamlFile
-    Cmd = "rpm -qa --queryformat '[%{NAME} %{VERSION}-%{RELEASE}\n]'"
-    while ((Cmd | getline ) > 0) {
-        print "    " $1 ": " $2 >>YamlFile
-    }
-
-    # Get all files that have the SUID and/or SGID bit set.
-    FS=" "
-    print "  suid_sgid_files:" >>YamlFile
-    Cmd1 = "df -l | grep -v tmpfs | awk '(NR>1)'"
-    while ((Cmd1 | getline ) > 0) {
-        Cmd2 = "find " $6 " -xdev \\( -perm -4000 -o -perm -2000 \\) -type f 2>/dev/null"
-        while ((Cmd2 | getline ) > 0) {
-            print "    - " $1 >>YamlFile
-        }
-    }
-
-    # Find system accounts with valid shells.
-    FS=":"
-    Found = 0
-    Cmd = "egrep -v \"^\\+\" /etc/passwd"
-    while ((Cmd | getline ) > 0) {
-        if ($1 != "root" && $1 != "sync" && $1 != "shutdown" && $1 != "halt" && $3 < 1000 && $7 != "/sbin/nologin" && $7 != "/bin/false") {
-            if (Found == 0) {
-                print "  system_accounts_with_valid_shell:" >>YamlFile
-            }
-            Found = 1
-            print "    - " $1 >>YamlFile
-        }
-    }
-    if (Found == 0) {
-        print "  system_accounts_with_valid_shell: []" >>YamlFile
-    }
-
-    # Log variations between rpm and what's on the system.
-    FS="[ \t]+"
-    Found = 0
-    Cmd = "rpm -Va --nomtime --nosize --nomd5 --nolinkto"
-    while ((Cmd | getline ) > 0) {
-        if ($2 != "c") {
-            if (Found == 0) {
-                print "  package_system_file_variances:" >>YamlFile
-            }
-            Found = 1
-            print "    " $2 ": '" $1 "'" >>YamlFile
-        }
-    }
-    if (Found == 0) {
-        print "  package_system_file_variances: []" >>YamlFile
-    }
-
-    # Find world writable files.
-    FoundFiles = 0
-    Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -0002 2>/dev/null"
-    while ((Cmd | getline ) > 0) {
-        if (FoundFiles == 0) {
-            print "  world_writable_files:" >>YamlFile
-        }
-        print "    - " $1 >>YamlFile
-        FoundFiles = 1
-    }
-    if (FoundFiles == 0) {
-        print "  world_writable_files: []" >>YamlFile
-    }
-
-    # Find unowned files.
-    FoundFiles = 0
-    Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nouser"
-    while ((Cmd | getline ) > 0) {
-        if (FoundFiles == 0) {
-            print "  unowned_files:" >>YamlFile
-        }
-        print "    - " $1 >>YamlFile
-        FoundFiles = 1
-    }
-    if (FoundFiles == 0) {
-        print "  unowned_files: []" >>YamlFile
-    }
-
-    # Find ungrouped files.
-    FoundFiles = 0
-    Cmd = "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nogroup"
-    while ((Cmd | getline ) > 0) {
-        if (FoundFiles == 0) {
-            print "  ungrouped_files:" >>YamlFile
-        }
-        print "    - " $1 >>YamlFile
-        FoundFiles = 1
-    }
-    if (FoundFiles == 0) {
-        print "  ungrouped_files: []" >>YamlFile
-    }
-
-    # Find accounts with empty passwords.
-    FS=":"
-    FoundUsers = 0
-    Cmd = "cat /etc/shadow"
-    while ((Cmd | getline) > 0) {
-        if ($2 == "") {
-            if (FoundUsers == 0) {
-                print "  accounts_with_empty_passwords:" >>YamlFile
-            }
-            print "    - " $1 >>YamlFile
-            FoundUsers = 1
-        }
-    }
-    if (FoundUsers == 0) {
-        print "  accounts_with_empty_passwords: []" >>YamlFile
-    }
-
-    # Find accounts other than root with UID 0.
-    FoundUsers = 0
-    Cmd = "cat /etc/passwd"
-    while ((Cmd | getline) > 0) {
-        if ($3 == 0) {
-            if (FoundUsers == 0) {
-                print "  accounts_with_uid_zero:" >>YamlFile
-            }
-            print "    - " $1 >>YamlFile
-            FoundUsers = 1
-        }
-    }
-    if (FoundUsers == 0) {
-        print "  accounts_with_uid_zero: []" >>YamlFile
-    }
-
-    # Export root's path.
-    FS=":"
-    print "  root_path:" >>YamlFile
-    Cmd = "sed 's/:/\\n/g' <<< \"$PATH\""
-    while ((Cmd | getline) > 0) {
-        print "    - " $1 >>YamlFile
     }
 
 }

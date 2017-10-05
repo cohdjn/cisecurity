@@ -13,11 +13,14 @@ class cisecurity::redhat7::security (
   String $issue_net,
   String $motd,
   Enum['enabled','disabled'] $remediate_blank_passwords,
-  Enum['enabled','disabled'] $remediate_home_directories,
   Enum['enabled','disabled'] $remediate_home_directories_dot_files,
   Enum['enabled','disabled'] $remediate_home_directories_exist,
+  Enum['enabled','disabled'] $remediate_home_directories_forward_files,
   Enum['enabled','disabled'] $remediate_home_directories_netrc_files,
+  Enum['enabled','disabled'] $remediate_home_directories_netrc_files_perms,
+  Enum['enabled','disabled'] $remediate_home_directories_owner,
   Enum['enabled','disabled'] $remediate_home_directories_perms,
+  Enum['enabled','disabled'] $remediate_home_directories_rhosts_files,
   String $remediate_home_directories_start_hour,
   String $remediate_home_directories_start_minute,
   Enum['enabled','disabled'] $remediate_legacy_group_entries,
@@ -25,9 +28,6 @@ class cisecurity::redhat7::security (
   Enum['enabled','disabled'] $remediate_legacy_shadow_entries,
   Enum['enabled','disabled'] $remediate_root_path,
   Enum['enabled','disabled'] $remediate_uid_zero_accounts,
-  Enum['enabled','disabled'] $remove_home_directories_forward_files,
-  Enum['enabled','disabled'] $remove_home_directories_netrc_files,
-  Enum['enabled','disabled'] $remove_home_directories_rhosts_files,
   Enum['enabled','disabled'] $restricted_core_dumps,
   Array[String] $root_path,
   Enum['enabled','disabled'] $single_user_authentication,
@@ -36,7 +36,6 @@ class cisecurity::redhat7::security (
   Array[String] $secure_terminals,
   String $syslog_facility,
   String $syslog_severity,
-  Enum['enabled','disabled'] $verify_home_directories_owner,
   Enum['enabled','disabled'] $verify_user_groups_exist,
   Enum['enabled','disabled'] $verify_duplicate_gids_notexist,
   Enum['enabled','disabled'] $verify_duplicate_groupnames_notexist,
@@ -187,27 +186,27 @@ class cisecurity::redhat7::security (
       path    => '/usr/lib/systemd/system/emergency.service',
       section => 'Service',
       setting => 'ExecStart',
-      value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"'
+      value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"',
     }
     ini_setting { 'rescue.service ExecStart':
       ensure  => present,
       path    => '/usr/lib/systemd/system/rescue.service',
       section => 'Service',
       setting => 'ExecStart',
-      value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"'
+      value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"',
     }
   }
 
   if $facts['cisecurity']['unconfined_daemons'] != undef {
     if !empty($facts['cisecurity']['unconfined_daemons']) {
-      warning ('One or more unconfined daemons found running on this system.')
+      notice ('One or more unconfined daemons found running on this system.')
     }
   } else {
-    warning ('Cannot validate the presence of unconfined daemons because required external facts are unavailable.')
+    notice ('Cannot validate the presence of unconfined daemons because required external facts are unavailable.')
   }
 
   if $facts['architecture'] != 'x86_64' {
-    warning ('The system appears to be running on an x86 system.  Make sure PAE extensions are installed and NX/XD support properly configured.')
+    notice ('The system appears to be running on an x86 system.  Make sure PAE extensions are installed and NX/XD support properly configured.')
   }
 
   if !empty($secure_terminals) {
@@ -230,7 +229,7 @@ class cisecurity::redhat7::security (
         }
       }
     } else {
-      warning ('Cannot validate if system accounts have valid shells because required external facts are unavailable.')
+      notice ('Cannot validate if system accounts have valid shells because required external facts are unavailable.')
     }
   }
 
@@ -242,7 +241,7 @@ class cisecurity::redhat7::security (
         }
       }
     } else {
-      warning ('Cannot validate if there are accounts with blank passwords because required external facts are unavailable.')
+      notice ('Cannot validate if there are accounts with blank passwords because required external facts are unavailable.')
     }
   }
 
@@ -279,12 +278,14 @@ class cisecurity::redhat7::security (
   if $remediate_uid_zero_accounts == 'enabled' {
     if $facts['cisecurity']['accounts_with_uid_zero'] != undef {
       $facts['cisecurity']['accounts_with_uid_zero'].each | String $username | {
-        user { $username:
-          ensure => absent,
+        if $username != 'root' {
+          user { $username:
+            ensure => absent,
+          }
         }
       }
     } else {
-      warning ('Cannot validate if there are duplicate UID 0 accounts because required external facts are unavailable.')
+      notice ('Cannot validate if there are duplicate UID 0 accounts because required external facts are unavailable.')
     }
   }
 
@@ -292,7 +293,7 @@ class cisecurity::redhat7::security (
     class { '::bash': }
     $flattened_path = join($root_path, ':')
     bash::user { 'root':
-      env_variables => { 'path' => $root_path }
+      env_variables => { 'path' => $root_path },
     }
     if $facts['cisecurity']['root_path'] != undef {
       $facts['cisecurity']['root_path'].each | String $directory | {
@@ -304,7 +305,7 @@ class cisecurity::redhat7::security (
         }
       }
     } else {
-      warning ('Cannot validate root\'s path because required external facts are unavailable.')
+      notice ('Cannot validate root\'s path because required external facts are unavailable.')
     }
   }
 
@@ -336,7 +337,7 @@ class cisecurity::redhat7::security (
     user    => 'root',
     hour    => $remediate_home_directories_start_hour,
     minute  => $remediate_home_directories_start_minute,
-    require => File['/opt/cisecurity/scripts/redmediate_home_directories.sh'],
+    require => File['/opt/cisecurity/scripts/remediate_home_directories.sh'],
   }
 
 }

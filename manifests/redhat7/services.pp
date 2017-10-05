@@ -63,7 +63,8 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $rsh,
   Enum['enabled','disabled'] $rsyncd,
   String $rsyslog_conf,
-  Hash[String,Integer] $rsyslog_remote_servers,
+  #Array[Hash[String,Integer]] $rsyslog_remote_servers,
+  $rsyslog_remote_servers,
   Enum['enabled','disabled'] $slapd,
   Enum['enabled','disabled'] $smb,
   Enum['enabled','disabled'] $snmpd,
@@ -170,7 +171,7 @@ class cisecurity::redhat7::services (
         auditd::rule { "-a always,exit -F path='${file}' -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged": }
       }
     } else {
-      warning ('Cannot configure auditing of suid/sgid files because required external facts are unavailable. This may be transient.')
+      notice ('Cannot configure auditing of suid/sgid files because required external facts are unavailable. This may be transient.')
     }
     auditd::rule{ '-e 2':
       order => 999,
@@ -345,9 +346,9 @@ class cisecurity::redhat7::services (
     'ypserv.service',
   ]
   $service_list.each | String $service | {
-    $uscore_service = regsubst($service, '-', '_')
-    $uscore_service = regsubst($uscore_service, '.service', '')
-    $uscore_service = regsubst($uscore_service, '.socket', '')
+    $uscore_service1 = regsubst($service, '-', '_')
+    $uscore_service2 = regsubst($uscore_service1, '.service', '')
+    $uscore_service = regsubst($uscore_service2, '.socket', '')
     if getvar($uscore_service) == 'enabled' {
       service { $service:
         ensure => started,

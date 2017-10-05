@@ -62,13 +62,12 @@ class cisecurity::redhat7::filesystem (
         ensure  => present,
         path    => '/etc/modprobe.d/CIS.conf',
         line    => "install ${filesystem} /bin/true",
-        require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
       }
     }
   }
 
   if $facts['mountpoints']['/tmp'] == undef {
-    warning ('Cannot configure mount options for /tmp because it\'s not a valid partition.')
+    notice ('Cannot configure mount options for /tmp because it\'s not a valid partition.')
   } elsif !empty($tmp_mount_options ) {
     if $facts['mountpoints']['/tmp']['filesystem'] == 'tmpfs' {
       exec { 'systemctl unmask tmp.mount':
@@ -100,7 +99,7 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $facts['mountpoints']['/var'] == undef {
-    warning ('Cannot configure mount options for /var because it\'s not a valid partition.')
+    notice ('Cannot configure mount options for /var because it\'s not a valid partition.')
   } elsif !empty($var_mount_options) {
     mount { '/var':
       ensure   => present,
@@ -109,20 +108,17 @@ class cisecurity::redhat7::filesystem (
     }
   }
 
-  if $facts['mountpoints']['/var/tmp'] == undef {
-    warning ('Cannot configure mount options for /var/tmp because it\'s not a valid partition.')
-  } elsif !empty($var_tmp_mount_options) {
+  if !empty($var_tmp_mount_options) {
     mount { '/var/tmp':
       ensure   => mounted,
       device   => '/tmp',
       fstype   => 'none',
       options  => $var_tmp_mount_options,
-      remounts => false,
     }
   }
 
   if $facts['mountpoints']['/var/log'] == undef {
-    warning ('Cannot configure mount options for /var/log because it\'s not a valid partition.')
+    notice ('Cannot configure mount options for /var/log because it\'s not a valid partition.')
   } elsif !empty($var_log_mount_options) {
     mount { '/var/log':
       ensure   => present,
@@ -132,7 +128,7 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $facts['mountpoints']['/var/log/audit'] == undef {
-    warning ('Cannot configure mount options for /var/log/audit because it\'s not a valid partition.')
+    notice ('Cannot configure mount options for /var/log/audit because it\'s not a valid partition.')
   } elsif !empty($var_log_audit_mount_options) {
     mount { '/var/log/audit':
       ensure   => present,
@@ -142,7 +138,7 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $facts['mountpoints']['/home'] == undef {
-    warning ('Cannot configure mount options for /home because it\'s not a valid partition.')
+    notice ('Cannot configure mount options for /home because it\'s not a valid partition.')
   } elsif !empty($home_mount_options) {
     mount { '/home':
       ensure   => present,
@@ -152,7 +148,7 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $facts['mountpoints']['/dev/shm'] == undef {
-    warning ('Cannot configure mount options for /dev/shm because it\'s not a valid partition.')
+    notice ('Cannot configure mount options for /dev/shm because it\'s not a valid partition.')
   } elsif !empty($dev_shm_mount_options) {
     mount { '/dev/shm':
       ensure   =>  'mounted',
@@ -182,7 +178,7 @@ class cisecurity::redhat7::filesystem (
         }
       }
     } else {
-      warning ('Cannot remediate world writable dirs because required external facts are unavailable. This may be transient.')
+      notice ('Cannot remediate world writable dirs because required external facts are unavailable. This may be transient.')
     }
   }
 
@@ -195,7 +191,7 @@ class cisecurity::redhat7::filesystem (
         }
       }
     } else {
-      warning ('Cannot remediate world writable files because required external facts are unavailable. This may be transient.')
+      notice ('Cannot remediate world writable files because required external facts are unavailable. This may be transient.')
     }
   }
 
@@ -208,7 +204,7 @@ class cisecurity::redhat7::filesystem (
         }
       }
     } else {
-      warning ('Cannot remediate unowned files because required exteranl facts are unavailable. This may be transient.')
+      notice ('Cannot remediate unowned files because required exteranl facts are unavailable. This may be transient.')
     }
   }
 
@@ -221,7 +217,7 @@ class cisecurity::redhat7::filesystem (
         }
       }
     } else {
-      warning ('Cannot remediate ungrouped files because required external facts are unavailable. This may be transient.')
+      notice ('Cannot remediate ungrouped files because required external facts are unavailable. This may be transient.')
     }
   }
 

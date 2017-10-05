@@ -503,7 +503,7 @@ Determines if the TCP Wrappers will be installed.
 
 Determines if the telnet client will be installed.
 
-##### `x_windows`
+##### `x11_org`
 * Default value: `'uninstalled'`
 * Data type: `Enum['installed','uninstalled']`
 * Implements: Control 2.2.2
@@ -581,13 +581,6 @@ Defines what category of updates you wish applied.
   * `minimal` provides updates for bugfixes.
   * `minimal-security`provides updates to packages with security errata.
   * `minimal-security-severity:Critical` provides only critical security fixes for packages with security errata.
-
-##### `yum_gpg_keys_required_signers`
-* Default value: `'/redhat/'`
-* Data type: `String`
-* Implements: Control 1.2.3
-
-Specifies a regex of which signers' GPG keys should be installed in `rpm`.  This parameter and the associated logic is really loose and is only meant to make sure you have **something** registered.
 
 ##### `yum_repo_enforce_gpgcheck`
 * Default value: `'enabled'`

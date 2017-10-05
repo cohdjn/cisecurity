@@ -77,7 +77,7 @@ cisecurity::redhat7::packages::setroubleshoot: 'uninstalled'
 cisecurity::redhat7::packages::talk: 'uninstalled'
 cisecurity::redhat7::packages::tcp_wrappers: 'installed'
 cisecurity::redhat7::packages::telnet: 'uninstalled'
-cisecurity::redhat7::packages::x_windows: 'uninstalled'
+cisecurity::redhat7::packages::x11_org: 'uninstalled'
 cisecurity::redhat7::packages::ypbind: 'uninstalled'
 cisecurity::redhat7::packages::yum_auto_update: 'installed'
 cisecurity::redhat7::packages::yum_auto_update_action: 'apply'
@@ -86,7 +86,6 @@ cisecurity::redhat7::packages::yum_auto_update_email_to: 'root'
 cisecurity::redhat7::packages::yum_auto_update_exclude: []
 cisecurity::redhat7::packages::yum_auto_update_notify_email: true
 cisecurity::redhat7::packages::yum_auto_update_update_cmd: 'default'
-cisecurity::redhat7::packages::yum_gpg_keys_required_signers: '/redhat/'
 cisecurity::redhat7::packages::yum_repo_enforce_gpgcheck: 'enabled'
 
 cisecurity::redhat7::pam::account_lockout_enforcement: 'enabled'
@@ -187,7 +186,7 @@ cisecurity::redhat7::services::ntp_service_restrictions:
   - '127.0.0.1'
   - '-6 ::1'
 cisecurity::redhat7::services::rexec: 'disabled'
-cisecurity::redhat7::services::rhnsd: 'disabled',
+cisecurity::redhat7::services::rhnsd: 'disabled'
 cisecurity::redhat7::services::rlogin: 'disabled'
 cisecurity::redhat7::services::rpcbind: 'disabled'
 cisecurity::redhat7::services::rsh: 'disabled'
@@ -234,10 +233,10 @@ cisecurity::redhat7::services::tftp: 'disabled'
 cisecurity::redhat7::services::time_dgram: 'disabled'
 cisecurity::redhat7::services::time_service_provider: 'ntp'
 cisecurity::redhat7::services::time_service_servers:
- -  '0.rhel.pool.ntp.org',
- -  '1.rhel.pool.ntp.org',
- -  '2.rhel.pool.ntp.org',
- -  '3.rhel.pool.ntp.org',
+ -  '0.rhel.pool.ntp.org'
+ -  '1.rhel.pool.ntp.org'
+ -  '2.rhel.pool.ntp.org'
+ -  '3.rhel.pool.ntp.org'
 cisecurity::redhat7::services::time_stream: 'disabled'
 cisecurity::redhat7::services::vsftpd: 'disabled'
 cisecurity::redhat7::services::ypserv: 'disabled'

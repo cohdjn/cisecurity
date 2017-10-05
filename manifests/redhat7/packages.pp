@@ -3,7 +3,7 @@
 # Implements Center of Internet Security package controls.
 
 class cisecurity::redhat7::packages (
-  Enum['enabled','disabled'] $aide,
+  Enum['installed','uninstalled'] $aide,
   String $aide_cron_start_hour,
   String $aide_cron_start_minute,
   Enum['installed','uninstalled'] $firewalld,
@@ -16,7 +16,7 @@ class cisecurity::redhat7::packages (
   Enum['installed','uninstalled'] $talk,
   Enum['installed','uninstalled'] $tcp_wrappers,
   Enum['installed','uninstalled'] $telnet,
-  Enum['installed','uninstalled'] $x_windows,
+  Enum['installed','uninstalled'] $x11_org,
   Enum['installed','uninstalled'] $ypbind,
   Enum['installed','uninstalled'] $yum_auto_update,
   Enum['check','download','apply'] $yum_auto_update_action,
@@ -31,12 +31,11 @@ class cisecurity::redhat7::packages (
     'minimal-security-severity:Critical',
     'security',
     'security-severity:Critical'] $yum_auto_update_update_cmd,
-  String $yum_gpg_keys_required_signers,
   Enum['enabled','disabled'] $yum_repo_enforce_gpgcheck,
 ) {
 
   if $aide == 'installed' {
-    class { 'aide':
+    class { '::aide':
       hour   => $aide_cron_start_hour,
       minute => $aide_cron_start_minute,
     }
@@ -47,7 +46,7 @@ class cisecurity::redhat7::packages (
   }
 
   if $yum_auto_update == 'installed' {
-    class { '::yum_auto_update':
+    class { '::yum_autoupdate':
       action       => $yum_auto_update_action,
       exclude      => $yum_auto_update_exclude,
       notify_email => $yum_auto_update_notify_email,
@@ -92,10 +91,10 @@ class cisecurity::redhat7::packages (
 
   if $facts['cisecurity']['yum_enabled_repos'] != undef {
     if empty($facts['cisecurity']['yum_enabled_repos']) {
-      warning ('There are no enabled repositories in yum.')
+      notice ('There are no enabled repositories in yum.')
     }
   } else {
-    warning ('Cannot validate enabled repositories in yum because required external facts are unavailable. This may be transient.')
+    notice ('Cannot validate enabled repositories in yum because required external facts are unavailable. This may be transient.')
   }
 
   if $yum_repo_enforce_gpgcheck == 'enabled' {
@@ -120,30 +119,24 @@ class cisecurity::redhat7::packages (
         }
       }
     } else {
-      warning ('Cannot validate if GPG checks are present because required external facts are unavailable. This may be transient.')
+      notice ('Cannot validate if GPG checks are present because required external facts are unavailable. This may be transient.')
     }
   }
 
-  if $facts['cisecurity']['gpg_keys'] != undef {
-    $found = false
-    $facts['cisecurity']['gpg_keys'].each | String $keyname, String $signer | {
-      if $signer =~ $yum_gpg_keys_required_signers {
-        $found = true
-      }
-      if !$found {
-        warning ('One or more required yum GPG keys were not found.')
-      }
+  if $facts['cisecurity']['redhat_gpg_key_present'] != undef {
+    if $facts['cisecurity']['redhat_gpg_key_present'] == false {
+      notice ('One or more required yum GPG keys were not found.')
     }
   } else {
-    warning ('Cannot validate if required GPG keys are present because required external facts are unavailable. This may be transient.')
+    notice ('Cannot validate if required GPG keys are present because required external facts are unavailable. This may be transient.')
   }
 
   if $facts['cisecurity']['subscriptions'] != undef {
     if $facts['cisecurity']['subscriptions']['status'] != 'Subscribed' {
-      warning ('No valid entitlement subscriptions were found.')
+      notice ('No valid entitlement subscriptions were found.')
     }
   } else {
-    warning ('Cannot validate entitlement subscriptions because required external facts are unavailable. This may be transient.')
+    notice ('Cannot validate entitlement subscriptions because required external facts are unavailable. This may be transient.')
   }
 
 }

@@ -37,7 +37,6 @@ class cisecurity::redhat7::network (
         ensure  => present,
         path    => '/etc/modprobe.d/CIS.conf',
         line    => "install ${protocol} /bin/true",
-        require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
       }
     }
   }
@@ -46,7 +45,7 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.ip_forward':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -54,7 +53,7 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.icmp_ignore_bogus_error_responses':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -62,7 +61,7 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.icmp_echo_ignore_broadcasts':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -70,12 +69,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.conf.all.accept_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv4.conf.default.accept_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -83,12 +82,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.conf.all.log_martians':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv4.conf.default.log_martians':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -96,12 +95,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.conf.all.send_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv4.conf.default.send_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -109,12 +108,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.conf.all.rp_filter':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv4.conf.default.rp_filter':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -122,12 +121,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.conf.all.secure_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv4.conf.default.secure_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -135,12 +134,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.conf.all.accept_source_route':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv4.conf.default.accept_source_route':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -148,7 +147,7 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv4.tcp_syncookies':
       ensure  => present,
       value   => '1',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -156,12 +155,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv6.conf.all.accept_ra':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv6.conf.default.accept_ra':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -169,12 +168,12 @@ class cisecurity::redhat7::network (
     sysctl { 'net.ipv6.conf.all.accept_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
     sysctl { 'net.ipv6.conf.default.accept_redirects':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet.'
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -183,7 +182,6 @@ class cisecurity::redhat7::network (
       ensure  => present,
       path    => '/etc/modprobe.d/CIS.conf',
       line    => 'options ipv6 disable=0',
-      require => File[ ['/etc/modprobe.d'], File['/etc/modprobe.d/CIS.conf'] ]
     }
   }
 
@@ -191,7 +189,7 @@ class cisecurity::redhat7::network (
     $facts['networking']['interfaces'].each | String $interface, Hash $info | {
       if $interface =~ 'wlan' {
         exec { "ip link set ${interface} down":
-          path => [ '/sbin', '/bin' ]
+          path => [ '/sbin', '/bin' ],
         }
       }
     }
