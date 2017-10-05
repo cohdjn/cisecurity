@@ -6,11 +6,14 @@ defaults:
   data_hash: yaml_data
 
 hierarchy:
-  - name: 'Node Name'
+  - name: 'Per-Node Configuration'
     path: 'nodes/%{facts.trusted.certname}.yaml'
 
-  - name: 'Operating System'
-    path: '%{facts.os.name}%{facts.os.release.major}.yaml'
+  - name: 'Per-Environment Configuration'
+    path: 'environments/%{environment}.yaml'
 
-  - name: 'common'
+  - name: 'Per-OS Configuration'
+    path: 'os/%{facts.os.name}%{facts.os.release.major}.yaml'
+
+  - name: 'Common Configuration'
     path: 'common.yaml'

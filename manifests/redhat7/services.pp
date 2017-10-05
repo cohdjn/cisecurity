@@ -1,72 +1,6 @@
 # redhat7/services
 #
 # Implements Center of Internet Security service controls.
-#
-# @param auditd_action_mail_acct [String] Email address of user who should receive notifications from auditd. Default value: 'root'.
-# @param auditd_admin_space_left_action [Enum['ignore','syslog','rotate','email','exec','suspend','single','halt']] Action system should take when it's low on disk space. Default value: 'halt'.
-# @param auditd_configure_rules [Enum['enabled','disabled']] Whether CIS rules should be applied to the system. Default value: 'enabled'.
-# @param auditd_max_log_file [Integer] The maximum log file size of a single log file. Default value: 8.
-# @param auditd_max_log_file_action [Enum['ignore','syslog','suspend','rotate','keep_logs']] The action to be taken when the maximum log file size. Default value: 'keep_logs'
-# @param auditd_space_left_action [Enum['ignore','syslog','rotate','email','exec','suspend','single','halt']] Action system should take when it's low on disk space. Default value: 'email'.
-# @param auditd_configure_boot_auditing [Enum['enabled','disabled']] Direct the kernel to start auditing before the auditd service starts. Default value: 'enabled'.
-# @param autofs [Enum['enabled','disabled'] Whether to ensure the autofs service is running and boot-time enabled. Default value: 'disabled'.
-# @param avahi_daemon [Enum['enabled','disabled'] Whether to ensure the avahi-daemon service is running and boot-time enabled. Default value: 'disabled'.
-# @param chargen_dgram [Enum['enabled','disabled'] Whether to ensure the chargen-dgram inetd service is running and enabled. Default value: 'disabled'.
-# @param chargen_stream [Enum['enabled','disabled'] Whether to ensure the chargen-stream inetd service is running and enabled. Default value: 'disabled'.
-# @param configure_auditd [Enum['enabled','disabled']] Configure audit subsystem with values specified in variables in this class. Default value: 'enabled'.
-# @param configure_cron [Enum['enabled','disabled']] Whether to ensure the cron daemon is running and boot-time enabled. Default value: 'enabled'.
-# @param configure_postfix [Enum['enabled','disabled']] Whether to configure Postfix to listen only on localhost. Default value: 'enabled'.
-# @param configure_rsyslog [Enum['enabled','disabled']] Configure rsyslog subsystem with values specified in variables in the class. Default value: 'enabled'.
-# @param configure_sshd [Enum['enabled','disabled']] Configure SSH daemon with values specified in variables in the class. Default value: 'enabled'.
-# @param configure_time [Enum['enabled','disabled']] Whether to configure time services (ntp or chrony). Default value: 'enabled'.
-# @param cups [Enum['enabled','disabled'] Whether to ensure the cups service is running and boot-time enabled. Default value: 'disabled'.
-# @param daytime_dgram [Enum['enabled','disabled'] Whether to ensure the daytime-dgram inetd service is running and enabled. Default value: 'disabled'.
-# @param daytime_stream [Enum['enabled','disabled'] Whether to ensure the daytime-stream inetd service is running and enabled. Default value: 'disabled'.
-# @param dhcpd [Enum['enabled','disabled'] Whether to ensure the dhcpd service is running and boot-time enabled. Default value: 'disabled'.
-# @param dovecot [Enum['enabled','disabled'] Whether to ensure the dovecot service is running and boot-time enabled. Default value: 'disabled'.
-# @param discard_dgram [Enum['enabled','disabled'] Whether to ensure the discard-dgram inetd service is running and enabled. Default value: 'disabled'.
-# @param discard_stream [Enum['enabled','disabled'] Whether to ensure the discard-stream inetd service is running and enabled. Default value: 'disabled'.
-# @param echo_dgram [Enum['enabled','disabled'] Whether to ensure the echo-dgram inetd service is running and enabled. Default value: 'disabled'.
-# @param echo_stream [Enum['enabled','disabled'] Whether to ensure the echo-stream inetd service is running and enabled. Default value: 'disabled'.
-# @param httpd [Enum['enabled','disabled'] Whether to ensure the httpd service is running and boot-time enabled. Default value: 'disabled'.
-# @param inetd [Enum['enabled','disabled'] Whether to ensure the inetd service is running and boot-time enabled. Default value: 'disabled'.
-# @param named [Enum['enabled','disabled'] Whether to ensure the named service is running and boot-time enabled. Default value: 'disabled'.
-# @param nfs [Enum['enabled','disabled'] Whether to ensure the nfs service is running and boot-time enabled. Default value: 'disabled'.
-# @param ntalk [Enum['enabled','disabled'] Whether to ensure the ntalk service is running and boot-time enabled. Default value: 'disabled'.
-# @param ntp_service_restrictions [Array[String]] Configures ntp daemon restrictions. Default value: ['-4 default kod nomodify notrap nopeer noquery', '-6 default kod nomodify notrap nopeer noquery', '127.0.0.1', '-6 ::1'].
-# @param rexec [Enum['enabled','disabled'] Whether to ensure the rexec service is running and boot-time enabled. Default value: 'disabled'.
-# @param rhnsd [Enum['enabled','disabled'] Whether to ensure the rhnsd service is running and boot-time enabled. Default value: 'disabled'.
-# @param rlogin [Enum['enabled','disabled'] Whether to ensure the rlogin service is running and boot-time enabled. Default value: 'disabled'.
-# @param rpcbind [Enum['enabled','disabled'] Whether to ensure the rpcbind service is running and boot-time enabled. Default value: 'disabled'.
-# @param rsh [Enum['enabled','disabled'] Whether to ensure the rsh service is running and boot-time enabled. Default value: 'disabled'.
-# @param rsyncd [Enum['enabled','disabled'] Whether to ensure the rsync service is running and boot-time enabled. Default value: 'disabled'.
-# @param rsyslog_remote_servers [Hash[String,Integer]] Configures rsyslog loghosts. Default value: {'log.domain.com' => 514}.
-# @param slapd [Enum['enabled','disabled'] Whether to ensure the slapd service is running and boot-time enabled. Default value: 'disabled'.
-# @param smb [Enum['enabled','disabled'] Whether to ensure the smb service is running and boot-time enabled. Default value: 'disabled'.
-# @param sshd_banner_file [String] File to use to send banner to remote user before authentication. Default value: '/etc/issue.net'.
-# @param sshd_client_alive_count_max [Integer] Maximum number of client alive messages before closing session. Default value: 4.
-# @param sshd_client_alive_interval [Integer] Interval in seconds before sending a message to the client. Default value: 300.
-# @param sshd_hostbased_authentication [Enum['yes','no']] Whether rhosts and public key authentication is allowed. Default value: 'no'.
-# @param sshd_ignore_rhosts [Enum['yes','no']] Specifies whether .rhosts and .shosts files will be used. Default value: 'no'.
-# @param sshd_login_grace_time [Integer] Amount of time until the server disconnects without successful login. Default value: 60.
-# @param sshd_log_level [Enum['QUIET','FATAL','ERROR','INFO','VERBOSE','DEBUG','DEBUG1','DEBUG2','DEBUG3'] Verbosity level used when logging messages. Default value: 'INFO'.
-# @param sshd_max_auth_tries [Integer] Maximum number of authentication attempts per connection. Default value: 4.
-# @param sshd_permit_empty_password [Enum['yes','no']] Specifies whether sshd allows login to account with empty passwords. Default value: 'no'.
-# @param sshd_permit_root_login [Enum['yes','no']] Specifies whether sshd allows root to log in directly. Default value: 'no'.
-# @param sshd_permitted_ciphers [Array[String]] Specifies the ciphers allowed to secure connection. Default value: ['aes256-ctr', 'aes192-ctr', 'aes128-ctr', 'aes256-gcm@openssh.com', 'aes128-gcm@openssh.com', 'chacha20-poly1305@openssh.com'].
-# @param sshd_permitted_macs [Array[String]] Specified the message authentication protocols allowed to secure the connection. Default value: ['hmac-sha2-512-etm@openssh.com', 'hmac-sha2-256-etm@openssh.com', 'umac-128-etm@openssh.com', 'hmac-sha2-512', 'hmac-sha2-256', 'umac-128@openssh.com', 'curve25519-sha256@libssh.org', 'diffie-hellman-group-exchange-sha256'].
-# @param sshd_permit_user_environment [Enum['yes','no]] Specifies whether ~/.ssh.environment and environment= options in ~/.ssh/authorized_keys are permitted. Default value: 'no'.
-# @param sshd_protocol [Integer[1,2]] Specifies the ssh protocol version to be used. Default value: 2.
-# @param squid [Enum['enabled','disabled'] Whether to ensure the squid service is running and boot-time enabled. Default value: 'disabled'.
-# @param telnet [Enum['enabled','disabled'] Whether to ensure the telnet service is running and boot-time enabled. Default value: 'disabled'.
-# @param tftp [Enum['enabled','disabled'] Whether to ensure the tftp service is running and boot-time enabled. Default value: 'disabled'.
-# @param tftp_server [Enum['enabled','disabled'] Whether to ensure the tftp-server service is running and boot-time enabled. Default value: 'disabled'.
-# @param time_dgram [Enum['enabled','disabled'] Whether to ensure the time-dgram inetd service is running and enabled. Default value: 'disabled'.
-# @param time_service_provider [Enum['chrony','ntp']] Specifies which time server service to use. Default value: 'ntp'.
-# @param time_service_servers [Array[String]] Specifies authoritative time servers to synchronize with. Default value:  '0.rhel.pool.ntp.org', '1.rhel.pool.ntp.org', '2.rhel.pool.ntp.org', '3.rhel.pool.ntp.org'].
-# @param time_stream [Enum['enabled','disabled'] Whether to ensure the time-stream inetd service is running and enabled. Default value: 'disabled'.
-# @param vsftpd [Enum['enabled','disabled'] Whether to ensure the vsftpd service is running and boot-time enabled. Default value: 'disabled'.
-# @param ypserv [Enum['enabled','disabled'] Whether to ensure the ypserv service is running and boot-time enabled. Default value: 'disabled'.
 
 class cisecurity::redhat7::services (
   String $auditd_action_mail_acct,
@@ -102,11 +36,11 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $chargen_dgram,
   Enum['enabled','disabled'] $chargen_stream,
   Enum['enabled','disabled'] $configure_auditd,
-  Enum['enabled','disabled'] $configure_cron,
   Enum['enabled','disabled'] $configure_postfix,
   Enum['enabled','disabled'] $configure_rsyslog,
   Enum['enabled','disabled'] $configure_sshd,
   Enum['enabled','disabled'] $configure_time,
+  Enum['enabled','disabled'] $cron,
   Enum['enabled','disabled'] $cups,
   Enum['enabled','disabled'] $daytime_dgram,
   Enum['enabled','disabled'] $daytime_stream,
@@ -128,6 +62,7 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $rpcbind,
   Enum['enabled','disabled'] $rsh,
   Enum['enabled','disabled'] $rsyncd,
+  String $rsyslog_conf,
   Hash[String,Integer] $rsyslog_remote_servers,
   Enum['enabled','disabled'] $slapd,
   Enum['enabled','disabled'] $smb,
@@ -154,12 +89,11 @@ class cisecurity::redhat7::services (
   Array[String] $sshd_permitted_ciphers,
   Array[String] $sshd_permitted_macs,
   Enum['yes','no'] $sshd_permit_user_environment,
-  Integer $sshd_protocol,
+  String $sshd_protocol,
   Enum['yes','no'] $sshd_x11_forwarding,
   Enum['enabled','disabled'] $squid,
   Enum['enabled','disabled'] $telnet,
   Enum['enabled','disabled'] $tftp,
-  Enum['enabled','disabled'] $tftp_server,
   Enum['enabled','disabled'] $time_dgram,
   Enum['chrony','ntp'] $time_service_provider,
   Array[String] $time_service_servers,
@@ -167,32 +101,6 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $vsftpd,
   Enum['enabled','disabled'] $ypserv,
 ) {
-
-  # Private variables.
-  $service_list = [
-    'avahi-daemon.service',
-    'cups.service',
-    'dhcpd.service',
-    'dovecot.service',
-    'httpd.service',
-    'named.service',
-    'nfs.service',
-    'ntalk.service',
-    'rexec.socket',
-    'rhnsd.service',
-    'rlogin.socket',
-    'rpcbind.service',
-    'rsh.socket',
-    'rsyncd.service',
-    'slapd.service',
-    'smb.service',
-    'snmpd.service',
-    'squid.service',
-    'telnet.socket',
-    'tftp.socket',
-    'vsftpd.service',
-    'ypserv.service',
-  ]
 
   if $configure_auditd == 'enabled' {
     class { '::auditd':
@@ -209,11 +117,6 @@ class cisecurity::redhat7::services (
   if $auditd_configure_boot_auditing == 'enabled' {
     kernel_parameter { 'audit':
       ensure => present,
-      value  => '1',
-    }
-  } else {
-    kernel_parameter { 'audit':
-      ensure => absent,
       value  => '1',
     }
   }
@@ -262,15 +165,13 @@ class cisecurity::redhat7::services (
     auditd::rule{ '-w /sbin/rmmod -p x -k modules': }
     auditd::rule{ '-w /sbin/modprobe -p x -k modules': }
     auditd::rule{ '-a always,exit arch=b64 -S init_module -S delete_module -k modules': }
-
-    if $facts['cisecurity']['suid_sgid_files'] == undef {
-      warning ('Cannot configure auditing suid/sgid files because required system facts are undefined.')
-    } else {
+    if $facts['cisecurity']['suid_sgid_files'] != undef {
       $facts['cisecurity']['suid_sgid_files'].each | String $file | {
         auditd::rule { "-a always,exit -F path='${file}' -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged": }
       }
+    } else {
+      warning ('Cannot configure auditing of suid/sgid files because required external facts are unavailable. This may be transient.')
     }
-
     auditd::rule{ '-e 2':
       order => 999,
     }
@@ -282,7 +183,7 @@ class cisecurity::redhat7::services (
     }
   }
 
-  if $configure_cron == 'enabled' {
+  if $cron == 'enabled' {
     service { 'crond':
       ensure => running,
       enable => true,
@@ -293,17 +194,15 @@ class cisecurity::redhat7::services (
     class { '::rsyslog':
       perm_file => '0640',
     }
-
     class { 'rsyslog::client':
       remote_servers => $rsyslog_remote_servers,
     }
-
     file { '/etc/rsyslog.d/CIS.conf':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0644',
-      source => 'puppet:///modules/cisecurity/rsyslog/rsyslog.conf'
+      source => $rsyslog_conf,
     }
   }
 
@@ -312,78 +211,63 @@ class cisecurity::redhat7::services (
       ensure => running,
       enable => true,
     }
-
     sshd_config { 'Protocol':
       ensure => present,
       value  => $sshd_protocol,
     }
-
     sshd_config { 'LogLevel':
       ensure => present,
       value  => $sshd_log_level,
     }
-
     sshd_config { 'X11Forwarding':
       ensure => present,
       value  => $sshd_x11_forwarding,
     }
-
     sshd_config { 'MaxAuthTries':
       ensure => present,
       value  => $sshd_max_auth_tries,
     }
-
     sshd_config { 'IgnoreRhosts':
       ensure => present,
       value  => $sshd_ignore_rhosts,
     }
-
     sshd_config { 'HostbasedAuthentication':
       ensure => present,
       value  => $sshd_hostbased_authentication,
     }
-
     sshd_config { 'PermitRootLogin':
       ensure => present,
       value  => $sshd_permit_root_login,
     }
-
     sshd_config { 'PermitEmptyPasswords':
       ensure => present,
       value  => $sshd_permit_empty_passwords,
     }
-
     sshd_config { 'PermitUserEnvironment':
       ensure => present,
       value  => $sshd_permit_user_environment,
     }
-
     $ciphers = join($sshd_permitted_ciphers, ',')
     sshd_config { 'Ciphers':
       ensure => present,
       value  => $ciphers,
     }
-
     sshd_config { 'MACs':
       ensure => present,
       value  => $sshd_permitted_macs,
     }
-
     sshd_config { 'ClientAliveInterval':
       ensure => present,
       value  => $sshd_client_alive_interval,
     }
-
     sshd_config { 'ClientAliveCountMax':
       ensure => present,
       value  => $sshd_client_alive_count_max,
     }
-
     sshd_config { 'LoginGraceTime':
       ensure => present,
       value  => $sshd_login_grace_time,
     }
-
     sshd_config { 'BannerFile':
       ensure => present,
       value  => $sshd_banner_file,
@@ -399,7 +283,6 @@ class cisecurity::redhat7::services (
           servers        => $time_service_servers,
           restrict       => $ntp_service_restrictions,
         }
-
         file { '/etc/sysconfig/ntpd':
           ensure  => file,
           owner   => 'root',
@@ -407,20 +290,17 @@ class cisecurity::redhat7::services (
           mode    => '0644',
           content => 'OPTIONS="-g -u ntp:ntp"',
         }
-
         class { '::chrony':
           service_ensure => stopped,
           service_enable => false,
         }
       }
-
       'chrony': {
         class { '::chrony':
           service_ensure => running,
           service_enable => true,
           servers        => $time_service_servers,
         }
-
         file { '/etc/sysconfig/chronyd':
           ensure  => file,
           owner   => 'root',
@@ -434,14 +314,41 @@ class cisecurity::redhat7::services (
           service_enable => false,
         }
       }
+      default: {
+        fail ("The time_service_provider parameter only accepts 'ntp' or 'chrony'.")
+      }
     }
   }
 
+  $service_list = [
+    'avahi-daemon.service',
+    'cups.service',
+    'dhcpd.service',
+    'dovecot.service',
+    'httpd.service',
+    'named.service',
+    'nfs.service',
+    'ntalk.service',
+    'rexec.socket',
+    'rhnsd.service',
+    'rlogin.socket',
+    'rpcbind.service',
+    'rsh.socket',
+    'rsyncd.service',
+    'slapd.service',
+    'smb.service',
+    'snmpd.service',
+    'squid.service',
+    'telnet.socket',
+    'tftp.socket',
+    'vsftpd.service',
+    'ypserv.service',
+  ]
   $service_list.each | String $service | {
     $uscore_service = regsubst($service, '-', '_')
     $uscore_service = regsubst($uscore_service, '.service', '')
     $uscore_service = regsubst($uscore_service, '.socket', '')
-    if getvar("service_${uscore_service}") == 'enabled' {
+    if getvar($uscore_service) == 'enabled' {
       service { $service:
         ensure => started,
         enable => true,

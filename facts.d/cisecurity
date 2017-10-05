@@ -2,6 +2,7 @@
 # Provides external facts for cisecurity.
 
 BEGIN {
+    system("mkdir -p /etc/puppetlabs/facter/facts.d")
     YamlFile = "/etc/puppetlabs/facter/facts.d/cisecurity.yaml"
     print "---" >YamlFile
     print "cisecurity:" >>YamlFile
@@ -174,4 +175,46 @@ BEGIN {
     if (FoundFiles == 0) {
         print "  ungrouped_files: []" >>YamlFile
     }
+
+    # Find accounts with empty passwords.
+    FS=":"
+    FoundUsers = 0
+    Cmd = "cat /etc/shadow"
+    while ((Cmd | getline) > 0) {
+        if ($2 == "") {
+            if (FoundUsers == 0) {
+                print "  accounts_with_empty_passwords:" >>YamlFile
+            }
+            print "    - " $1 >>YamlFile
+            FoundUsers = 1
+        }
+    }
+    if (FoundUsers == 0) {
+        print "  accounts_with_empty_passwords: []" >>YamlFile
+    }
+
+    # Find accounts other than root with UID 0.
+    FoundUsers = 0
+    Cmd = "cat /etc/passwd"
+    while ((Cmd | getline) > 0) {
+        if ($3 == 0) {
+            if (FoundUsers == 0) {
+                print "  accounts_with_uid_zero:" >>YamlFile
+            }
+            print "    - " $1 >>YamlFile
+            FoundUsers = 1
+        }
+    }
+    if (FoundUsers == 0) {
+        print "  accounts_with_uid_zero: []" >>YamlFile
+    }
+
+    # Export root's path.
+    FS=":"
+    print "  root_path:" >>YamlFile
+    Cmd = "sed 's/:/\\n/g' <<< \"$PATH\""
+    while ((Cmd | getline) > 0) {
+        print "    - " $1 >>YamlFile
+    }
+
 }

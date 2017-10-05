@@ -1,19 +1,6 @@
 # redhat7/security
 #
 # Implements Center of Internet Security security controls.
-#
-# @param aslr [Enum['enabled','disabled']] Whether address space layout randomization is enabled on the system. Default value: 'enabled'.
-# @param banner_message_text [String] Banner text displayed to use on Gnome desktop. Default value: 'Authorized uses only. All activity may be monitored and reported.'.
-# @param bootloader_password [String] Encrypted password for grub to use. Default value: 'abcd1234'.
-# @param configure_system_acct_nologin [Enum['enabled','disabled']] Change all system account shells to /sbin/nologin. Default value: 'enabled'.
-# @param issue [String] Source file for the contents of /etc/issue. Default value: 'puppet:///modules/cisecurity/banners/issue'.
-# @param issue_net [String] Source file for the contents of /etc/issue.net. Default value: 'puppet:///modules/cisecurity/banners/issue.net'.
-# @param restricted_core_dumps [Enum['enabled','disabled']] Whether core dumps should be restricted on the system. Default value: 'enabled'.
-# @param single_user_authentication [Enum['enabled','disabled']] Whether authentication is required for single-user mode. Default value: 'enabled'.
-# @param motd [String] Source file for the contents of /etc/motd. Default value: 'puppet:///modules/cisecurity/banners/motd'.
-# @param selinux [Enum['enforcing','permissive','disabled']] Desired state of selinux. Default value: 'enforcing'.
-# @param selinux_type [Enum['targeted','minimum','mls']] Desired state of selinux type. Default value: 'targeted'.
-# @param secure_terminals [Array[String]] List of terminals considered safe for root to log into directly. Default value: ['console','tty1','tty2','tty3','tty4','tty5','tty6','tty7','tty8','tty9','tty10','tty11','ttyS0']
 
 class cisecurity::redhat7::security (
 
@@ -21,14 +8,40 @@ class cisecurity::redhat7::security (
   String $banner_message_text,
   String $bootloader_password,
   Enum['enabled','disabled'] $configure_system_acct_nologin,
+  String $home_directories_perm,
   String $issue,
   String $issue_net,
-  Enum['enabled','disabled'] $restricted_core_dumps,
-  Enum['enabled','disabled'] $single_user_authentication,
   String $motd,
+  Enum['enabled','disabled'] $remediate_blank_passwords,
+  Enum['enabled','disabled'] $remediate_home_directories,
+  Enum['enabled','disabled'] $remediate_home_directories_dot_files,
+  Enum['enabled','disabled'] $remediate_home_directories_exist,
+  Enum['enabled','disabled'] $remediate_home_directories_netrc_files,
+  Enum['enabled','disabled'] $remediate_home_directories_perms,
+  String $remediate_home_directories_start_hour,
+  String $remediate_home_directories_start_minute,
+  Enum['enabled','disabled'] $remediate_legacy_group_entries,
+  Enum['enabled','disabled'] $remediate_legacy_passwd_entries,
+  Enum['enabled','disabled'] $remediate_legacy_shadow_entries,
+  Enum['enabled','disabled'] $remediate_root_path,
+  Enum['enabled','disabled'] $remediate_uid_zero_accounts,
+  Enum['enabled','disabled'] $remove_home_directories_forward_files,
+  Enum['enabled','disabled'] $remove_home_directories_netrc_files,
+  Enum['enabled','disabled'] $remove_home_directories_rhosts_files,
+  Enum['enabled','disabled'] $restricted_core_dumps,
+  Array[String] $root_path,
+  Enum['enabled','disabled'] $single_user_authentication,
   Enum['enforcing','permissive','disabled'] $selinux,
   Enum['targeted','minimum','mls'] $selinux_type,
   Array[String] $secure_terminals,
+  String $syslog_facility,
+  String $syslog_severity,
+  Enum['enabled','disabled'] $verify_home_directories_owner,
+  Enum['enabled','disabled'] $verify_user_groups_exist,
+  Enum['enabled','disabled'] $verify_duplicate_gids_notexist,
+  Enum['enabled','disabled'] $verify_duplicate_groupnames_notexist,
+  Enum['enabled','disabled'] $verify_duplicate_uids_notexist,
+  Enum['enabled','disabled'] $verify_duplicate_usernames_notexist,
 ) {
 
   if $bootloader_password != '' {
@@ -38,19 +51,7 @@ class cisecurity::redhat7::security (
       superuser => true,
     }
 
-    exec { "grub2-mkconfig -o ${::grubcfg}":
-      path        => [ '/usr/sbin', '/sbin', '/usr/bin', '/bin' ],
-      refreshonly => true,
-      subscribe   => Grub_user['root'],
-    }
-  } else {
-    grub_user { 'root':
-      ensure    => absent,
-      password  => $bootloader_password,
-      superuser => true,
-    }
-
-    exec { "grub2-mkconfig -o ${::grubcfg}":
+    exec { 'grub2-mkconfig -o /etc/grub2/grub.cfg':
       path        => [ '/usr/sbin', '/sbin', '/usr/bin', '/bin' ],
       refreshonly => true,
       subscribe   => Grub_user['root'],
@@ -61,7 +62,7 @@ class cisecurity::redhat7::security (
     sysctl { 'kernel.randomize_va_space':
       ensure  => present,
       value   => '2',
-      comment => 'Setting managed by Puppet cisecurity module.',
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -103,7 +104,6 @@ class cisecurity::redhat7::security (
       group  => 'root',
       mode   => '0644',
     }
-
     $gdmconfig = [
       'user-db:user',
       'system-db:gdm',
@@ -118,7 +118,6 @@ class cisecurity::redhat7::security (
         notify  => Exec['dconf update'],
       }
     }
-
     $gdm_banner_file = '/etc/dconf/db/gdm.d/01-banner-message'
     file { $gdm_banner_file:
       ensure => file,
@@ -126,10 +125,9 @@ class cisecurity::redhat7::security (
       group  => 'root',
       mode   => '0644',
     }
-
     $bannerconfig = {
       'banner-message-enable' => 'true',
-      'banner_message_text'   => $::gdm_banner_text
+      'banner_message_text'   => $banner_message_text,
     }
     $bannerconfig.each | String $setting, String $value | {
       ini_setting { "${gdm_banner_file} add ${setting}":
@@ -142,7 +140,6 @@ class cisecurity::redhat7::security (
         notify  => Exec['dconf update'],
       }
     }
-
     exec { 'dconf update':
       path        => [ '/sbin', '/bin' ],
       refreshonly => true,
@@ -156,15 +153,6 @@ class cisecurity::redhat7::security (
     }
     kernel_parameter { 'enforcing':
       ensure => present,
-      value  => '1',
-    }
-  } else {
-    kernel_parameter { 'selinux':
-      ensure => absent,
-      value  => '1',
-    }
-    kernel_parameter { 'enforcing':
-      ensure => absent,
       value  => '1',
     }
   }
@@ -181,18 +169,15 @@ class cisecurity::redhat7::security (
       group  => 'root',
       mode   => '0644',
     }
-
     file_line { '/etc/security/limits.d/CIS.conf':
-      ensure  => present,
-      path    => '/etc/security/limits.d/CIS.conf',
-      line    => '* hard core 0',
-      require => File['/etc/security/limits.d/CIS.conf'],
+      ensure => present,
+      path   => '/etc/security/limits.d/CIS.conf',
+      line   => '* hard core 0',
     }
-
     sysctl { 'fs.suid_dumpable':
       ensure  => present,
       value   => '0',
-      comment => 'Setting managed by Puppet cisecurity module.',
+      comment => 'Setting managed by Puppet.',
     }
   }
 
@@ -204,7 +189,6 @@ class cisecurity::redhat7::security (
       setting => 'ExecStart',
       value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"'
     }
-
     ini_setting { 'rescue.service ExecStart':
       ensure  => present,
       path    => '/usr/lib/systemd/system/rescue.service',
@@ -214,8 +198,12 @@ class cisecurity::redhat7::security (
     }
   }
 
-  if $facts['cisecurity']['unconfined_daemons'] != undef and !empty($facts['cisecurity']['unconfined_daemons']) {
-    warning ('One or more unconfined daemons found running on this system.')
+  if $facts['cisecurity']['unconfined_daemons'] != undef {
+    if !empty($facts['cisecurity']['unconfined_daemons']) {
+      warning ('One or more unconfined daemons found running on this system.')
+    }
+  } else {
+    warning ('Cannot validate the presence of unconfined daemons because required external facts are unavailable.')
   }
 
   if $facts['architecture'] != 'x86_64' {
@@ -223,7 +211,7 @@ class cisecurity::redhat7::security (
   }
 
   if !empty($secure_terminals) {
-    $ttys = join($cisecurity::secure_terminals, "\n")
+    $ttys = join($secure_terminals, "\n")
     file { '/etc/securetty':
       ensure  => file,
       owner   => 'root',
@@ -233,12 +221,122 @@ class cisecurity::redhat7::security (
     }
   }
 
-  if $configure_system_acct_nologin {
-    $facts['cisecurity']['system_accounts_with_valid_shell'].each | $username | {
-      exec { "usermod -s /sbin/nologin ${username}":
-        path => [ '/sbin', '/usr/sbin' ],
+  if $configure_system_acct_nologin == 'enabled' {
+    if $facts['cisecurity']['system_accounts_with_valid_shell'] != undef {
+      $facts['cisecurity']['system_accounts_with_valid_shell'].each | String $username | {
+        user { $username:
+          ensure => present,
+          shell  => '/sbin/nologin',
+        }
       }
+    } else {
+      warning ('Cannot validate if system accounts have valid shells because required external facts are unavailable.')
     }
+  }
+
+  if $remediate_blank_passwords == 'enabled' {
+    if $facts['cisecurity']['accounts_with_blank_passwords'] != undef {
+      $facts['cisecurity']['accounts_with_blank_passwords'].each | String $username | {
+        accounts::user { $username:
+          locked => true,
+        }
+      }
+    } else {
+      warning ('Cannot validate if there are accounts with blank passwords because required external facts are unavailable.')
+    }
+  }
+
+  if $remediate_legacy_passwd_entries == 'enabled' {
+    file_line { 'remove legacy passwd entries':
+      ensure            => absent,
+      path              => '/etc/passwd',
+      match             => '^+:.*',
+      multiple          => true,
+      match_for_absence => true,
+    }
+  }
+
+  if $remediate_legacy_shadow_entries == 'enabled' {
+    file_line { 'remove legacy shadow entries':
+      ensure            => absent,
+      path              => '/etc/shadow',
+      match             => '^+:.*',
+      multiple          => true,
+      match_for_absence => true,
+    }
+  }
+
+  if $remediate_legacy_group_entries == 'enabled' {
+    file_line { 'remove legacy group entries':
+      ensure            => absent,
+      path              => '/etc/group',
+      match             => '^+:.*',
+      multiple          => true,
+      match_for_absence => true,
+    }
+  }
+
+  if $remediate_uid_zero_accounts == 'enabled' {
+    if $facts['cisecurity']['accounts_with_uid_zero'] != undef {
+      $facts['cisecurity']['accounts_with_uid_zero'].each | String $username | {
+        user { $username:
+          ensure => absent,
+        }
+      }
+    } else {
+      warning ('Cannot validate if there are duplicate UID 0 accounts because required external facts are unavailable.')
+    }
+  }
+
+  if $remediate_root_path == 'enabled' {
+    class { '::bash': }
+    $flattened_path = join($root_path, ':')
+    bash::user { 'root':
+      env_variables => { 'path' => $root_path }
+    }
+    if $facts['cisecurity']['root_path'] != undef {
+      $facts['cisecurity']['root_path'].each | String $directory | {
+        file { $directory:
+          ensure => directory,
+          owner  => 'root',
+          group  => 'root',
+          mode   => 'o-w,g-w',
+        }
+      }
+    } else {
+      warning ('Cannot validate root\'s path because required external facts are unavailable.')
+    }
+  }
+
+  file { '/opt/cisecurity':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0555',
+  }
+  file { '/opt/cisecurity/scripts':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0555',
+    require => File['/opt/cisecurity'],
+  }
+  $script = epp("cisecurity/${cisecurity::osrelease}__remediate_home_directories.sh")
+  file { '/opt/cisecurity/scripts/remediate_home_directories.sh':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0555',
+    content => $script,
+    require => File['/opt/cisecurity/scripts'],
+  }
+  cron { 'remediate_home_directories.sh':
+    ensure  => present,
+    command => '/opt/cisecurity/scripts/remediate_home_directories.sh',
+    user    => 'root',
+    hour    => $remediate_home_directories_start_hour,
+    minute  => $remediate_home_directories_start_minute,
+    require => File['/opt/cisecurity/scripts/redmediate_home_directories.sh'],
   }
 
 }

@@ -1,34 +1,6 @@
 # redhat7/filesystem
 #
 # Implements Center of Internet Security filesystem controls.
-#
-# @param configure_umask_default [Enum['enabled','disabled'] Whether the system-wide default umask should be configured. Default value: 'enabled'.
-# @param cramfs [Enum['enabled','disabled']] Whether cramfs should be enabled. Default value: 'disabled'.
-# @param dev_shm_mount_options [Array[String]] Specifies the mount options for /dev/shm. Default value: ['noexec','nodev','nosuid'].
-# @param freevxfs [Enum['enabled','disabled']] Whether freevxfs should be enabled. Default value: 'disabled'.
-# @param harden_system_file_perms [Enum['enabled','disabled'] Whether to harden all system files in the specification to recommended values. Default value: 'enabled'.
-# @param hfs [Enum['enabled','disabled']] Whether hfs should be enabled. Default value: 'disabled'.
-# @param hfsplus [Enum['enabled','disabled']] Whether hfsplus should be enabled. Default value: 'disabled'.
-# @param home_mount_options [Array[String]] Specifies the mount options for /home. Default value: ['nodev'].
-# @param jffs2 [Enum['enabled','disabled']] Whether jffs2 should be enabled. Default value: 'disabled'.
-# @param remediate_log_file_perms [Enum['enabled','disabled']] Whether files in /var/log should be trimmed back. Default value: 'enabled'.
-# @param remediate_ungrouped_files [Enum['enabled','disabled'] Whether the module should assign a valid group to ungrouped files. Default value: 'enabled'.
-# @param remediate_unowned_files [Enum['enabled','disabled'] Whether the module should assign a valid owner to unowned files. Default value: 'enabled'.
-# @param remediate_world_writable_dirs [Enum['enabled','disabled'] Whether the module should remove world writable permissions from directories with it set. Default value: 'enabled'.
-# @param remediate_world_writable_files [Enum['enabled','disabled'] Whether the module should remove world writable permissions from files with it set. Default value: 'enabled'.
-# @param removable_media_mount_options [Array[String]] Specifies the mount options for removable media. Default value: ['noexec','nodev','nosuid'].
-# @param removable_media_partitions [Array[String]] Specifies a list of removable media devices. Default value: [ ].
-# @param squashfs [Enum['enabled','disabled']] Whether squashfs should be enabled. Default value: 'disabled'.
-# @param tmp_mount_options [Array[String]] Specifies the mount options for /tmp. Default value: ['mode=1777','astrictatime','noexec','nodev','nosuid'].
-# @param udf [Enum['enabled','disabled']] Whether udf should be enabled. Default value: 'disabled'.
-# @param umask_default [String[3]] The system-wide default umask to be configured. Default value: '027'.
-# @param ungrouped_files_replacement_group [String] The group to assign to files that are unowned. Default value: 'root'.
-# @param unowned_files_replacement_owner [String] The user to assign to files that are unowned. Default value: 'root'.
-# @param var_mount_options [Array[String]] Specifies the mount options for /var. Default value: ['defaults'].
-# @param var_log_audit_mount_options [Array[String]] Specifies the mount options for /var/log/audit. Default value: ['defaults'].
-# @param var_log_mount_options [Array[String]] Specifies the mount options for /var/log. Default value: ['defaults'].
-# @param var_tmp_mount_options [Array[String]] Specifies the mount options for /var/tmp. Default value: ['bind'].
-# @param vfat [Enum['enabled','disabled']] Whether vfat should be enabled. Default value: 'disabled'.
 
 class cisecurity::redhat7::filesystem (
   Enum['enabled','disabled'] $configure_umask_default,
@@ -60,21 +32,6 @@ class cisecurity::redhat7::filesystem (
   Enum['enabled','disabled'] $vfat,
 ) {
 
-  # Private variables.
-  $filesystem_list = [
-    'cramfs',
-    'freevxfs',
-    'jffs2',
-    'hfs',
-    'hfsplus',
-    'squashfs',
-    'udf',
-    'vfat',
-  ]
-  $cronfiles = [ '/etc/crontab', '/etc/cron.allow', '/etc/at.allow' ]
-  $crondirs = [ '/etc/cron.hourly', '/etc/cron.daily', '/etc/cron.weekly', '/etc/cron.monthly', '/etc/cron.d' ]
-  $crondenies = [ '/etc/cron.deny', '/etc/at.deny' ]
-
   file { '/etc/modprobe.d':
     ensure => directory,
     mode   => '0755',
@@ -89,37 +46,36 @@ class cisecurity::redhat7::filesystem (
     group  => 'root',
   }
 
+  $filesystem_list = [
+    'cramfs',
+    'freevxfs',
+    'jffs2',
+    'hfs',
+    'hfsplus',
+    'squashfs',
+    'udf',
+    'vfat',
+  ]
   $filesystem_list.each | String $filesystem | {
-    case getvar($filesystem) {
-      'enabled': {
-        file_line { $filesystem:
-          ensure  => absent,
-          path    => '/etc/modprobe.d/CIS.conf',
-          line    => "install ${filesystem} /bin/true",
-          require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
-        }
-      }
-      'disabled': {
-        file_line { $filesystem:
-          ensure  => present,
-          path    => '/etc/modprobe.d/CIS.conf',
-          line    => "install ${filesystem} /bin/true",
-          require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
-        }
+    if getvar($filesystem) == 'disabled' {
+      file_line { $filesystem:
+        ensure  => present,
+        path    => '/etc/modprobe.d/CIS.conf',
+        line    => "install ${filesystem} /bin/true",
+        require => [ File['/etc/modprobe.d' ], File['/etc/modprobe.d/CIS.conf'] ]
       }
     }
   }
 
   if $facts['mountpoints']['/tmp'] == undef {
     warning ('Cannot configure mount options for /tmp because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($tmp_mount_options ) {
     if $facts['mountpoints']['/tmp']['filesystem'] == 'tmpfs' {
       exec { 'systemctl unmask tmp.mount':
         path      => [ 'bin', '/usr/bin' ],
         logoutput => on_failure,
         unless    => 'ls /etc/systemd/system/local-fs.target.wants/tmp.mount',
       }
-
       ini_setting { 'tmp mount options':
         ensure  => present,
         path    => '/etc/systemd/system/local-fs.target.wants/tmp.mount',
@@ -128,14 +84,12 @@ class cisecurity::redhat7::filesystem (
         value   => $tmp_mount_options,
         require => Exec['systemctl unmask tmp.mount'],
       }
-
       service { 'tmp.mount':
         ensure   => running,
         enable   => true,
         remounts => false,
         require  => Ini_setting['tmp mount options'],
       }
-
     } else {
       mount { '/tmp':
         ensure   => present,
@@ -147,7 +101,7 @@ class cisecurity::redhat7::filesystem (
 
   if $facts['mountpoints']['/var'] == undef {
     warning ('Cannot configure mount options for /var because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($var_mount_options) {
     mount { '/var':
       ensure   => present,
       options  => $var_mount_options,
@@ -157,7 +111,7 @@ class cisecurity::redhat7::filesystem (
 
   if $facts['mountpoints']['/var/tmp'] == undef {
     warning ('Cannot configure mount options for /var/tmp because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($var_tmp_mount_options) {
     mount { '/var/tmp':
       ensure   => mounted,
       device   => '/tmp',
@@ -169,7 +123,7 @@ class cisecurity::redhat7::filesystem (
 
   if $facts['mountpoints']['/var/log'] == undef {
     warning ('Cannot configure mount options for /var/log because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($var_log_mount_options) {
     mount { '/var/log':
       ensure   => present,
       options  => $var_log_mount_options,
@@ -179,7 +133,7 @@ class cisecurity::redhat7::filesystem (
 
   if $facts['mountpoints']['/var/log/audit'] == undef {
     warning ('Cannot configure mount options for /var/log/audit because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($var_log_audit_mount_options) {
     mount { '/var/log/audit':
       ensure   => present,
       options  => $var_log_audit_mount_options,
@@ -189,7 +143,7 @@ class cisecurity::redhat7::filesystem (
 
   if $facts['mountpoints']['/home'] == undef {
     warning ('Cannot configure mount options for /home because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($home_mount_options) {
     mount { '/home':
       ensure   => present,
       options  => $home_mount_options,
@@ -199,7 +153,7 @@ class cisecurity::redhat7::filesystem (
 
   if $facts['mountpoints']['/dev/shm'] == undef {
     warning ('Cannot configure mount options for /dev/shm because it\'s not a valid partition.')
-  } else {
+  } elsif !empty($dev_shm_mount_options) {
     mount { '/dev/shm':
       ensure   =>  'mounted',
       name     => '/dev/shm',
@@ -220,38 +174,54 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $remediate_world_writable_dirs == 'enabled' {
-    $facts['cisecurity']['world_writable_dirs'].each | String $directory | {
-      file { $directory:
-        ensure => directory,
-        mode   => 'o+t',
+    if $facts['cisecurity']['world_writable_dirs'] != undef {
+      $facts['cisecurity']['world_writable_dirs'].each | String $directory | {
+        file { $directory:
+          ensure => directory,
+          mode   => 'o+t',
+        }
       }
+    } else {
+      warning ('Cannot remediate world writable dirs because required external facts are unavailable. This may be transient.')
     }
   }
 
   if $remediate_world_writable_files == 'enabled' {
-    $facts['cisecurity']['world_writable_files'].each | String $file | {
-      file { $file:
-        ensure => file,
-        mode   => 'o-w',
+    if $facts['cisecurity']['world_writable_files'] != undef {
+      $facts['cisecurity']['world_writable_files'].each | String $file | {
+        file { $file:
+          ensure => file,
+          mode   => 'o-w',
+        }
       }
+    } else {
+      warning ('Cannot remediate world writable files because required external facts are unavailable. This may be transient.')
     }
   }
 
   if $remediate_unowned_files == 'enabled' {
-    $facts['cisecurity']['unowned_files'].each | String $file | {
-      file { $file:
-        ensure => file,
-        owner  => $unowned_files_replacement_owner,
+    if $facts['cisecurity']['unowned_files'] != undef {
+      $facts['cisecurity']['unowned_files'].each | String $file | {
+        file { $file:
+          ensure => file,
+          owner  => $unowned_files_replacement_owner,
+        }
       }
+    } else {
+      warning ('Cannot remediate unowned files because required exteranl facts are unavailable. This may be transient.')
     }
   }
 
   if $remediate_ungrouped_files == 'enabled' {
-    $facts['cisecurity']['ungrouped_files'].each | String $file | {
-      file { $file:
-        ensure => file,
-        gid    => $ungrouped_files_replacement_group,
+    if $facts['cisecurity']['ungrouped_files'] != undef {
+      $facts['cisecurity']['ungrouped_files'].each | String $file | {
+        file { $file:
+          ensure => file,
+          gid    => $ungrouped_files_replacement_group,
+        }
       }
+    } else {
+      warning ('Cannot remediate ungrouped files because required external facts are unavailable. This may be transient.')
     }
   }
 
@@ -262,26 +232,25 @@ class cisecurity::redhat7::filesystem (
       group  => 'root',
       mode   => '0644',
     }
-
     file { '/etc/profile':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0644',
     }
-
     file_line { '/etc/bashrc':
-      ensure  => present,
-      path    => '/etc/bashrc',
-      line    => "umask ${umask_default}",
-      require => File['/etc/bashrc'],
+      ensure             => present,
+      path               => '/etc/bashrc',
+      line               => "umask ${umask_default}",
+      match              => 'umask 022',
+      append_on_no_match => false,
     }
-
     file_line { '/etc/profile':
-      ensure  => present,
-      path    => '/etc/profile',
-      line    => "umask ${umask_default}",
-      require => File['/etc/profile'],
+      ensure             => present,
+      path               => '/etc/profile',
+      line               => "umask ${umask_default}",
+      match              => '\s+umask 022',
+      append_on_no_match => false,
     }
   }
 
@@ -292,56 +261,49 @@ class cisecurity::redhat7::filesystem (
       group  => 'root',
       mode   => '0644',
     }
-
     file { '/etc/shadow':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0000',
     }
-
     file { '/etc/group':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0644',
     }
-
     file { '/etc/gshadow':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0600',
     }
-
     file { '/etc/passwd-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0600',
     }
-
     file { '/etc/shadow-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0600',
     }
-
     file { '/etc/group-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0600',
     }
-
     file { '/etc/gshadow-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
       mode   => '0600',
     }
-
+    $cronfiles = [ '/etc/crontab', '/etc/cron.allow', '/etc/at.allow' ]
     $cronfiles.each | String $file | {
       file { $file:
         ensure => file,
@@ -350,7 +312,7 @@ class cisecurity::redhat7::filesystem (
         mode   => '0600',
       }
     }
-
+    $crondirs = [ '/etc/cron.hourly', '/etc/cron.daily', '/etc/cron.weekly', '/etc/cron.monthly', '/etc/cron.d' ]
     $crondirs.each | String $directory | {
       file { $directory:
         ensure => directory,
@@ -359,13 +321,12 @@ class cisecurity::redhat7::filesystem (
         mode   => '0700',
       }
     }
-
+    $crondenies = [ '/etc/cron.deny', '/etc/at.deny' ]
     $crondenies.each | String $file | {
       file { $file:
         ensure => absent,
       }
     }
-
     file { '/etc/ssh/sshd_config':
       ensure => file,
       mode   => '0600',
@@ -375,18 +336,8 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $remediate_log_file_perms == 'enabled' {
-    cron { 'logfile_perms':
-      ensure  => present,
-      command => 'find /var/log -type f -exec chmod g-wx,o-rwx {} \;',
-      user    => 'root',
-      minute  => '*/30',
-    }
-  } else {
-    cron { 'logfile_perms':
-      ensure  => absent,
-      command => 'find /var/log -type f -exec chmod g-wx,o-rwx {} \;',
-      user    => 'root',
-      minute  => '*/30',
+    exec { 'find /var/log -type f -exec chmod g-wx,o-rwx {} \;':
+      path => [ '/usr/bin', '/bin' ],
     }
   }
 

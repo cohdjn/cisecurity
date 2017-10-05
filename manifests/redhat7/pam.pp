@@ -1,26 +1,6 @@
 # redhat7/pam
 #
 # Implements Center of Internet Security PAM controls.
-#
-# @param account_lockout_enforcement [Enum['enabled','disabled']] Whether account lockouts should be configured and enabled. Default value: 'enabled'.
-# @param account_lockout_attempts [Integer] Number of bad login attempts before the account is locked out. Default value: 5.
-# @param account_lockout_time [Integer] Amount of time in seconds to leave an account locked before unlocking. Default value: 900.
-# @param inactive_account_lockout [Enum['enabled','disabled']] Whether inactive accounts will be automatically locked out. Default value: 'enabled'.
-# @param inactive_account_lockout_days [Integer] Number of days an account must be inactive before locking the account. Default value: 30.
-# @param password_aging [Enum['enabled','disabled']] Whether account passwords must meet complex requirements. Default value: 'enabled'.
-# @param password_aging_max_days [Integer] Maximum number of days before a password must be changed. Default value: 90.
-# @param password_aging_min_days [Integer] Minimum number of days before a password must be changed. Default value: 7.
-# @param password_aging_warn_days [Integer] Number of days before user receives warning their password needs to be changed. Default value: 7.
-# @param password_enforcement [Enum['enabled','disabled']] Whether password complexity requirements are enabled. Default value: 'enabled',
-# @param password_min_length [Integer] Minimum password length. Default value: 14.
-# @param password_num_digits [Integer] Number of digits required. Default value: -1.
-# @param password_num_lowercase [Integer] Number of lowercase characters required. Default value: -1.
-# @param password_num_uppercase [Integer] Number of uppercase characters required. Default value: -1.
-# @param password_num_other_chars [Integer] Number of special characters required. Default value: -1.
-# @param password_max_attempts [Integer] Number of times a user can attempt to change password to meet complexity requirements before aborting. Default value: 3
-# @param password_num_remembered [Integer] Number of passwords that the system will remember. Default value: 5.
-# @param root_primary_group [String] The GID or name of root's primary group. Default value: 'root'.
-# @param wheel [Enum['enabled','disabled']] Whether to require membership in wheel to su to root. Default value: 'enabled'.
 
 class cisecurity::redhat7::pam (
 
@@ -53,7 +33,7 @@ class cisecurity::redhat7::pam (
   if $inactive_account_lockout == 'enabled' {
     exec { "useradd -D -f ${inactive_account_lockout_days}":
       path   => [ '/sbin', '/bin' ],
-      unless => "useradd -D | grep INACTIVE | grep ${::inactive_lockout_days}",
+      unless => "useradd -D | grep INACTIVE | grep ${inactive_account_lockout_days}",
     }
   }
 
@@ -76,26 +56,26 @@ class cisecurity::redhat7::pam (
       group  => 'root',
       mode   => '0644',
     }
-
     file_line { 'PASS_MAX_DAYS':
-      ensure  => present,
-      path    => '/etc/login.defs',
-      line    => "PASS_MAX_DAYS ${cisecurity::password_aging_max_days}",
-      require => File['/etc/login.defs'],
+      ensure             => present,
+      path               => '/etc/login.defs',
+      line               => "PASS_MAX_DAYS ${password_aging_max_days}",
+      match              => '^PASS_MAX_DAYS.*',
+      append_on_no_match => false,
     }
-
     file_line { 'PASS_MIN_DAYS':
-      ensure  => present,
-      path    => '/etc/login.defs',
-      line    => "PASS_MIN_DAYS ${cisecurity::password_aging_min_days}",
-      require => File['/etc/login.defs'],
+      ensure             => present,
+      path               => '/etc/login.defs',
+      line               => "PASS_MIN_DAYS ${password_aging_min_days}",
+      match              => '^PASS_MIN_DAYS.*',
+      append_on_no_match => false,
     }
-
     file_line { 'PASS_WARN_AGE':
-      ensure  => present,
-      path    => '/etc/login.defs',
-      line    => "PASS_WARN_AGE ${cisecurity::password_aging_warn_days}",
-      require => File['/etc/login.defs'],
+      ensure             => present,
+      path               => '/etc/login.defs',
+      line               => "PASS_WARN_AGE ${password_aging_warn_days}",
+      match              => '^PASS_WARN_AGE.*',
+      append_on_no_match => false,
     }
   }
 
@@ -109,7 +89,6 @@ class cisecurity::redhat7::pam (
       arguments => [ 'try_first_pass', "retry=${password_max_attempts}" ],
       position  => 'before module pam_unix.so',
     }
-
     pam { 'system-auth pam_pwquality.so':
       ensure    => present,
       service   => 'system-auth',
@@ -119,7 +98,6 @@ class cisecurity::redhat7::pam (
       arguments => [ 'try_first_pass', "retry=${password_max_attempts}" ],
       position  => 'before module pam_unix.so',
     }
-
     pam { 'password-auth pam_faillock.so 99':
       ensure    => present,
       service   => 'password-auth',
@@ -129,7 +107,6 @@ class cisecurity::redhat7::pam (
       arguments => [ 'sha512', 'shadow', 'nullok', 'try_first_pass', 'use_authtok', "remember=${password_num_remembered}" ],
       position  => 'after module pam_pwquality.so',
     }
-
     pam { 'system-auth pam_faillock.so 99':
       ensure    => present,
       service   => 'system-auth',
@@ -139,7 +116,6 @@ class cisecurity::redhat7::pam (
       arguments => [ 'sha512', 'shadow', 'nullok', 'try_first_pass', 'use_authtok', "remember=${password_num_remembered}" ],
       position  => 'after module pam_pwquality.so',
     }
-
     $pwquality_hash = {
       'dcredit' => $password_num_digits,
       'lcredit' => $password_num_lowercase,
@@ -166,7 +142,6 @@ class cisecurity::redhat7::pam (
       arguments => [ 'preauth', 'audit', 'silent', "deny=${account_lockout_attempts}", "unlock_time=${account_lockout_time}" ],
       position  => 'before module pam_unix.so',
     }
-
     pam { 'system-auth pam_faillock.so 1':
       ensure    => present,
       service   => 'system-auth',
@@ -176,7 +151,6 @@ class cisecurity::redhat7::pam (
       arguments => [ 'preauth', 'audit', 'silent', "deny=${account_lockout_attempts}", "unlock_time=${account_lockout_time}" ],
       position  => 'before module pam_unix.so',
     }
-
     pam { 'password-auth pam_faillock.so 2':
       ensure           => present,
       service          => 'password-auth',
@@ -185,7 +159,6 @@ class cisecurity::redhat7::pam (
       control_is_param => true,
       module           => 'pam_unix.so',
     }
-
     pam { 'system-auth pam_faillock.so 2':
       ensure           => present,
       service          => 'system-auth',
@@ -194,7 +167,6 @@ class cisecurity::redhat7::pam (
       control_is_param => true,
       module           => 'pam_unix.so',
     }
-
     pam { 'password-auth pam_faillock.so 3':
       ensure           => present,
       service          => 'password-auth',
@@ -205,7 +177,6 @@ class cisecurity::redhat7::pam (
       arguments        => ['authfail',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
       position         => 'after module pam_unix.so',
     }
-
     pam { 'system-auth pam_faillock.so 3':
       ensure           => present,
       service          => 'system-auth',
@@ -216,7 +187,6 @@ class cisecurity::redhat7::pam (
       arguments        => ['authfail',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
       position         => 'after module pam_unix.so',
     }
-
     pam { 'password-auth pam_faillock.so 4':
       ensure    => present,
       service   => 'password-auth',
@@ -226,7 +196,6 @@ class cisecurity::redhat7::pam (
       arguments => ['authsucc',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
       position  => 'after module pam_faillock.so',
     }
-
     pam { 'system-auth pam_faillock.so 4':
       ensure    => present,
       service   => 'system-auth',
