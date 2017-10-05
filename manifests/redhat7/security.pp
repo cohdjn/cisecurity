@@ -297,11 +297,13 @@ class cisecurity::redhat7::security (
     }
     if $facts['cisecurity']['root_path'] != undef {
       $facts['cisecurity']['root_path'].each | String $directory | {
-        file { $directory:
-          ensure => directory,
-          owner  => 'root',
-          group  => 'root',
-          mode   => 'o-w,g-w',
+      unless File[$directory] {
+          file { $directory:
+            ensure => directory,
+            owner  => 'root',
+            group  => 'root',
+            mode   => 'o-w,g-w',
+          }
         }
       }
     } else {
