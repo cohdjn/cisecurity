@@ -247,10 +247,9 @@ class cisecurity::redhat7::services (
       ensure => present,
       value  => $sshd_permit_user_environment,
     }
-    $ciphers = join($sshd_permitted_ciphers, ',')
     sshd_config { 'Ciphers':
       ensure => present,
-      value  => $ciphers,
+      value  => $sshd_permitted_ciphers,
     }
     sshd_config { 'MACs':
       ensure => present,
