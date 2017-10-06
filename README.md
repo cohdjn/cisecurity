@@ -611,7 +611,7 @@ Banner message text to be displayed when a GNOME-based graphical login occurs.
 * Data type: `String`
 * Implements: Control 1.4.2
 
-An Grub SHA512 encrypted password string used as the bootloader password.  The encrypted password in `Redhat7.yaml` is `password`.  To change the bootloader password, use `grub2-mkpasswd-pbkdf2` as shown below:
+A grub SHA512 encrypted password string used as the bootloader password.  The encrypted password in `Redhat7.yaml` is `password`.  To change the bootloader password, use `grub2-mkpasswd-pbkdf2` as shown below:
 ```
 $ grub2-mkpasswd-pbkdf2
 Enter password: <new password>
@@ -619,6 +619,13 @@ Reenter password: <confirm new password>
 PBKDF2 hash of your password is grub.pbkdf2.sha512.10000.D70F1...
 ```
 Copy and paste the entire string into the parameter.
+
+##### `bootloader_user`
+* Default value: `'rescue'`
+* Data type: `String`
+* Implements: Control 1.4.2
+
+Specifies a username to be created with superuser privileges in grub.
 
 ##### `configure_system_acct_nologin`
 * Default value: `'enabled'`
