@@ -7,6 +7,7 @@ class cisecurity::redhat7::security (
   Enum['enabled','disabled'] $aslr,
   String $banner_message_text,
   String $bootloader_password,
+  String $bootloader_user,
   Enum['enabled','disabled'] $configure_system_acct_nologin,
   String $home_directories_perm,
   String $issue,
@@ -44,7 +45,7 @@ class cisecurity::redhat7::security (
 ) {
 
   if $bootloader_password != '' {
-    grub_user { 'root':
+    grub_user { $bootloader_user:
       ensure    => present,
       password  => $bootloader_password,
       superuser => true,
