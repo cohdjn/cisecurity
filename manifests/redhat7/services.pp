@@ -267,7 +267,7 @@ class cisecurity::redhat7::services (
       ensure => present,
       value  => $sshd_login_grace_time,
     }
-    sshd_config { 'BannerFile':
+    sshd_config { 'Banner':
       ensure => present,
       value  => $sshd_banner_file,
     }
