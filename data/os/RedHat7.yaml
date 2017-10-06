@@ -223,8 +223,6 @@ cisecurity::redhat7::services::sshd_permitted_macs:
   - 'hmac-sha2-512'
   - 'hmac-sha2-256'
   - 'umac-128@openssh.com'
-  - 'curve25519-sha256@libssh.org'
-  - 'diffie-hellman-group-exchange-sha256'
 cisecurity::redhat7::services::sshd_permit_user_environment: 'no'
 cisecurity::redhat7::services::sshd_protocol: '2'
 cisecurity::redhat7::services::sshd_x11_forwarding: 'no'
