@@ -84,21 +84,18 @@ class cisecurity::redhat7::pam (
       ensure    => present,
       service   => 'password-auth',
       type      => 'password',
-      control   => 'sufficient',
+      control   => 'requisite',
       module    => 'pam_pwquality.so',
       arguments => [ 'try_first_pass', "retry=${password_max_attempts}" ],
       position  => 'before module pam_unix.so',
     }
-    pam { 'system-auth pam_pwquality.so':
-      ensure    => present,
-      service   => 'system-auth',
-      type      => 'password',
-      control   => 'sufficient',
-      module    => 'pam_pwquality.so',
-      arguments => [ 'try_first_pass', "retry=${password_max_attempts}" ],
-      position  => 'before module pam_unix.so',
+    -> pam { 'password-auth delete pam_unix.so 1':
+      ensure  => absent,
+      service => 'password-auth',
+      type    => 'password',
+      module  => 'pam_unix.so',
     }
-    pam { 'password-auth pam_faillock.so 99':
+    -> pam { 'password-auth recreate pam_unix.so 1':
       ensure    => present,
       service   => 'password-auth',
       type      => 'password',
@@ -107,7 +104,22 @@ class cisecurity::redhat7::pam (
       arguments => [ 'sha512', 'shadow', 'nullok', 'try_first_pass', 'use_authtok', "remember=${password_num_remembered}" ],
       position  => 'after module pam_pwquality.so',
     }
-    pam { 'system-auth pam_faillock.so 99':
+    -> pam { 'system-auth pam_pwquality.so':
+      ensure    => present,
+      service   => 'system-auth',
+      type      => 'password',
+      control   => 'requisite',
+      module    => 'pam_pwquality.so',
+      arguments => [ 'try_first_pass', "retry=${password_max_attempts}" ],
+      position  => 'before module pam_unix.so',
+    }
+    -> pam { 'system-auth delete pam_unix.so 1':
+      ensure  => absent,
+      service => 'system-auth',
+      type    => 'password',
+      module  => 'pam_unix.so',
+    }
+    -> pam { 'system-auth recreate pam_unix.so 1':
       ensure    => present,
       service   => 'system-auth',
       type      => 'password',
@@ -142,6 +154,41 @@ class cisecurity::redhat7::pam (
       arguments => [ 'preauth', 'audit', 'silent', "deny=${account_lockout_attempts}", "unlock_time=${account_lockout_time}" ],
       position  => 'before module pam_unix.so',
     }
+    -> pam { 'password-auth delete pam_unix.so 2':
+      ensure  => absent,
+      service => 'password-auth',
+      type    => 'auth',
+      module  => 'pam_unix.so',
+    }
+    -> pam { 'password-auth recreate pam_unix.so 2':
+      ensure           => present,
+      service          => 'password-auth',
+      type             => 'auth',
+      control          => '[success=1 default=bad]',
+      control_is_param => true,
+      module           => 'pam_unix.so',
+      position         => 'after module pam_faillock.so',
+    }
+    -> pam { 'password-auth pam_faillock.so 3':
+      ensure           => present,
+      service          => 'password-auth',
+      type             => 'auth',
+      control          => '[default=die]',
+      control_is_param => true,
+      module           => 'pam_faillock.so',
+      arguments        => ['authfail',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
+      position         => 'after module pam_unix.so',
+    }
+    -> pam { 'password-auth pam_faillock.so 4':
+      ensure    => present,
+      service   => 'password-auth',
+      type      => 'auth',
+      control   => 'sufficient',
+      module    => 'pam_faillock.so',
+      arguments => ['authsucc',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
+      position  => 'before module pam_sss.so',
+    }
+
     pam { 'system-auth pam_faillock.so 1':
       ensure    => present,
       service   => 'system-auth',
@@ -151,33 +198,22 @@ class cisecurity::redhat7::pam (
       arguments => [ 'preauth', 'audit', 'silent', "deny=${account_lockout_attempts}", "unlock_time=${account_lockout_time}" ],
       position  => 'before module pam_unix.so',
     }
-    pam { 'password-auth pam_faillock.so 2':
-      ensure           => present,
-      service          => 'password-auth',
-      type             => 'auth',
-      control          => '[success=1 default=bad]',
-      control_is_param => true,
-      module           => 'pam_unix.so',
+    -> pam { 'system-auth delete pam_unix.so 2':
+      ensure  => absent,
+      service => 'system-auth',
+      type    => 'auth',
+      module  => 'pam_unix.so',
     }
-    pam { 'system-auth pam_faillock.so 2':
+    -> pam { 'system-auth recreate pam_unix.so 2':
       ensure           => present,
       service          => 'system-auth',
       type             => 'auth',
       control          => '[success=1 default=bad]',
       control_is_param => true,
       module           => 'pam_unix.so',
+      position         => 'after module pam_faillock.so',
     }
-    pam { 'password-auth pam_faillock.so 3':
-      ensure           => present,
-      service          => 'password-auth',
-      type             => 'auth',
-      control          => '[default=die]',
-      control_is_param => true,
-      module           => 'pam_faillock.so',
-      arguments        => ['authfail',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
-      position         => 'after module pam_unix.so',
-    }
-    pam { 'system-auth pam_faillock.so 3':
+    -> pam { 'system-auth pam_faillock.so 3':
       ensure           => present,
       service          => 'system-auth',
       type             => 'auth',
@@ -187,23 +223,14 @@ class cisecurity::redhat7::pam (
       arguments        => ['authfail',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
       position         => 'after module pam_unix.so',
     }
-    pam { 'password-auth pam_faillock.so 4':
-      ensure    => present,
-      service   => 'password-auth',
-      type      => 'auth',
-      control   => 'sufficient',
-      module    => 'pam_faillock.so',
-      arguments => ['authsucc',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
-      position  => 'after module pam_faillock.so',
-    }
-    pam { 'system-auth pam_faillock.so 4':
+    -> pam { 'system-auth pam_faillock.so 4':
       ensure    => present,
       service   => 'system-auth',
       type      => 'auth',
       control   => 'sufficient',
       module    => 'pam_faillock.so',
       arguments => ['authsucc',"deny=${account_lockout_attempts}","unlock_time=${account_lockout_time}"],
-      position  => 'after module pam_faillock.so',
+      position  => 'before module pam_sss.so',
     }
   }
 

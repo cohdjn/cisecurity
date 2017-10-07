@@ -4,9 +4,9 @@
   "author": "David Nelson",
   "summary": "Configures Linux systems to Center for Internet Security Linux hardening standard.",
   "license": "Apache-2.0",
-  "source": "https://github.com/cohdjn/cisecurity.git",
-  "project_page": "https://github.com/cohdjn/cisecurity",
-  "issues_url": "https://github.com/cohdjn/cisecurity/issues",
+  "source": "https://github.com/cohdjn/cohdjn-cisecurity.git",
+  "project_page": "https://github.com/cohdjn/cohdjn-cisecurity",
+  "issues_url": "https://github.com/cohdjn/cohdjn-cisecurity/issues",
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.20.0 < 5.0.0" },
     { "name": "puppetlabs/concat", "version_requirement": ">= 4.20.0 < 5.0.0" },
