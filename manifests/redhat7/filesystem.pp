@@ -92,9 +92,10 @@ class cisecurity::redhat7::filesystem (
         require  => Ini_setting['tmp mount options'],
       }
     } else {
+      $flattened_tmp_options = join($tmp_mount,_options, ',')
       mount { '/tmp':
         ensure   => present,
-        options  => $tmp_mount_options,
+        options  => $flattened_tmp_options,
         remounts => false,
       }
     }
@@ -103,28 +104,31 @@ class cisecurity::redhat7::filesystem (
   if $facts['mountpoints']['/var'] == undef {
     notice ('Cannot configure mount options for /var because it\'s not a valid partition.')
   } elsif !empty($var_mount_options) {
+    $flattened_var_options = join($var_mount_options, ',')
     mount { '/var':
       ensure   => present,
-      options  => $var_mount_options,
+      options  => $flattened_var_options,
       remounts => false,
     }
   }
 
   if !empty($var_tmp_mount_options) {
+    $flattened_var_tmp_options = join($var_tmp_mount_options, ',')
     mount { '/var/tmp':
       ensure  => mounted,
       device  => '/tmp',
       fstype  => 'none',
-      options => $var_tmp_mount_options,
+      options => $flattened_var_tmp_options,
     }
   }
 
   if $facts['mountpoints']['/var/log'] == undef {
     notice ('Cannot configure mount options for /var/log because it\'s not a valid partition.')
   } elsif !empty($var_log_mount_options) {
+    $flattened_var_log_options = join($var_log_mount_options, ',')
     mount { '/var/log':
       ensure   => present,
-      options  => $var_log_mount_options,
+      options  => $flattened_var_log_options,
       remounts => false,
     }
   }
@@ -132,9 +136,10 @@ class cisecurity::redhat7::filesystem (
   if $facts['mountpoints']['/var/log/audit'] == undef {
     notice ('Cannot configure mount options for /var/log/audit because it\'s not a valid partition.')
   } elsif !empty($var_log_audit_mount_options) {
+    $flattened_var_log_audit_options = join($var_log_audit_mount_options, ',')
     mount { '/var/log/audit':
       ensure   => present,
-      options  => $var_log_audit_mount_options,
+      options  => $flattened_var_log_audit_options,
       remounts => false,
     }
   }
@@ -142,9 +147,10 @@ class cisecurity::redhat7::filesystem (
   if $facts['mountpoints']['/home'] == undef {
     notice ('Cannot configure mount options for /home because it\'s not a valid partition.')
   } elsif !empty($home_mount_options) {
+    $flattened_home_options = join($home_mount_options, ',')
     mount { '/home':
       ensure   => present,
-      options  => $home_mount_options,
+      options  => $flattened_home_options,
       remounts => false,
     }
   }
@@ -152,20 +158,22 @@ class cisecurity::redhat7::filesystem (
   if $facts['mountpoints']['/dev/shm'] == undef {
     notice ('Cannot configure mount options for /dev/shm because it\'s not a valid partition.')
   } elsif !empty($dev_shm_mount_options) {
+    $flattened_shm_options = join($dev_shm_mount_options, ',')
     mount { '/dev/shm':
       ensure   =>  'mounted',
       name     => '/dev/shm',
       device   => 'shmfs',
       fstype   => 'tmpfs',
-      options  => $dev_shm_mount_options,
+      options  => $flattened_shm_options,
       remounts => false,
     }
   }
 
+  $flattened_media_options = join($removable_media_mount_options, ',')
   $removable_media_partitions.each | String $partition | {
     mount { $partition:
       ensure   => present,
-      options  => $removable_media_mount_options,
+      options  => $flattened_media_options,
       remounts => false,
       atboot   => false,
     }
