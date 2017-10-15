@@ -92,7 +92,7 @@ class cisecurity::redhat7::filesystem (
         require  => Ini_setting['tmp mount options'],
       }
     } else {
-      $flattened_tmp_options = join($tmp_mount,_options, ',')
+      $flattened_tmp_options = join($tmp_mount_options, ',')
       mount { '/tmp':
         ensure   => present,
         options  => $flattened_tmp_options,
