@@ -19,7 +19,7 @@ done
 # Control 6.2.8 - Ensure users' home directories permissions are 750 or more restrictive
 cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read USER UID DIR; do
     if [ $UID -ge 1000 -a ! -d "$DIR" -a $USER != "nfsnobody" ]; then
-        chmod <%= $cisecuity::redhat7::security::home_directories_perm %> $DIR
+        chmod <%= $cisecurity::redhat7::security::home_directories_perm %> $DIR
     fi
 done
 <% }-%>
