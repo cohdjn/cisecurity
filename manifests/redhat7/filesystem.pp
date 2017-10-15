@@ -29,6 +29,8 @@ class cisecurity::redhat7::filesystem (
   Array[String] $var_log_audit_mount_options,
   Array[String] $var_log_mount_options,
   Array[String] $var_tmp_mount_options,
+  Array[String] $world_writable_dirs_ignored,
+  Array[String] $world_writable_files_ignored,
   Enum['enabled','disabled'] $vfat,
 ) {
 
@@ -172,9 +174,11 @@ class cisecurity::redhat7::filesystem (
   if $remediate_world_writable_dirs == 'enabled' {
     if $facts['cisecurity']['world_writable_dirs'] != undef {
       $facts['cisecurity']['world_writable_dirs'].each | String $directory | {
-        file { $directory:
-          ensure => directory,
-          mode   => 'o+t',
+        if !$directory in $world_writable_dirs_ignored {
+          file { $directory:
+            ensure => directory,
+            mode   => 'o+t',
+          }
         }
       }
     } else {
@@ -185,9 +189,11 @@ class cisecurity::redhat7::filesystem (
   if $remediate_world_writable_files == 'enabled' {
     if $facts['cisecurity']['world_writable_files'] != undef {
       $facts['cisecurity']['world_writable_files'].each | String $file | {
-        file { $file:
-          ensure => file,
-          mode   => 'o-w',
+        if !$file in $world_writable_files_ignored {
+          file { $file:
+            ensure => file,
+            mode   => 'o-w',
+          }
         }
       }
     } else {

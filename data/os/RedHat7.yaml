@@ -42,6 +42,9 @@ cisecurity::redhat7::filesystem::var_log_mount_options:
 cisecurity::redhat7::filesystem::var_tmp_mount_options:
   - 'bind'
 cisecurity::redhat7::filesystem::vfat: 'disabled'
+cisecurity::redhat7::filesystem::world_writable_dirs_ignored: []
+cisecurity::redhat7::filesystem::world_writable_files_ignored:
+  - '/var/lib/rsyslog/imjournal.state'
 
 cisecurity::redhat7::network::dccp: 'disabled'
 cisecurity::redhat7::network::disable_wireless_interfaces: 'enabled'
