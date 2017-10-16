@@ -6,7 +6,7 @@
 cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
     if [ $uid -ge 1000 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
         mkdir $dir
-        chmod <% $cisecurity::redhat7::security::home_directories_perm %> $dir
+        chmod <%= $cisecurity::redhat7::security::home_directories_perm %> $dir
         cp /etc/skel/.* $dir
         cp /etc/skel/* $dir
         chown -R $uid $dir
@@ -19,7 +19,7 @@ done
 # Control 6.2.8 - Ensure users' home directories permissions are 750 or more restrictive
 cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
     if [ $uid -ge 1000 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
-        chmod <% $cisecurity::redhat7::security::home_directories_perm %> $dir
+        chmod <%= $cisecurity::redhat7::security::home_directories_perm %> $dir
     fi
 done
 <% }-%>
@@ -88,7 +88,7 @@ done
 for GROUP in $(cut -s -d: -f4 /etc/passwd | sort -u); do
     getent group $GROUP >/dev/null 2>&1
     if [ $? -ne 0 ]; then
-      logger -p <% $cisecurity::redhat7::security::syslog_facility %>.<% $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Group $GROUP is referenced in /etc/passwd but does not exist.
+      logger -p <%= $cisecurity::redhat7::security::syslog_facility %>.<%= $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Group $GROUP is referenced in /etc/passwd but does not exist.
     fi
 done
 <% }-%>
@@ -100,7 +100,7 @@ cat /etc/passwd | cut -f3 -d":" | sort -n | uniq -c | while read uid; do
     set - $uid
     if [ $1 -gt 1 ]; then
         users=`awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs`
-        logger -p <% $cisecurity::redhat7::security::syslog_facility %>.<% $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate UID \($2\): $users
+        logger -p <%= $cisecurity::redhat7::security::syslog_facility %>.<%= $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate UID \($2\): $users
     fi
 done
 <% }-%>
@@ -112,7 +112,7 @@ cat /etc/group | cut -f3 -d":" | sort -n | uniq -c | while read GID; do
     set - $GID
     if [ $1 -gt 1 ]; then
         GROUPS=`awk -F: '($3 == n) { print $1 }' n=$2 /etc/group | xargs`
-        logger -p <% $cisecurity::redhat7::security::syslog_facility %>.<% $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate GID \($2\): $GROUPS
+        logger -p <%= $cisecurity::redhat7::security::syslog_facility %>.<%= $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate GID \($2\): $GROUPS
     fi
 done
 <% }-%>
@@ -124,7 +124,7 @@ cat /etc/passwd | cut -f1 -d":" | sort -n | uniq -c | while read uid; do
     set - $uid
     if [ $1 -gt 1 ]; then
         uids=`awk -F: '($1 == n) { print $3 }' n=$2 /etc/passwd | xargs`
-        logger -p <% $cisecurity::redhat7::security::syslog_facility %>.<% $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate Username \($2\): $uids
+        logger -p <%= $cisecurity::redhat7::security::syslog_facility %>.<%= $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate Username \($2\): $uids
     fi
 done
 <% }-%>
@@ -136,7 +136,7 @@ cat /etc/group | cut -f1 -d":" | sort -n | uniq -c | while read GID; do
     set - $GID
     if [ $1 -gt 1 ]; then
         GIDS=`awk -F: '($1 == n) { print $3 }' n=$2 /etc/group | xargs`
-        logger -p <% $cisecurity::redhat7::security::syslog_facility %>.<% $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate Group Name \($2\): $GIDS
+        logger -p <%= $cisecurity::redhat7::security::syslog_facility %>.<%= $cisecurity::redhat7::security::syslog_severity %> -t cisecurity Duplicate Group Name \($2\): $GIDS
     fi
 done
 <% }-%>
