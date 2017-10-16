@@ -7,8 +7,8 @@ auth        [default=1 ignore=ignore success=ok] pam_localuser.so
 <% if $cisecurity::redhat7::pam::account_lockout_enforcement == 'enabled' {-%>
 auth        required      pam_faillock.so preauth audit silent deny=<%= $cisecurity::redhat7::pam::account_lockout_attempts %> unlock_time=<%= $cisecurity::redhat7::pam::account_lockout_time %>
 auth        [success=1 default=bad] pam_unix.so
-auth        [default=die] pam_faillock.so authfail deny=<%= $cisecurity::redhat7::pam::account_lockout_attempts %> unlock_time=<%= $cisecurity::redhat7::pam::account_lockout_time %>
-auth        sufficient    pam_faillock.so authsucc deny=<%= $cisecurity::redhat7::pam::account_lockout_attempts %>
+auth        [default=die] pam_faillock.so authfail audit deny=<%= $cisecurity::redhat7::pam::account_lockout_attempts %> unlock_time=<%= $cisecurity::redhat7::pam::account_lockout_time %>
+auth        sufficient    pam_faillock.so authsucc audit deny=<%= $cisecurity::redhat7::pam::account_lockout_attempts %> unlock_time=<%= $cisecurity::redhat7::pam::account_lockout_time %>
 <% } else {-%>
 auth        sufficient    pam_unix.so nullok try_first_pass
 <% }-%>

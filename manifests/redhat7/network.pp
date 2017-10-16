@@ -44,7 +44,7 @@ class cisecurity::redhat7::network (
   if $ipv4_forwarding == 'disabled' {
     sysctl { 'net.ipv4.ip_forward':
       ensure  => present,
-      value   => '1',
+      value   => '0',
       comment => 'Setting managed by Puppet.',
     }
   }
@@ -181,7 +181,7 @@ class cisecurity::redhat7::network (
     file_line { 'ipv6':
       ensure => present,
       path   => '/etc/modprobe.d/CIS.conf',
-      line   => 'options ipv6 disable=0',
+      line   => 'options ipv6 disable=1',
     }
   }
 

@@ -67,9 +67,13 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $slapd,
   Enum['enabled','disabled'] $smb,
   Enum['enabled','disabled'] $snmpd,
+  Array[String] $sshd_allowed_groups,
+  Array[String] $sshd_allowed_users,
   String $sshd_banner_file,
   String $sshd_client_alive_count_max,
   String $sshd_client_alive_interval,
+  Array[String] $sshd_denied_groups,
+  Array[String] $sshd_denied_users,
   Enum['yes','no'] $sshd_hostbased_authentication,
   Enum['yes','no'] $sshd_ignore_rhosts,
   String $sshd_login_grace_time,
@@ -270,6 +274,34 @@ class cisecurity::redhat7::services (
     sshd_config { 'Banner':
       ensure => present,
       value  => $sshd_banner_file,
+    }
+    if !empty($sshd_allowed_users) {
+      $flattened_ausers = join($sshd_allowed_users, ' ')
+      sshd_config { 'AllowUsers':
+        ensure => present,
+        value  => $flattened_ausers,
+      }
+    }
+    if !empty($sshd_allowed_groups) {
+      $flattened_agroups = join($sshd_allowed_groups, ' ')
+      sshd_config { 'AllowGroups':
+        ensure => present,
+        value  => $flattened_agroups,
+      }
+    }
+    if !empty($sshd_denied_users) {
+      $flattened_dusers = join($sshd_denied_users, ' ')
+      sshd_config { 'DenyUsers':
+        ensure => present,
+        value  => $flattened_dusers,
+      }
+    }
+    if !empty($sshd_denied_groups) {
+      $flattened_dgroups = join($sshd_denied_groups, ' ')
+      sshd_config { 'DenyGroups':
+        ensure => present,
+        value  => $flattened_dgroups,
+      }
     }
   }
 
