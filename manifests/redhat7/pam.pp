@@ -57,25 +57,22 @@ class cisecurity::redhat7::pam (
       mode   => '0644',
     }
     file_line { 'PASS_MAX_DAYS':
-      ensure             => present,
-      path               => '/etc/login.defs',
-      line               => "PASS_MAX_DAYS ${password_aging_max_days}",
-      match              => '^PASS_MAX_DAYS',
-      append_on_no_match => false,
+      ensure => present,
+      path   => '/etc/login.defs',
+      line   => "PASS_MAX_DAYS ${password_aging_max_days}",
+      match  => '^PASS_MAX_DAYS',
     }
     file_line { 'PASS_MIN_DAYS':
-      ensure             => present,
-      path               => '/etc/login.defs',
-      line               => "PASS_MIN_DAYS ${password_aging_min_days}",
-      match              => '^PASS_MIN_DAYS',
-      append_on_no_match => false,
+      ensure => present,
+      path   => '/etc/login.defs',
+      line   => "PASS_MIN_DAYS ${password_aging_min_days}",
+      match  => '^PASS_MIN_DAYS',
     }
     file_line { 'PASS_WARN_AGE':
-      ensure             => present,
-      path               => '/etc/login.defs',
-      line               => "PASS_WARN_AGE ${password_aging_warn_days}",
-      match              => '^PASS_WARN_AGE',
-      append_on_no_match => false,
+      ensure => present,
+      path   => '/etc/login.defs',
+      line   => "PASS_WARN_AGE ${password_aging_warn_days}",
+      match  => '^PASS_WARN_AGE',
     }
   }
 
