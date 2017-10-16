@@ -320,13 +320,12 @@ class cisecurity::redhat7::security (
     mode    => '0555',
     require => File['/opt/cisecurity'],
   }
-  $script = epp("cisecurity/${cisecurity::osrelease}__remediate_home_directories.sh")
   file { '/opt/cisecurity/scripts/remediate_home_directories.sh':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0555',
-    content => $script,
+    content => epp("cisecurity/${cisecurity::osrelease}__remediate_home_directories.sh.epp"),
     require => File['/opt/cisecurity/scripts'],
   }
   cron { 'remediate_home_directories.sh':

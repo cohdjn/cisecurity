@@ -96,21 +96,19 @@ class cisecurity::redhat7::pam (
     }
   }
 
-  $password_auth = epp("cisecurity/${cisecurity::osrelease}__system_auth")
-  $system_auth = epp("cisecurity/${cisecurity::osrelease}__password_auth")
   file { '/etc/pam.d/system-auth-ac':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => $system_auth,
+    content => epp("cisecurity/${cisecurity::osrelease}__system_auth"),
   }
   file { '/etc/pam.d/password-auth-ac':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => $password_auth,
+    content => epp("cisecurity/${cisecurity::osrelease}__password_auth"),
   }
 
 }
