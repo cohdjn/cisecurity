@@ -1,6 +1,6 @@
 {
   "name": "cohdjn-cisecurity",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "David Nelson",
   "summary": "Configures Linux systems to Center for Internet Security Linux hardening standard.",
   "license": "Apache-2.0",
@@ -29,6 +29,7 @@
     { "name": "justin8/systemd", "version_requirement": ">= 0.4.0 < 1.0.0" },
     { "name": "warrenpnz/aide", "version_requirement": ">= 0.4.0 < 1.0.0" }
   ],
+  "tags": [ "cisecurity", "cis", "security", "benchmark", "compliance" ],
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -40,7 +41,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.10.5 < 5.0.0"
+      "version_requirement": ">= 4.7.0 < 5.0.0"
     }
   ],
   "description": "Center for Internet Security module for RHEL 7."
