@@ -13,7 +13,7 @@
 
 ## Module Description
 
-This module configures and maintains controls listed in the Center for Internet Security Benchmark for Linux.  The current version of cisecurity implements v2.11 of the benchmark and provides a lot of dials and knobs to fine-tune the module to your specific needs.
+This module configures and maintains controls listed in the Center for Internet Security Benchmark for Linux.  The current version of cisecurity implements v2.11 of the benchmark for Red Hat Enterprise Linux 7 and provides a lot of dials and knobs to fine-tune the module to your specific needs.
 
 More information about the benchmark and downloading a copy of it for yourself is available at the [Center for Internet Security](http://www.cisecurity.org).
 
@@ -40,7 +40,7 @@ cisecurity touches a wide variety of system-level settings including:
 To use the cisecurity module with default parameters, declare the cisecurity class.
 
 ```puppet
-include cisecurity
+class { '::cisecurity': }
 ```
 
 ## Usage
@@ -62,9 +62,7 @@ All parameters for the `cisecurity` module are broken down into various classes 
 
 If you modify an `Enum['enabled','disabled']` parameter to something other than the default, the module will not autocorrect the desired state of the system.  You will need to go to that system and manually change the configuration to whatever you want it to be.  cisecurity is designed to only enforce the controls in the benchmark and will not make assumptions of what you want a system's configuration to look like when you deviate.
 
-**Exception:** For parameters in the `cisecurity::services` class, if you modify an `Enum['installed','uninstalled','ignored']` parameter, the module will honor the setting and attempt to start/stop and enable/disable the specified package.
-
-For parameters in the `cisecurity::packages` class, if you modify an `Enum['installed','uninstalled','ignored']` parameter, the module will attempt to install or purge the specified package.
+For parameters in the `cisecurity::packages` class, if you modify an `Enum['installed','uninstalled','ignored']` parameter, the class will attempt to install, purge, or ignore the specified package.
 
 #### Class cisecurity::filesystem
 
@@ -159,6 +157,7 @@ Reassigns user ownership of an unowned files and directories.
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
 * Implements: Control 1.1.21
+* Related: `world_writable_dirs_ignored`
 
 Adds sticky bit to all world writable directories.
 
@@ -166,6 +165,7 @@ Adds sticky bit to all world writable directories.
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
 * Implements: Control 6.1.10
+* Related: `world_writable_files_ignored`
 
 Removes world writable permission from all world writable files.
 
@@ -265,6 +265,22 @@ Provides mount options for /var/tmp.  Set this parameter to an empty array if yo
 * Implements: Control 1.1.1.8
 
 Determines if mounting vfat filesystems will be allowed.
+
+##### `world_writable_dirs_ignored`
+* Default value: `[ ]`
+* Data type: `Array[String]`
+* Implements: Control 1.1.21
+* Related: `remediate_world_writable_dirs`
+
+Provides a list of world writable directories that you don't want the sticky bit automatically set on.
+
+##### `world_writable_files_ignored`
+* Default value: `[ '/var/lib/rsyslog/imjournal.state' ]`
+* Data type: Array[String]`
+* Implements: Control 6.1.10
+* Related: `remediate_world_writable_files`
+
+Provides a list of world writable files that you don't want permissions automatically changed.
 
 #### Class cisecurity::network
 
@@ -588,6 +604,158 @@ Defines what category of updates you wish applied.
 * Implements: Control 1.2.2
 
 Determines whether to enforce `gpgcheck` on all available repositories.
+
+#### Class cisecurity::pam
+
+##### `account_lockout_enforcement`
+* Default value: `'enabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 5.3.2
+* Related: `account_lockout_attempts`, `account_lockout_time`, `inactive_account_lockout`, `inactive_account_lockout_days`
+
+Determines whether the system should be configured for account lockout enforcement.
+
+##### `account_lockout_attempts`
+* Default value: `5`
+* Data type: `Integer`
+* Implements: Control 5.3.2
+* Related: `account_lockout_enforcement`
+
+Specifies the number of times a bad password may be entered before the account is automatically locked out.
+
+##### `account_lockout_time`
+* Default value: `900`
+* Data type: `Integer`
+* Implements: Control 5.3.2
+* Related: `account_lockout_enforcement`
+
+Specifies the amount of time (in seconds) when an account will be automatically unlocked after failed password attempts.
+
+##### `inactive_account_lockout`
+* Default value: `'enabled'`
+* Data Type: `Enum['enabled','disabled']`
+* Implements: Control 5.4.1.4
+* Related: `account_lockout_enforcement`
+
+Specifies whether inactive accounts should be locked by the system.
+
+##### `account_lockout_days`
+* Default value: `30`
+* Data Type: `Integer`
+* Implements: Control 5.4.1.4
+* Related: `account_lockout_enforcement`
+
+Specifies the number of days when an account is considered inactive.
+
+##### `password_aging`
+* Default value: `'enabled'`
+* Data Type: `Enum['enabled','disabled']`
+* Implements: Controls 5.4.1.1 - 5.4.1.3
+* Related: `password_aging_max_days`, `password_aging_min_days`, `password_aging_warn_days`
+
+Determines whether the system should be configured for password aging enforcement.
+
+##### `password_aging_max_days`
+* Default value: `90`
+* Data Type: `Integer`
+* Implements: Control 5.4.1.1
+* Related: `password_aging`
+
+Specifies the maximum number of days before a password is required to be changed.
+
+##### `password_aging_min_days`
+* Default value: `7`
+* Data Type: `Integer`
+* Implements: Control 5.4.1.2
+* Related: `password_aging`
+
+Specifies the minimum number of days before a password must be used before it can be changed.
+
+##### `password_aging_warn_days`
+* Default value: `7`
+* Data Type: `Integer`
+* Implements: Control 5.4.1.3
+* Related: `password_aging`
+
+Specifies the number of days before a messsage is displayed at user login that their password is going to expire.
+
+##### `password_enforcement`
+* Default value: `'enabled'`
+* Data Type: `Enum['enabled','disabled']`
+* Implements: Controls 5.3.1, 5.3.3
+* Related: `password_min_length`, `password_num_digits`, `password_num_lowercase`, `password_num_uppercase`, `password_num_other_chars`, `password_max_attempts`, `password_num_remembered`
+
+Determines whether the system should be configured for password complexity restrictions.
+
+##### `password_max_attempts`
+* Default value: `3`
+* Data Type: `Integer`
+* Implements: Control 5.3.1
+* Related: `password_enforcement`
+
+Specifies the number of times a user may specify a new password that doesn't meet complexity requirements before the attempt to change the password is rejected.
+
+##### `password_min_length`
+* Default value: `14`
+* Data Type: `Integer`
+* Implements: Control 5.3.1
+* Related: `password_enforcement`
+
+Specifies the minimum length of a valid password.
+
+##### `password_num_digits`
+* Default value: `-1`
+* Data Type: `Integer`
+* Implements: Control 5.3.1
+* Related: `password_enforcement`
+
+Specifies the number of digits required to be present in the password.
+
+##### `password_num_lowercase`
+* Default value: `-1`
+* Data Type: `Integer`
+* Implements: Control 5.3.1
+* Related: `password_enforcement`
+
+Specifies the number of lowercase characers required to be present in the password.
+
+##### `password_num_uppercase`
+* Default value: `-1`
+* Data Type: `Integer`
+* Implements: Control 5.3.1
+* Related: `password_enforcement`
+
+Specifies the number of uppercase characers required to be present in the password.
+
+##### `password_num_other_chars`
+* Default value: `-1`
+* Data Type: `Integer`
+* Implements: Control 5.3.1
+* Related: `password_enforcement`
+
+Specifies the number of special characers required to be present in the password.
+
+##### `password_num_remembered`
+* Default value: `5`
+* Data Type: `Integer`
+* Implements: Control 5.3.3
+* Related: `password_enforcement`
+
+Specifies the number of passwords the system will store per user to prevent them from resuing old passwords.
+
+##### `root_primary_group`
+* Default value: `'root'`
+* Data Type: `String`
+* Implements: Control 5.4.3
+
+Specifies the primary group that the root user should belong to.
+
+##### `wheel`
+* Default value: `'enabled'`
+* Data Type: `Enum['enabled','disabled']`
+* Implements: Control 5.6
+
+Specifies whether to enable the use of the `wheel` group on the system for the `su` command.
 
 #### Class cisecurity::security
 

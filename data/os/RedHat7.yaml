@@ -101,12 +101,12 @@ cisecurity::redhat7::pam::password_aging_max_days: 90
 cisecurity::redhat7::pam::password_aging_min_days: 7
 cisecurity::redhat7::pam::password_aging_warn_days: 7
 cisecurity::redhat7::pam::password_enforcement: 'enabled'
+cisecurity::redhat7::pam::password_max_attempts: 3
 cisecurity::redhat7::pam::password_min_length: 14
 cisecurity::redhat7::pam::password_num_digits: -1
 cisecurity::redhat7::pam::password_num_lowercase: -1
 cisecurity::redhat7::pam::password_num_uppercase: -1
 cisecurity::redhat7::pam::password_num_other_chars: -1
-cisecurity::redhat7::pam::password_max_attempts: 3
 cisecurity::redhat7::pam::password_num_remembered: 5
 cisecurity::redhat7::pam::root_primary_group: 'root'
 cisecurity::redhat7::pam::wheel: 'enabled'
