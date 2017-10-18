@@ -381,7 +381,7 @@ class cisecurity::redhat7::services (
     $uscore_service = regsubst($uscore_service2, '.socket', '')
     if getvar($uscore_service) == 'enabled' {
       service { $service:
-        ensure => started,
+        ensure => running,
         enable => true,
       }
     } else {

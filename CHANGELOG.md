@@ -1,3 +1,7 @@
+## Release 0.3.3
+### Sumary
+Fixed bad argument in services.
+
 ## Release 0.3.2
 ### Summary
 Fixed bad Hiera parameter for home_directories_perm.
