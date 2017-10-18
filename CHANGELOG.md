@@ -1,3 +1,11 @@
+## Release 0.3.2
+### Summary
+Fixed bad Hiera parameter for home_directories_perm.
+
+## Release 0.3.1
+### Summary
+Minor modifications to metadata.json to better Puppet Forge score.
+
 ## Release 0.3.0
 ### Summary
 Finished manual auditing and testing of the module.  No rspec tests have been done mostly because it's insanely confusing and I don't have the time to work through the process.  If you happen to be good at running these tests, drop me a line because I'd love to work with you through the process.
