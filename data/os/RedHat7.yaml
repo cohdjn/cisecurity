@@ -116,7 +116,7 @@ cisecurity::redhat7::security::banner_message_text: 'Authorized uses only. All a
 cisecurity::redhat7::security::bootloader_password: 'grub.pbkdf2.sha512.10000.0A096A9EF547EFEDCE27053BBF3C2730578FA477D68F34417A3F827F73067D73FBBB4BE85BD8239F193420CFF8333745928D953B64AE28D5F901770381EEDB5F.782E2694DCD0955061639ECE3740B488E6D76965F37D472E6009A4D1D649227EAB85433576BB43192A2D211D06E1826F175D167F81CDC6573A9932C4F84E4AC7'
 cisecurity::redhat7::security::bootloader_user: 'rescue'
 cisecurity::redhat7::security::configure_system_acct_nologin: 'enabled'
-cisecurity::redhat7::security::home_directories_perm: = '0750'
+cisecurity::redhat7::security::home_directories_perm: '0750'
 cisecurity::redhat7::security::issue: 'puppet:///modules/cisecurity/redhat7/banners/issue'
 cisecurity::redhat7::security::issue_net: 'puppet:///modules/cisecurity/redhat7/banners/issue.net'
 cisecurity::redhat7::security::motd: 'puppet:///modules/cisecurity/redhat7/banners/motd'
