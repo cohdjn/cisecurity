@@ -93,19 +93,20 @@ class cisecurity::redhat7::pam (
     }
   }
 
+  $osrelease = downcase("${facts['os']['family']}${facts['os']['release']['major']}")
   file { '/etc/pam.d/system-auth-ac':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => epp("cisecurity/${cisecurity::osrelease}__system_auth"),
+    content => epp("cisecurity/${osrelease}__system_auth"),
   }
   file { '/etc/pam.d/password-auth-ac':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => epp("cisecurity/${cisecurity::osrelease}__password_auth"),
+    content => epp("cisecurity/${osrelease}__password_auth"),
   }
 
 }
