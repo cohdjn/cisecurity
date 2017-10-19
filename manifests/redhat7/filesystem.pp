@@ -12,6 +12,8 @@ class cisecurity::redhat7::filesystem (
   Enum['enabled','disabled'] $hfsplus,
   Array[String] $home_mount_options,
   Enum['enabled','disabled'] $jffs2,
+  String $log_file_perms_cron_start_hour,
+  String $log_file_perms_cron_start_minute,
   Enum['enabled','disabled'] $remediate_log_file_perms,
   Enum['enabled','disabled'] $remediate_ungrouped_files,
   Enum['enabled','disabled'] $remediate_unowned_files,
@@ -346,8 +348,12 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $remediate_log_file_perms == 'enabled' {
-    exec { 'find /var/log -type f -exec chmod g-wx,o-rwx {} \;':
-      path => [ '/usr/bin', '/bin' ],
+    cron { 'remediate_log_file_perms':
+      ensure  => present,
+      command => 'find /var/log -type f ! -path \'/var/log/puppetlabs/mcollective*.log\' -exec chmod g-wx,o-rwx {} \;',
+      user    => 'root',
+      hour    => $log_file_perms_cron_start_hour,
+      minute  => $log_file_perms_cron_start_minute,
     }
   }
 

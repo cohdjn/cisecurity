@@ -130,10 +130,27 @@ Provides mount options for /home.  If /home is not configured as a separate part
 
 Determines if mounting hfs filesystems will be allowed.
 
+##### `log_file_perms_cron_start_hour`
+* Default value: `'*'`
+* Data type: `String`
+* Implements: Control 4.2.4
+* Related: `remediate_log_file_perms`
+
+A cron-styled hour when log file permissions will be corrected.
+
+##### `log_file_perms_cron_start_minute`
+* Default value: `'37'`
+* Data type: `String`
+Implements: Control 4.2.4
+* Related: `remediate_log_file_perms`
+
+A cron-styled minute when log file permissions will be corrected.
+
 ##### `remediate_log_file_perms`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
 * Implements: Control 4.2.4
+* Related: `log_file_perms_cron_start_hour`, `log_file_perms_cron_start_minute`
 
 Secures log files in /var/log harder than the default operating system provides.
 

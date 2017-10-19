@@ -12,6 +12,8 @@ cisecurity::redhat7::filesystem::hfsplus: 'disabled'
 cisecurity::redhat7::filesystem::home_mount_options:
   - 'nodev'
 cisecurity::redhat7::filesystem::jffs2: 'disabled'
+cisecurity::redhat7::filesystem::log_file_perms_cron_start_hour: '*'
+cisecurity::redhat7::filesystem::log_file_perms_cron_start_minute: '37'
 cisecurity::redhat7::filesystem::remediate_log_file_perms: 'enabled'
 cisecurity::redhat7::filesystem::remediate_ungrouped_files: 'enabled'
 cisecurity::redhat7::filesystem::remediate_unowned_files: 'enabled'
