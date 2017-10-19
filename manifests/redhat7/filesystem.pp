@@ -249,16 +249,18 @@ class cisecurity::redhat7::filesystem (
       mode   => '0644',
     }
     file_line { '/etc/bashrc':
-      ensure => present,
-      path   => '/etc/bashrc',
-      line   => "umask ${umask_default}",
-      match  => '^\s*umask 022$',
+      ensure             => present,
+      path               => '/etc/bashrc',
+      line               => "umask ${umask_default}",
+      match              => '^\s*umask 022$',
+      append_on_no_match => false,
     }
     file_line { '/etc/profile':
-      ensure => present,
-      path   => '/etc/profile',
-      line   => "umask ${umask_default}",
-      match  => '^\s*umask 022$',
+      ensure             => present,
+      path               => '/etc/profile',
+      line               => "umask ${umask_default}",
+      match              => '^\s*umask 022$',
+      append_on_no_match => false,
     }
   }
 
