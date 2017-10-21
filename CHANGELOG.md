@@ -1,5 +1,22 @@
+## Release 0.4.0
+### Summary
+Multiple fixes in this release.  Pay close attention to the module dependencies!
+
+#### Module Dependencies
+* The `crayfishx/firewalld` module has been updated to v3.4.0.
+* I created a fork of `herculesteam-augeasproviders_grub` that corrects a problem with EFI-based nodes.  I recommend you change your Puppetfile to use my GitHub site (https://github.com/cohdjn/augeasproviders_grub) or install the module from there depending on your environment.  Future release will point back to the Forge once the fix has been merged and uploaded.
+* Puppet Labs has an updated version of `puppetlabs/stdlib` that corrects a problem with pattern matching in `file_line` resources. I recommend you change your Puppetfile to use their GitHub site (https://github.com/puppetlabs/puppetlabs-stdlib) or install the module from there depending on your environment.  Future release will point back to the Forge once the fix has been merged and uploaded.
+
+#### Bug Fixes
+* Added evaluation of `osrelease` to submodules.  Parameter declaration outside of Hiera breaks miserably when using EPP templates.
+* Fixed problem with `file_line` resources constantly appending umask to the end of file.
+
+#### Enhancements
+* Moved log file remediation from `exec` resource to `cron` resource to prevent Puppet from always reporting intentional changes on every run.  Two new parameters, `log_file_perms_cron_start_hour` and `log_file_perms_cron_start_minute` have been added to schedule to your environment.
+
+
 ## Release 0.3.3
-### Sumary
+### Summary
 Fixed bad argument in services.
 
 ## Release 0.3.2
