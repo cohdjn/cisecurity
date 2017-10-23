@@ -121,7 +121,7 @@ class cisecurity::redhat7::packages (
     }
     if $facts['cisecurity']['yum_repos_gpgcheck_consistent'] != undef {
       if $facts['cisecurity']['yum_repos_gpgcheck_consistent'] == false {
-        exec { 'sed -i s/^gpgcheck.*/gpgcheck=1/ /etc/yum.repos.d/*.repo':
+        exec { 'sed -i \'s/^\(gpgcheck\s*=\s*\).*/\11/\' /etc/yum.repos.d/*.repo':
           path => [ '/bin', '/usr/bin' ],
         }
       }
