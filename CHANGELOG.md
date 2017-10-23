@@ -1,3 +1,10 @@
+## Release 0.4.1
+### Summary
+Minor bug fix.  Advice on module dependencies from Release 0.4.0 still apply.
+
+#### Bug Fixes
+* Modified gpgcheck regex to properly account for spaces that may (or may not) already exist in the files in /etc/yum.repos.d/.
+
 ## Release 0.4.0
 ### Summary
 Multiple fixes in this release.  Pay close attention to the module dependencies!
@@ -13,7 +20,6 @@ Multiple fixes in this release.  Pay close attention to the module dependencies!
 
 #### Enhancements
 * Moved log file remediation from `exec` resource to `cron` resource to prevent Puppet from always reporting intentional changes on every run.  Two new parameters, `log_file_perms_cron_start_hour` and `log_file_perms_cron_start_minute` have been added to schedule to your environment.
-
 
 ## Release 0.3.3
 ### Summary
