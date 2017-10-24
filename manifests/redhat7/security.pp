@@ -285,11 +285,12 @@ class cisecurity::redhat7::security (
   }
 
   if $remediate_root_path == 'enabled' {
-    class { '::bash': }
     $flattened_path = join($root_path, ':')
-    bash::user { 'root':
-      homedir       => '/root',
-      env_variables => { 'path' => $flattened_path },
+    file_line { 'sanitized_root_path':
+      ensure => present,
+      path   => '/root/.bash_profile',
+      line   => "PATH=${flattened_path}",
+      match  => "^PATH",
     }
     if $facts['cisecurity']['root_path'] != undef {
       $facts['cisecurity']['root_path'].each | String $directory | {
@@ -297,7 +298,6 @@ class cisecurity::redhat7::security (
           file { $directory:
             ensure => directory,
             owner  => 'root',
-            group  => 'root',
             mode   => 'o-w,g-w',
           }
         }
