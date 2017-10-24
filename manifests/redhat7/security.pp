@@ -289,7 +289,7 @@ class cisecurity::redhat7::security (
     $flattened_path = join($root_path, ':')
     bash::user { 'root':
       homedir       => '/root',
-      env_variables => { 'path' => $root_path },
+      env_variables => { 'path' => $flattened_path },
     }
     if $facts['cisecurity']['root_path'] != undef {
       $facts['cisecurity']['root_path'].each | String $directory | {
