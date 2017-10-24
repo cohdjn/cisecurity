@@ -290,7 +290,7 @@ class cisecurity::redhat7::security (
       ensure => present,
       path   => '/root/.bash_profile',
       line   => "PATH=${flattened_path}",
-      match  => "^PATH",
+      match  => '^PATH',
     }
     if $facts['cisecurity']['root_path'] != undef {
       $facts['cisecurity']['root_path'].each | String $directory | {
