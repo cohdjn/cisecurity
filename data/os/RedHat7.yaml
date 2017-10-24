@@ -26,7 +26,6 @@ cisecurity::redhat7::filesystem::removable_media_mount_options:
 cisecurity::redhat7::filesystem::removable_media_partitions: []
 cisecurity::redhat7::filesystem::squashfs: 'disabled'
 cisecurity::redhat7::filesystem::tmp_mount_options:
-  - 'strictatime'
   - 'noexec'
   - 'nodev'
   - 'nosuid'

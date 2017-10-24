@@ -7,6 +7,13 @@ BEGIN {
     print "---" >YamlFile
     print "cisecurity:" >>YamlFile
 
+    # check for EFI
+    if (system("[ -d /sys/firmware/efi ]") == 0) {
+        print "  efi: true" >>YamlFile
+    } else {
+        print "  efi: false" >>YamlFile
+    }
+
     # accounts_with_blank_passwords
     FS=":"
     FoundUsers = 0
