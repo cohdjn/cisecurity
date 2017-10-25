@@ -9,6 +9,7 @@ class cisecurity::redhat7::pam (
   Integer $account_lockout_time,
   Enum['enabled','disabled'] $inactive_account_lockout,
   Integer $inactive_account_lockout_days,
+  Hash $root_user_settings,
   Enum['enabled','disabled'] $password_aging,
   Integer $password_aging_max_days,
   Integer $password_aging_min_days,
@@ -21,13 +22,12 @@ class cisecurity::redhat7::pam (
   Integer $password_num_other_chars,
   Integer $password_max_attempts,
   Integer $password_num_remembered,
-  String $root_primary_group,
   Enum['enabled','disabled'] $wheel,
 ) {
 
   user { 'root':
     ensure => present,
-    gid    => $root_primary_group,
+    *      => $root_user_settings,
   }
 
   if $inactive_account_lockout == 'enabled' {

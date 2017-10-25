@@ -96,6 +96,8 @@ cisecurity::redhat7::pam::account_lockout_attempts: 5
 cisecurity::redhat7::pam::account_lockout_time: 900
 cisecurity::redhat7::pam::inactive_account_lockout: 'enabled'
 cisecurity::redhat7::pam::inactive_account_lockout_days: 30
+cisecurity::redhat7::pam::root_user_settings:
+  - gid: 'root'
 cisecurity::redhat7::pam::password_aging: 'enabled'
 cisecurity::redhat7::pam::password_aging_max_days: 90
 cisecurity::redhat7::pam::password_aging_min_days: 7
@@ -108,7 +110,6 @@ cisecurity::redhat7::pam::password_num_lowercase: -1
 cisecurity::redhat7::pam::password_num_uppercase: -1
 cisecurity::redhat7::pam::password_num_other_chars: -1
 cisecurity::redhat7::pam::password_num_remembered: 5
-cisecurity::redhat7::pam::root_primary_group: 'root'
 cisecurity::redhat7::pam::wheel: 'enabled'
 
 cisecurity::redhat7::security::aslr: 'enabled'

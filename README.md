@@ -656,6 +656,13 @@ Specifies the amount of time (in seconds) when an account will be automatically 
 
 Specifies whether inactive accounts should be locked by the system.
 
+##### `root_user_settings`
+* Default value: '`{ gid => 'root' }`
+* Data Type: `Hash`
+* Implements: Control 5.4.3
+
+Specifies settings for the root user.  The minimum setting needed is for ensuring the primary group but this can be extended to include managing root passwords.
+ 
 ##### `account_lockout_days`
 * Default value: `30`
 * Data Type: `Integer`
@@ -759,13 +766,6 @@ Specifies the number of special characers required to be present in the password
 * Related: `password_enforcement`
 
 Specifies the number of passwords the system will store per user to prevent them from resuing old passwords.
-
-##### `root_primary_group`
-* Default value: `'root'`
-* Data Type: `String`
-* Implements: Control 5.4.3
-
-Specifies the primary group that the root user should belong to.
 
 ##### `wheel`
 * Default value: `'enabled'`
