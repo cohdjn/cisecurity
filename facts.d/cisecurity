@@ -221,6 +221,8 @@ BEGIN {
             break
         case /repolist:.*/:
             break
+	case "" :
+            break
         default:
             print "    - '" $1 "'" >>YamlFile
         }
