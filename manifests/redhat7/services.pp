@@ -4,6 +4,7 @@
 
 class cisecurity::redhat7::services (
   String $auditd_action_mail_acct,
+  Integer $auditd_admin_space_left,
   Enum[
     'email',
     'exec',
@@ -13,14 +14,17 @@ class cisecurity::redhat7::services (
     'single',
     'suspend',
     'syslog'] $auditd_admin_space_left_action,
+  Enum['enabled','disabled'] $auditd_configure_boot_auditing,
   Enum['enabled','disabled'] $auditd_configure_rules,
-  String $auditd_max_log_file,
+  Integer $auditd_max_log_file,
   Enum[
     'keep_logs',
     'ignore',
     'rotate',
     'suspend',
     'syslog'] $auditd_max_log_file_action,
+  Integer $auditd_num_logs,
+  Integer $auditd_space_left,
   Enum[
     'email',
     'exec',
@@ -30,7 +34,6 @@ class cisecurity::redhat7::services (
     'single',
     'suspend',
     'syslog'] $auditd_space_left_action,
-  Enum['enabled','disabled'] $auditd_configure_boot_auditing,
   Enum['enabled','disabled'] $autofs,
   Enum['enabled','disabled'] $avahi_daemon,
   Enum['enabled','disabled'] $chargen_dgram,
@@ -111,9 +114,12 @@ class cisecurity::redhat7::services (
       service_ensure          => running,
       service_enable          => true,
       action_mail_acct        => $auditd_action_mail_acct,
+      admin_space_left        => $auditd_admin_space_left,
       admin_space_left_action => $auditd_admin_space_left_action,
       max_log_file            => $auditd_max_log_file,
       max_log_file_action     => $auditd_max_log_file_action,
+      num_logs                => $auditd_num_logs,
+      space_left              => $auditd_space_left,
       space_left_action       => $auditd_space_left_action,
     }
   }

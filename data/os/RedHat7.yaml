@@ -165,12 +165,15 @@ cisecurity::redhat7::security::verify_duplicate_uids_notexist: 'enabled'
 cisecurity::redhat7::security::verify_duplicate_usernames_notexist: 'enabled'
 
 cisecurity::redhat7::services::auditd_action_mail_acct: 'root'
+cisecurity::redhat7::services::auditd_admin_space_left: 50
 cisecurity::redhat7::services::auditd_admin_space_left_action: 'halt'
-cisecurity::redhat7::services::auditd_configure_rules: 'enabled'
-cisecurity::redhat7::services::auditd_max_log_file: '8'
-cisecurity::redhat7::services::auditd_max_log_file_action: 'keep_logs'
-cisecurity::redhat7::services::auditd_space_left_action: 'email'
 cisecurity::redhat7::services::auditd_configure_boot_auditing: 'enabled'
+cisecurity::redhat7::services::auditd_configure_rules: 'enabled'
+cisecurity::redhat7::services::auditd_max_log_file: 8
+cisecurity::redhat7::services::auditd_max_log_file_action: 'keep_logs'
+cisecurity::redhat7::services::auditd_num_logs: 5
+cisecurity::redhat7::services::auditd_space_left: 75
+cisecurity::redhat7::services::auditd_space_left_action: 'email'
 cisecurity::redhat7::services::autofs: 'disabled'
 cisecurity::redhat7::services::avahi_daemon: 'disabled'
 cisecurity::redhat7::services::chargen_dgram: 'disabled'
