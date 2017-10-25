@@ -213,6 +213,9 @@ class cisecurity::redhat7::services (
       mode    => '0600',
       content => $flattened_at_users,
     }
+    file { '/etc/at.deny':
+      ensure => absent,
+    }
   }
 
   if $configure_cron_allow == 'enabled' {
@@ -223,6 +226,9 @@ class cisecurity::redhat7::services (
       owner   => 'root',
       mode    => '0600',
       content => $flattened_cron_users,
+    }
+    file { '/etc/cron.deny':
+      ensure => absent,
     }
   }
 
