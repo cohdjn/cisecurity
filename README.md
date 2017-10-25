@@ -1063,13 +1063,28 @@ Verifies no duplicate usernames exist.  If a duplicate username is found, a mess
 
 If email notifications are enabled, this parameter defines who receives the notification.  The parameter may be a local user (as in the case with root as the default) or a fully-qualified email address (someone@somewhere.com).
 
-##### `auditd_space_left_action`
+##### `auditd_admin_space_left`
+* Default value: `50`
+* Data type: `Integer`
+* Implements: None.
+* Related: `configure_auditd`, `auditd_admin_space_left_action`
+
+Value (in megabytes) that tells the audit daemon when to perform a configurable action because the system is running low on disk space. This should be considered the last chance to do something before running out of disk space. The numeric value for this parameter should be lower than the number for `auditd_space_left`.
+
+##### `auditd_admin_space_left_action`
 * Default value: `'halt'`
 * Data type: `Enum['email','exec','halt','ignore','rotate','single','suspend','syslog']`
 * Implements: Control 4.1.1.2
-* Related: `configure_auditd`
+* Related: `configure_auditd`, `auditd_admin_space_left`
 
-Determines what action to take when the system detects it's starting to get low on disk space.
+Action to take when the system has detected that it is low on disk space. If set to ignore, the audit daemon does nothing. Syslog means that it will issue a warning to syslog. Email means that it will send a warning to the email account specified in `auditd_action_mail_acct` as well as sending the message to syslog. Suspend will cause the audit daemon to stop writing records to the disk. The daemon will still be alive. The single option will cause the audit daemon to put the computer system in single user mode.
+
+##### `configure_boot_auditing`
+* Default value: `'enabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 4.1.3
+
+Determines if process auditing will happen prior to auditd is enabled.
 
 ##### `auditd_configure_rules`
 * Default value: `'enabled'`
@@ -1081,34 +1096,43 @@ Determines whether the rules defined in the benchmark are applied.
 
 ##### `auditd_max_log_file`
 * Default value: `'8'`
-* Data type: `String`
+* Data type: `Integer`
 * Implements: Control 4.1.1.1
 * Related: `configure_auditd`
 
-Specifies the maximum size of an audit log file in megabytes.
+Specifies the maximum file size in megabytes. When this limit is reached, it will trigger a configurable action.
 
 ##### `auditd_max_log_file_action`
 * Default value: `'keep_logs'`
 * Data type: `Enum['keep_logs','ignore','rotate','suspend','syslog']`
 * Implements: Control 4.1.1.3
+* Related: `configure_auditd`, `auditd_max_log_file`
+
+Action to take when the system has detected that the max file size limit has been reached. If set to ignore, the audit daemon does nothing. syslog means that it will issue a warning to syslog. suspend will cause the audit daemon to stop writing records to the disk. The daemon will still be alive. The rotate option will cause the audit daemon to rotate the logs. It should be noted that logs with higher numbers are older than logs with lower numbers. This is the same convention used by the logrotate utility. The keep_logs option is similar to rotate except it does not use the num_logs setting. This prevents audit logs from being overwritten.
+
+##### `auditd_num_logs`
+* Default value: `5`
+* Data type: `Integer[0-999]`
+* Implements: None.
 * Related: `configure_auditd`
 
-Specifies what action will be taken when the system detects the maximum log file size has been reached.
+Specifies the number of log files to keep if rotate is given as the `auditd_max_log_file_action`. If the number is less than 2, logs are not rotated. This number must be 999 or less. The default is 0 - which means no rotation.
+
+##### `auditd_space_left`
+* Default value: `75`
+* Data type: `Integer`
+* Implements: None.
+* Related: `configure_auditd`, `auditd_space_left_action`
+
+Value in megabytes that tells the audit daemon when to perform a configurable action because the system is starting to run low on disk space.
 
 ##### `auditd_space_left_action`
 * Default value: `'email'`
 * Data type: `Enum['email','exec','halt','ignore','rotate','single','suspend','syslog']`
 * Implements: Control 4.1.1.2
-* Related: `configure_auditd`
+* Related: `configure_auditd`, `auditd_space_left`
 
 Specifies what action will be taken when the system detects that it's starting to get low on disk space.
-
-##### `configure_boot_auditing`
-* Default value: `'enabled'`
-* Data type: `Enum['enabled','disabled']`
-* Implements: Control 4.1.3
-
-Determines if process auditing will happen prior to auditd is enabled.
 
 ##### `autofs`
 * Default value: `'disabled'`
