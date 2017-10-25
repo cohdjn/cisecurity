@@ -3,6 +3,7 @@
 # Implements Center of Internet Security service controls.
 
 class cisecurity::redhat7::services (
+  Array[String] $at_allowed_users,
   String $auditd_action_mail_acct,
   Integer $auditd_admin_space_left,
   Enum[
@@ -38,12 +39,15 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $avahi_daemon,
   Enum['enabled','disabled'] $chargen_dgram,
   Enum['enabled','disabled'] $chargen_stream,
+  Enum['enabled','disabled'] $configure_at_allow,
   Enum['enabled','disabled'] $configure_auditd,
+  Enum['enabled','disabled'] $configure_cron_allow,
   Enum['enabled','disabled'] $configure_postfix,
   Enum['enabled','disabled'] $configure_rsyslog,
   Enum['enabled','disabled'] $configure_sshd,
   Enum['enabled','disabled'] $configure_time,
   Enum['enabled','disabled'] $cron,
+  Array[String] $cron_allowed_users,
   Enum['enabled','disabled'] $cups,
   Enum['enabled','disabled'] $daytime_dgram,
   Enum['enabled','disabled'] $daytime_stream,
@@ -197,6 +201,28 @@ class cisecurity::redhat7::services (
     service { 'crond':
       ensure => running,
       enable => true,
+    }
+  }
+
+  if $configure_at_allow == 'enabled' {
+    $flattened_at_users = join($at_allowed_users, "\n")
+    file { '/etc/at.allow':
+      ensure  => file,
+      group   => 'root',
+      owner   => 'root',
+      mode    => '0600',
+      content => $flattened_at_users,
+    }
+  }
+
+  if $configure_cron_allow == 'enabled' {
+    $flattened_cron_users = join($cron_allowed_users, "\n")
+    file { '/etc/cron.allow':
+      ensure  => file,
+      group   => 'root',
+      owner   => 'root',
+      mode    => '0600',
+      content => $flattened_cron_users,
     }
   }
 

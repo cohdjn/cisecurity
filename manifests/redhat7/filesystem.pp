@@ -319,9 +319,22 @@ class cisecurity::redhat7::filesystem (
       group  => 'root',
       mode   => '0600',
     }
-    $cronfiles = [ '/etc/crontab', '/etc/cron.allow', '/etc/at.allow' ]
-    $cronfiles.each | String $file | {
-      file { $file:
+    file { '/etc/crontab':
+      ensure => file,
+      group  => 'root',
+      owner  => 'root',
+      mode   => '0600',
+    }
+    if $cisecurity::redhat7::services::configure_at_allow == 'disabled' {
+      file { '/etc/at.allow':
+        ensure => file,
+        group  => 'root',
+        owner  => 'root',
+        mode   => '0600',
+      }
+    }
+    if $cisecurity::redhat7::services::configure_cron_allow  == 'disabled' {
+      file { '/etc/cron.allow':
         ensure => file,
         group  => 'root',
         owner  => 'root',
