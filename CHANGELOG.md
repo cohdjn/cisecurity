@@ -1,3 +1,17 @@
+## Release 0.5.0
+### Summary
+Contains a few bug fixes and enhancements.  Advice on module dependencies from Release 0.4.0 still apply.
+
+#### Bug Fixes
+* Fixed bad mount options for /tmp.
+* Added EFI detection as an external fact which is used to override whether the vfat filesystem is enabled or disabled.  EFI requires a vfat partition to exist and system will not boot without vfat support.
+* Fixed bad variable substitution for root path.
+* Modified external facts to purposely remove double-colons and dots from root path to help deal with root path remediation.
+* Removed kemra102/bash as a dependency for cisecurity and flipped that functionality to use file_line resources instead.
+
+#### Enhancements
+* Added `auditd_admin_space_left`, `auditd_num_logs`, and `auditd_space_left` parameters to services module to provide a few additional nice to have knobs that can be turned as necessary.
+
 ## Release 0.4.1
 ### Summary
 Minor bug fix.  Advice on module dependencies from Release 0.4.0 still apply.
