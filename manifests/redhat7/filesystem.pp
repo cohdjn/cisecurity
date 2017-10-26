@@ -350,12 +350,6 @@ class cisecurity::redhat7::filesystem (
         mode   => '0700',
       }
     }
-    $crondenies = [ '/etc/cron.deny', '/etc/at.deny' ]
-    $crondenies.each | String $file | {
-      file { $file:
-        ensure => absent,
-      }
-    }
     file { '/etc/ssh/sshd_config':
       ensure => file,
       mode   => '0600',
