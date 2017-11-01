@@ -416,7 +416,7 @@ class cisecurity::redhat6::services (
   $service_list.each | String $service | {
     if getvar($service) == 'enabled' {
       ensure_resource('service', $service, { 'ensure' => 'running', 'enable' => 'true' })
-    } else {
+    } elsif getvar($service) == 'disabled' {
       ensure_resource('service', $service, { 'ensure' => 'stopped', 'enable' => 'false' })
     }
   }
