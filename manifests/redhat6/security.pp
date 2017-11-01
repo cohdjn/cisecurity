@@ -177,6 +177,15 @@ class cisecurity::redhat6::security (
     }
   }
 
+  if $single_user_authentication == 'enabled' {
+    file_line { '/etc/sysconfig/init':
+      ensure => present,
+      path   => '/etc/sysconfig/init',
+      line   => 'SINGLE=/sbin/sulogin',
+      match  => '^SINGLE',
+    }
+  }
+
   if $facts['cisecurity']['unconfined_daemons'] != undef {
     if !empty($facts['cisecurity']['unconfined_daemons']) {
       notice ('One or more unconfined daemons found running on this system.')
