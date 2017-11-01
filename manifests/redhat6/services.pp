@@ -414,17 +414,17 @@ class cisecurity::redhat6::services (
     'ypserv',
   ]
   $service_list.each | String $service | {
-    if getvar($service) == 'enabled' {
-      service { "Enable $service":
-        name   => $service,
-        ensure => running,
-        enable => true,
-      }
-    } else {
-      service { "Disable $service":
-        name   => $service,
-        ensure => stopped,
-        enable => false,
+    if !defined(Service[$service]) {
+      if getvar($service) == 'enabled' {
+        service { $service:
+          ensure => running,
+          enable => true,
+        }
+      } else {
+        service { $service:
+          ensure => stopped,
+          enable => false,
+        }
       }
     }
   }
