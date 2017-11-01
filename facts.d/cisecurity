@@ -212,18 +212,7 @@ BEGIN {
     print "  yum_enabled_repos:" >>YamlFile
     Cmd = "yum repolist enabled"
     while ((Cmd | getline ) > 0) {
-        switch ($1) {
-        case /Loaded/:
-            break
-        case ":":
-            break
-        case "repo":
-            break
-        case /repolist:.*/:
-            break
-	case "" :
-            break
-        default:
+        if ($1 !~ /Loaded/ && $1 != ":" && $1 != "repo" && $1 !~ /repolist:.*/ && $1 != "") {
             print "    - '" $1 "'" >>YamlFile
         }
     }
