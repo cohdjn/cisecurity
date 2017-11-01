@@ -414,10 +414,17 @@ class cisecurity::redhat6::services (
     'ypserv',
   ]
   $service_list.each | String $service | {
-    if getvar($service) == 'enabled' {
-      ensure_resource('service', $service, { 'ensure' => 'running', 'enable' => 'true' })
+    $uscore_service = regsubst($service, '-', '_')
+    if getvar($uscore_service) == 'enabled' {
+      service { $service:
+        ensure => running,
+        enable => true,
+      }
     } elsif getvar($service) == 'disabled' {
-      ensure_resource('service', $service, { 'ensure' => 'stopped', 'enable' => 'false' })
+      service { $service:
+        ensure => running,
+        enable => true,
+      }
     }
   }
 
