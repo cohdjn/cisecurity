@@ -415,12 +415,12 @@ class cisecurity::redhat6::services (
   ]
   $service_list.each | String $service | {
     if getvar($service) == 'enabled' {
-      service { $service:
+      service { "Enable $service":
         ensure => running,
         enable => true,
       }
     } else {
-      service { $service:
+      service { "Disable $service":
         ensure => stopped,
         enable => false,
       }
