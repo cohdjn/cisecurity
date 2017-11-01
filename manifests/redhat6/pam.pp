@@ -76,23 +76,6 @@ class cisecurity::redhat6::pam (
     }
   }
 
-  if $password_enforcement == 'enabled' {
-    $pwquality_hash = {
-      'dcredit' => $password_num_digits,
-      'lcredit' => $password_num_lowercase,
-      'minlen'  => $password_min_length,
-      'ocredit' => $password_num_other_chars,
-      'ucredit' => $password_num_uppercase,
-    }
-    $pwquality_hash.each | String $setting, Integer $value | {
-      file_line { $setting:
-        ensure => present,
-        path   => '/etc/security/pwquality.conf',
-        line   => "${setting}=${value}",
-      }
-    }
-  }
-
   $osrelease = downcase("${facts['os']['family']}${facts['os']['release']['major']}")
   file { '/etc/pam.d/system-auth-ac':
     ensure  => file,

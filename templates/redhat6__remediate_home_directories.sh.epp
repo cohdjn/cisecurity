@@ -1,0 +1,142 @@
+#!/bin/bash
+# This file is managed by Puppet.
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_exist == 'enabled' {-%>
+# Control 6.2.7 - Ensure all users' home directories exist
+cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
+    if [ $uid -ge 1000 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
+        mkdir $dir
+        chmod <%= $cisecurity::redhat6::security::home_directories_perm %> $dir
+        cp /etc/skel/.* $dir
+        cp /etc/skel/* $dir
+        chown -R $uid $dir
+        chgrp -R $uid $dir
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_perms == 'enabled' {-%>
+# Control 6.2.8 - Ensure users' home directories permissions are 750 or more restrictive
+cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
+    if [ $uid -ge 1000 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
+        chmod <%= $cisecurity::redhat6::security::home_directories_perm %> $dir
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_owner == 'enabled' {-%>
+# Control 6.2.9 - Ensure users own their home directories
+cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
+    if [ $uid -ge 1000 -a -d "$dir" -a $user != "nfsnobody" ]; then
+        OWNER=$(stat -L -c "%U" "$dir")
+        if [ "$OWNER" != "$user" ]; then
+            chown $user $dir
+        fi
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_dot_files == 'enabled' {-%>
+# Control 6.2.10 - Ensure users' dot files are not group or world writable
+for dir in `cat /etc/passwd | egrep -v '(root|halt|sync|shutdown)' | awk -F: '($7 != "/sbin/nologin") { print $6 }'`; do
+    for FILE in $dir/.[A-Za-z0-9]*; do
+        if [ ! -h "$FILE" -a -f "$FILE" ]; then
+            chmod 'g-w,o-w' $FILE
+        fi
+    done
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_forward_files == 'enabled' {-%>
+# Control 6.2.11 - Ensure no users have .forward files
+for dir in `cat /etc/passwd | awk -F: '{ print $6 }'`; do
+    if [ ! -h "$dir/.forward" -a -f "$DIR/.forward" ]; then
+        rm -f "$dir/.forward"
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_netrc_files == 'enabled' {-%>
+# Control 6.2.12 - Ensure no users have .netrc files
+for dir in `cat /etc/passwd | awk -F: '{ print $6 }'`; do
+    if [ ! -h "$dir/.netrc" -a -f "$DIR/.netrc" ]; then
+        rm -f "$dir/.netrc"
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_netrc_files_perms == 'enabled' {-%>
+# Control 6.2.13 - Ensure users' .netrc files are not group or world accessible
+for dir in `cat /etc/passwd | awk -F: '{ print $6 }'`; do
+    if [ ! -h "$dir/.netrc" -a -f "$DIR/.netrc" ]; then
+        chmod 'g-w,o-w' "$dir/.netrc"
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::remediate_home_directories_rhosts_files == 'enabled' {-%>
+# Control 6.2.14 - Ensure no users have .rhosts files
+for dir in `cat /etc/passwd | egrep -v '(root|halt|sync|shutdown)' | awk -F: '($7 != "/sbin/nologin") { print $6 }'`; do
+    if [ ! -h "$dir/.rhosts" -a -f "$DIR/.rhosts" ]; then
+        rm -f "$dir/.rhosts"
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::verify_user_groups_exist == 'enabled' {-%>
+# Control 6.2.15 - Ensure all groups in /etc/passwd exist in /etc/group
+for GROUP in $(cut -s -d: -f4 /etc/passwd | sort -u); do
+    getent group $GROUP >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      logger -p <%= $cisecurity::redhat6::security::syslog_facility %>.<%= $cisecurity::redhat6::security::syslog_severity %> -t cisecurity Group $GROUP is referenced in /etc/passwd but does not exist.
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::verify_duplicate_uids_notexist == 'enabled' {-%>
+# Control 6.2.16 - Ensure no duplicate uids exist
+cat /etc/passwd | cut -f3 -d":" | sort -n | uniq -c | while read uid; do
+    [ -z "$uid" ] && break
+    set - $uid
+    if [ $1 -gt 1 ]; then
+        users=`awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs`
+        logger -p <%= $cisecurity::redhat6::security::syslog_facility %>.<%= $cisecurity::redhat6::security::syslog_severity %> -t cisecurity Duplicate UID \($2\): $users
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::verify_duplicate_gids_notexist == 'enabled' {-%>
+# Control 6.2.17 - Ensure no duplicate GIDs exist
+cat /etc/group | cut -f3 -d":" | sort -n | uniq -c | while read GID; do
+    [ -z "$GID" ] && break
+    set - $GID
+    if [ $1 -gt 1 ]; then
+        GROUPS=`awk -F: '($3 == n) { print $1 }' n=$2 /etc/group | xargs`
+        logger -p <%= $cisecurity::redhat6::security::syslog_facility %>.<%= $cisecurity::redhat6::security::syslog_severity %> -t cisecurity Duplicate GID \($2\): $GROUPS
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::verify_duplicate_usernames_notexist == 'enabled' {-%>
+# Control 6.2.18 - Ensure no duplicate user names exist
+cat /etc/passwd | cut -f1 -d":" | sort -n | uniq -c | while read uid; do
+    [ -z "$uid" ] && break
+    set - $uid
+    if [ $1 -gt 1 ]; then
+        uids=`awk -F: '($1 == n) { print $3 }' n=$2 /etc/passwd | xargs`
+        logger -p <%= $cisecurity::redhat6::security::syslog_facility %>.<%= $cisecurity::redhat6::security::syslog_severity %> -t cisecurity Duplicate Username \($2\): $uids
+    fi
+done
+<% }-%>
+
+<% if $cisecurity::redhat6::security::verify_duplicate_groupnames_notexist == 'enabled' {-%>
+# Control 6.2.19 - Ensure no duplicate group names exist
+cat /etc/group | cut -f1 -d":" | sort -n | uniq -c | while read GID; do
+    [ -z "$GID" ] && break
+    set - $GID
+    if [ $1 -gt 1 ]; then
+        GIDS=`awk -F: '($1 == n) { print $3 }' n=$2 /etc/group | xargs`
+        logger -p <%= $cisecurity::redhat6::security::syslog_facility %>.<%= $cisecurity::redhat6::security::syslog_severity %> -t cisecurity Duplicate Group Name \($2\): $GIDS
+    fi
+done
+<% }-%>
