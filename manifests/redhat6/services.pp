@@ -24,7 +24,7 @@ class cisecurity::redhat6::services (
     'rotate',
     'suspend',
     'syslog'] $auditd_max_log_file_action,
-  Integer[0,999] $auditd_num_logs,
+  Integer[0,99] $auditd_num_logs,
   Integer $auditd_space_left,
   Enum[
     'email',
