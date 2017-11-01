@@ -422,8 +422,8 @@ class cisecurity::redhat6::services (
       }
     } elsif getvar($service) == 'disabled' {
       service { $service:
-        ensure => running,
-        enable => true,
+        ensure => stopped,
+        enable => false,
       }
     }
   }
