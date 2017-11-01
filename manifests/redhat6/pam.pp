@@ -30,13 +30,6 @@ class cisecurity::redhat6::pam (
     *      => $root_user_settings,
   }
 
-  if $inactive_account_lockout == 'enabled' {
-    exec { "useradd -D -f ${inactive_account_lockout_days}":
-      path   => [ '/sbin', '/bin' ],
-      unless => "useradd -D | grep INACTIVE | grep ${inactive_account_lockout_days}",
-    }
-  }
-
   if $wheel == 'enabled' {
     pam { 'su pam_wheel.so':
       ensure    => present,

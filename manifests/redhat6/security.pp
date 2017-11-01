@@ -54,14 +54,6 @@ class cisecurity::redhat6::security (
     }
   }
 
-  if $bootloader_password != '' {
-    grub_user { $bootloader_user:
-      ensure    => present,
-      password  => $bootloader_password,
-      superuser => true,
-    }
-  }
-
   if $aslr == 'enabled' {
     sysctl { 'kernel.randomize_va_space':
       ensure  => present,
