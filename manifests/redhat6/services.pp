@@ -390,34 +390,31 @@ class cisecurity::redhat6::services (
   }
 
   $service_list = [
-    'avahi-daemon.service',
-    'cups.service',
-    'dhcpd.service',
-    'dovecot.service',
-    'httpd.service',
-    'named.service',
-    'nfs.service',
-    'ntalk.service',
-    'rexec.socket',
-    'rhnsd.service',
-    'rlogin.socket',
-    'rpcbind.service',
-    'rsh.socket',
-    'rsyncd.service',
-    'slapd.service',
-    'smb.service',
-    'snmpd.service',
-    'squid.service',
-    'telnet.socket',
-    'tftp.socket',
-    'vsftpd.service',
-    'ypserv.service',
+    'avahi-daemon',
+    'cups',
+    'dhcpd',
+    'dovecot',
+    'httpd',
+    'named',
+    'nfs',
+    'ntalk',
+    'rexec',
+    'rhnsd',
+    'rlogin',
+    'rpcbind',
+    'rsh',
+    'rsyncd',
+    'slapd',
+    'smb',
+    'snmpd',
+    'squid',
+    'telnet',
+    'tftp',
+    'vsftpd',
+    'ypserv',
   ]
   $service_list.each | String $service | {
-    $uscore_service1 = regsubst($service, '-', '_')
-    $uscore_service2 = regsubst($uscore_service1, '.service', '')
-    $uscore_service = regsubst($uscore_service2, '.socket', '')
-    if getvar($uscore_service) == 'enabled' {
+    if getvar($service) == 'enabled' {
       service { $service:
         ensure => running,
         enable => true,

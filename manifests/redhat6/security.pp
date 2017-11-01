@@ -185,23 +185,6 @@ class cisecurity::redhat6::security (
     }
   }
 
-  if $single_user_authentication == 'enabled' {
-    ini_setting { 'emergency.service ExecStart':
-      ensure  => present,
-      path    => '/usr/lib/systemd/system/emergency.service',
-      section => 'Service',
-      setting => 'ExecStart',
-      value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"',
-    }
-    ini_setting { 'rescue.service ExecStart':
-      ensure  => present,
-      path    => '/usr/lib/systemd/system/rescue.service',
-      section => 'Service',
-      setting => 'ExecStart',
-      value   => '-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"',
-    }
-  }
-
   if $facts['cisecurity']['unconfined_daemons'] != undef {
     if !empty($facts['cisecurity']['unconfined_daemons']) {
       notice ('One or more unconfined daemons found running on this system.')
