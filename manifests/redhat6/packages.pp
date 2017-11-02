@@ -6,7 +6,7 @@ class cisecurity::redhat6::packages (
   Enum['installed','uninstalled','ignored'] $aide,
   String $aide_cron_start_hour,
   String $aide_cron_start_minute,
-  Enum['installed','uninstalled','ignored'] $firewalld,
+  Enum['installed','uninstalled','ignored'] $iptables,
   Enum['installed','uninstalled','ignored'] $logrotate,
   Enum['installed','uninstalled','ignored'] $mcstrans,
   Enum['installed','uninstalled','ignored'] $openldap_clients,
@@ -57,7 +57,7 @@ class cisecurity::redhat6::packages (
   }
 
   $package_list = [
-    'firewalld',
+    'iptables',
     'logrotate',
     'mcstrans',
     'openldap-clients',

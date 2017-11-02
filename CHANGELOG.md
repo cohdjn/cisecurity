@@ -1,3 +1,15 @@
+## Release 0.6.0
+### Summary
+Contains more bug fixes and enhancements.  Advice on module dependencies from Release 0.4.0 still apply.
+
+#### Bug Fixes
+* Moved removal of at.deny and cron.deny to services module rather than filesystem module.
+* Removed switch statement from facts.d/cisecurity to support older versions of awk/gawk.
+* Added `ignored` as a valid keyword for service states to avoid duplicate resource statements during catalog compilation.  You should use this parameter if you have another class or module that defines the state of a service rather than this one.
+
+#### Enhancements
+* Added support for RHEL 6. This also adds puppet/firewall to the list of dependencies for this module to work.
+
 ## Release 0.5.0
 ### Summary
 Contains a few bug fixes and enhancements.  Advice on module dependencies from Release 0.4.0 still apply.

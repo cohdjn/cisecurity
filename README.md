@@ -1,6 +1,6 @@
 # cisecurity
 
-#### Table of Contents
+## Table of Contents
 
 1. [Module Description](#description)
 2. [Setup - The basics of getting started with cisecurity](#setup)
@@ -13,7 +13,7 @@
 
 ## Module Description
 
-This module configures and maintains controls listed in the Center for Internet Security Benchmark for Linux.  The current version of cisecurity implements v2.11 of the benchmark for Red Hat Enterprise Linux 7 and provides a lot of dials and knobs to fine-tune the module to your specific needs.
+This module configures and maintains controls listed in the Center for Internet Security Benchmark for Linux.  The current version of cisecurity implements v2.02 of the benchmark for Red Hat Enterprise Linux 6 and v2.11 for Red Hat Enterprise Linux 7.  The module provides a lot of dials and knobs to fine-tune the module to your specific needs.
 
 More information about the benchmark and downloading a copy of it for yourself is available at the [Center for Internet Security](http://www.cisecurity.org).
 
