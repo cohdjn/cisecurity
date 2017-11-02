@@ -77,33 +77,11 @@ class cisecurity::redhat6::filesystem (
   if $facts['mountpoints']['/tmp'] == undef {
     notice ('Cannot configure mount options for /tmp because it\'s not a valid partition.')
   } elsif !empty($tmp_mount_options ) {
-    if $facts['mountpoints']['/tmp']['filesystem'] == 'tmpfs' {
-      exec { 'systemctl unmask tmp.mount':
-        path      => [ 'bin', '/usr/bin' ],
-        logoutput => on_failure,
-        unless    => 'ls /etc/systemd/system/local-fs.target.wants/tmp.mount',
-      }
-      ini_setting { 'tmp mount options':
-        ensure  => present,
-        path    => '/etc/systemd/system/local-fs.target.wants/tmp.mount',
-        section => 'Mount',
-        setting => 'Options',
-        value   => $tmp_mount_options,
-        require => Exec['systemctl unmask tmp.mount'],
-      }
-      service { 'tmp.mount':
-        ensure   => running,
-        enable   => true,
-        remounts => false,
-        require  => Ini_setting['tmp mount options'],
-      }
-    } else {
-      $flattened_tmp_options = join($tmp_mount_options, ',')
-      mount { '/tmp':
-        ensure   => present,
-        options  => $flattened_tmp_options,
-        remounts => false,
-      }
+    $flattened_tmp_options = join($tmp_mount_options, ',')
+    mount { '/tmp':
+      ensure   => present,
+      options  => $flattened_tmp_options,
+      remounts => false,
     }
   }
 
