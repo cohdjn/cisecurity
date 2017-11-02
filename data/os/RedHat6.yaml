@@ -243,12 +243,8 @@ cisecurity::redhat6::services::sshd_permitted_ciphers:
   - 'aes192-ctr'
   - 'aes128-ctr'
 cisecurity::redhat6::services::sshd_permitted_macs:
-  - 'hmac-sha2-512-etm@openssh.com'
-  - 'hmac-sha2-256-etm@openssh.com'
-  - 'umac-128-etm@openssh.com'
   - 'hmac-sha2-512'
   - 'hmac-sha2-256'
-  - 'umac-128@openssh.com'
 cisecurity::redhat6::services::sshd_permit_user_environment: 'no'
 cisecurity::redhat6::services::sshd_protocol: '2'
 cisecurity::redhat6::services::sshd_x11_forwarding: 'no'
