@@ -4,7 +4,7 @@
 <% if $cisecurity::redhat6::security::remediate_home_directories_exist == 'enabled' {-%>
 # Control 6.2.7 - Ensure all users' home directories exist
 cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
-    if [ $uid -ge 1000 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
+    if [ $uid -ge 500 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
         mkdir $dir
         chmod <%= $cisecurity::redhat6::security::home_directories_perm %> $dir
         cp /etc/skel/.* $dir
@@ -18,7 +18,7 @@ done
 <% if $cisecurity::redhat6::security::remediate_home_directories_perms == 'enabled' {-%>
 # Control 6.2.8 - Ensure users' home directories permissions are 750 or more restrictive
 cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
-    if [ $uid -ge 1000 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
+    if [ $uid -ge 500 -a ! -d "$dir" -a $user != "nfsnobody" ]; then
         chmod <%= $cisecurity::redhat6::security::home_directories_perm %> $dir
     fi
 done
@@ -27,7 +27,7 @@ done
 <% if $cisecurity::redhat6::security::remediate_home_directories_owner == 'enabled' {-%>
 # Control 6.2.9 - Ensure users own their home directories
 cat /etc/passwd | awk -F: '{print $1 " " $3 " " $6}' | while read user uid dir; do
-    if [ $uid -ge 1000 -a -d "$dir" -a $user != "nfsnobody" ]; then
+    if [ $uid -ge 500 -a -d "$dir" -a $user != "nfsnobody" ]; then
         OWNER=$(stat -L -c "%U" "$dir")
         if [ "$OWNER" != "$user" ]; then
             chown $user $dir
