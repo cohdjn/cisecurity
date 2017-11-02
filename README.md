@@ -1593,7 +1593,7 @@ Enables or disables NIS server services.
 
 ## Limitations
 
-This module has been tested on RHEL 7 and it "should" work on CentOS 7 but no testing has been performed.
+This module has been tested on RHEL 6 and 7 and it "should" work on CentOS 6 and 7 but no testing has been performed.
 
 ## Development
 
