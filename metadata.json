@@ -10,7 +10,7 @@
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.20.0 < 5.0.0" },
     { "name": "puppetlabs/concat", "version_requirement": ">= 4.1.0 < 5.0.0" },
-    { "name": "crayfishx-firewalld", "version_requirement": ">= 3.4.0 < 4.0.0" },
+    { "name": "crayfishx/firewalld", "version_requirement": ">= 3.4.0 < 4.0.0" },
     { "name": "herculesteam/augeasproviders_core", "version_requirement": ">= 2.1.3 < 3.0.0" },
     { "name": "herculesteam/augeasproviders_grub", "version_requirement": ">= 3.0.0 < 4.0.0" },
     { "name": "herculesteam/augeasproviders_pam", "version_requirement": ">= 2.1.0 < 3.0.0" },
@@ -26,8 +26,8 @@
     { "name": "saz/rsyslog", "version_requirement": ">= 5.0.0 < 6.0.0" },
     { "name": "stahnma/epel", "version_requirement": ">= 1.2.2 < 2.0.0" },
     { "name": "justin8/systemd", "version_requirement": ">= 0.4.0 < 1.0.0" },
-    { "name": "warrenpnz/aide", "version_requirement": ">= 0.4.0 < 1.0.0" }
-    { "name": "puppetlabs-firewall", "version_requirement": ">= 1.9.0 < 2.0.0" }
+    { "name": "warrenpnz/aide", "version_requirement": ">= 0.4.0 < 1.0.0" },
+    { "name": "puppetlabs/firewall", "version_requirement": ">= 1.9.0 < 2.0.0" }
   ],
   "tags": [ "cisecurity", "cis", "security", "benchmark", "compliance" ],
   "operatingsystem_support": [
