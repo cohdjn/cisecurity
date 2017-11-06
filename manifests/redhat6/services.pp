@@ -216,6 +216,13 @@ class cisecurity::redhat6::services (
     file { '/etc/at.deny':
       ensure => absent,
     }
+  } else {
+    file { '/etc/at.allow':
+      ensure => file,
+      group  => 'root',
+      owner  => 'root',
+      mode   => '0600',
+    }
   }
 
   if $configure_cron_allow == 'enabled' {
@@ -229,6 +236,13 @@ class cisecurity::redhat6::services (
     }
     file { '/etc/cron.deny':
       ensure => absent,
+    }
+  } else {
+    file { '/etc/cron.allow':
+      ensure => file,
+      group  => 'root',
+      owner  => 'root',
+      mode   => '0600',
     }
   }
 

@@ -303,22 +303,6 @@ class cisecurity::redhat6::filesystem (
       owner  => 'root',
       mode   => '0600',
     }
-    if $cisecurity::redhat6::services::configure_at_allow == 'disabled' {
-      file { '/etc/at.allow':
-        ensure => file,
-        group  => 'root',
-        owner  => 'root',
-        mode   => '0600',
-      }
-    }
-    if $cisecurity::redhat6::services::configure_cron_allow  == 'disabled' {
-      file { '/etc/cron.allow':
-        ensure => file,
-        group  => 'root',
-        owner  => 'root',
-        mode   => '0600',
-      }
-    }
     $crondirs = [ '/etc/cron.hourly', '/etc/cron.daily', '/etc/cron.weekly', '/etc/cron.monthly', '/etc/cron.d' ]
     $crondirs.each | String $directory | {
       file { $directory:
