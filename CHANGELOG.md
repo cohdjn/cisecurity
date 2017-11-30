@@ -1,3 +1,14 @@
+## Release 0.6.1
+### Summary
+Contains more bug fixes.  Pay close attention to the module dependencies as they have changed!
+
+#### Module Dependencies
+* The `puppetlabs/stdlib` module has been updated to v4.23.0.  If you followed the advice from Release 0.4.0 to use GitHub for stdlib rather than the Forge, please change your Puppetfile back to the Forge.
+* `herculesteam/augeasproviders_grub` still has not been updated on the Forge from the PR they merged back in October.  I recommend you continue using my GitHub site (https://github.com/cohdjn/augeasproviders_grub) in your Puppetfile or install the module from there depending on your environment.  Future release will point back to the Forge once the fix has been merged and uploaded.
+
+##### Bug Fixes
+* Fixed services not adding CRLF at EOF in cron.allow and at.allow.
+
 ## Release 0.6.0
 ### Summary
 Contains more bug fixes and enhancements.  Advice on module dependencies from Release 0.4.0 still apply.
