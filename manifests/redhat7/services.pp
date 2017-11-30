@@ -205,7 +205,7 @@ class cisecurity::redhat7::services (
   }
 
   if $configure_at_allow == 'enabled' {
-    $flattened_at_users = join($at_allowed_users, "\n")
+    $flattened_at_users = join([join($at_allowed_users, "\n"), "\n"])
     file { '/etc/at.allow':
       ensure  => file,
       group   => 'root',
@@ -219,7 +219,7 @@ class cisecurity::redhat7::services (
   }
 
   if $configure_cron_allow == 'enabled' {
-    $flattened_cron_users = join($cron_allowed_users, "\n")
+    $flattened_cron_users = join([join($cron_allowed_users, "\n"), "\n"])
     file { '/etc/cron.allow':
       ensure  => file,
       group   => 'root',
