@@ -93,15 +93,17 @@ BEGIN {
     }
 
     # subscriptions
-    FS=":"
-    print "  subscriptions:" >>YamlFile
-    Cmd = "subscription-manager list | awk '(NR>4)'"
-    while ((Cmd | getline ) > 0) {
-        gsub(/\s/, "", $1)
-        gsub(/^\s*/, "", $2)
-        if ($1 != "") {
-            print "    " tolower($1) ": \"" $2 "\"" >>YamlFile
-	}
+    if (system("[ -f /usr/bin/subscription-manager ]") == 0) {
+        FS=":"
+        print "  subscriptions:" >>YamlFile
+        Cmd = "subscription-manager list | awk '(NR>4)'"
+        while ((Cmd | getline ) > 0) {
+            gsub(/\s/, "", $1)
+            gsub(/^\s*/, "", $2)
+            if ($1 != "") {
+                print "    " tolower($1) ": \"" $2 "\"" >>YamlFile
+	    }
+        }
     }
 
     # suid_sgid_files

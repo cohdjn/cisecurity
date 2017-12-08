@@ -13,7 +13,7 @@ hierarchy:
     path: 'environments/%{environment}.yaml'
 
   - name: 'Per-OS Configuration'
-    path: 'os/%{facts.os.name}%{facts.os.release.major}.yaml'
+    path: 'os/%{facts.os.family}%{facts.os.release.major}.yaml'
 
   - name: 'Common Configuration'
     path: 'common.yaml'

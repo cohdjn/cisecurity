@@ -130,20 +130,22 @@ class cisecurity::redhat7::packages (
     }
   }
 
-  if $facts['cisecurity']['redhat_gpg_key_present'] != undef {
-    if $facts['cisecurity']['redhat_gpg_key_present'] == false {
-      notice ('One or more required yum GPG keys were not found.')
+  if $facts['os']['name'] == 'RedHat' {
+    if $facts['cisecurity']['redhat_gpg_key_present'] != undef {
+      if $facts['cisecurity']['redhat_gpg_key_present'] == false {
+        notice ('One or more required yum GPG keys were not found.')
+      }
+    } else {
+      notice ('Cannot validate if required GPG keys are present because required external facts are unavailable. This may be transient.')
     }
-  } else {
-    notice ('Cannot validate if required GPG keys are present because required external facts are unavailable. This may be transient.')
-  }
 
-  if $facts['cisecurity']['subscriptions'] != undef {
-    if $facts['cisecurity']['subscriptions']['status'] != 'Subscribed' {
-      notice ('No valid entitlement subscriptions were found.')
+    if $facts['cisecurity']['subscriptions'] != undef {
+      if $facts['cisecurity']['subscriptions']['status'] != 'Subscribed' {
+        notice ('No valid entitlement subscriptions were found.')
+      }
+    } else {
+      notice ('Cannot validate entitlement subscriptions because required external facts are unavailable. This may be transient.')
     }
-  } else {
-    notice ('Cannot validate entitlement subscriptions because required external facts are unavailable. This may be transient.')
   }
 
 }
