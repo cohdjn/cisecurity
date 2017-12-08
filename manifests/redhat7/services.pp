@@ -418,6 +418,11 @@ class cisecurity::redhat7::services (
     $uscore_service2 = regsubst($uscore_service1, '.service', '')
     $uscore_service = regsubst($uscore_service2, '.socket', '')
     if getvar($uscore_service) == 'enabled' {
+      unless Package[$uscore_service] {
+        package { $uscore_service:
+          ensure  => present,
+        }
+      }
       service { $service:
         ensure => running,
         enable => true,

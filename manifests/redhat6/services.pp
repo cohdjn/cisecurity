@@ -430,6 +430,11 @@ class cisecurity::redhat6::services (
   $service_list.each | String $service | {
     $uscore_service = regsubst($service, '-', '_')
     if getvar($uscore_service) == 'enabled' {
+      unless Package[$uscore_service] {
+        package { $uscore_service:
+          ensure  => present,
+        }
+      }
       service { $service:
         ensure => running,
         enable => true,
