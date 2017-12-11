@@ -93,20 +93,24 @@ class cisecurity::redhat7::pam (
     }
   }
 
-  $osrelease = downcase("${facts['os']['family']}${facts['os']['release']['major']}")
-  file { '/etc/pam.d/system-auth-ac':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content => epp("cisecurity/${osrelease}__system_auth"),
-  }
-  file { '/etc/pam.d/password-auth-ac':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content => epp("cisecurity/${osrelease}__password_auth"),
+  if $facts['os']['family'] == undef or $facts['os']['release']['major'] == undef {
+    notice ('Cannot configure pam because required external facts are unavailable. This may be transient.')
+  } else {
+    $osrelease = downcase("${facts['os']['family']}${facts['os']['release']['major']}")
+    file { '/etc/pam.d/system-auth-ac':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => epp("cisecurity/${osrelease}__system_auth"),
+    }
+    file { '/etc/pam.d/password-auth-ac':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => epp("cisecurity/${osrelease}__password_auth"),
+    }
   }
 
 }

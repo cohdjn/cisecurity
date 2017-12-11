@@ -185,11 +185,15 @@ class cisecurity::redhat6::network (
     }
   }
 
-  if $disable_wireless_interfaces == 'enabled' {
-    $facts['networking']['interfaces'].each | String $interface, Hash $info | {
-      if $interface =~ 'wlan' {
-        exec { "ip link set ${interface} down":
-          path => [ '/sbin', '/bin' ],
+  if $facts['networking']['interfaces'] == undef {
+    notice ('Cannot configure wireless interfaces because required external facts are unavailable. This may be transient.')
+  } else {
+    if $disable_wireless_interfaces == 'enabled' {
+      $facts['networking']['interfaces'].each | String $interface, Hash $info | {
+        if $interface =~ 'wlan' {
+          exec { "ip link set ${interface} down":
+            path => [ '/sbin', '/bin' ],
+          }
         }
       }
     }

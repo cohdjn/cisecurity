@@ -193,8 +193,12 @@ class cisecurity::redhat6::security (
     notice ('Cannot validate the presence of unconfined daemons because required external facts are unavailable.')
   }
 
-  if $facts['architecture'] != 'x86_64' {
-    notice ('The system appears to be running on an x86 system.  Make sure PAE extensions are installed and NX/XD support properly configured.')
+  if $facts['architecture'] == undef {
+    notice ('Cannot verify PAE because required external facts are unavailable. This may be transient.')
+  } else {
+    if $facts['architecture'] != 'x86_64' {
+      notice ('The system appears to be running on an x86 system.  Make sure PAE extensions are installed and NX/XD support properly configured.')
+    }
   }
 
   if !empty($secure_terminals) {
@@ -300,35 +304,39 @@ class cisecurity::redhat6::security (
     }
   }
 
-  file { '/opt/cisecurity':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0555',
-  }
-  file { '/opt/cisecurity/scripts':
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0555',
-    require => File['/opt/cisecurity'],
-  }
-  $osrelease = downcase("${facts['os']['family']}${facts['os']['release']['major']}")
-  file { '/opt/cisecurity/scripts/remediate_home_directories.sh':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0555',
-    content => epp("cisecurity/${osrelease}__remediate_home_directories.sh.epp"),
-    require => File['/opt/cisecurity/scripts'],
-  }
-  cron { 'remediate_home_directories.sh':
-    ensure  => present,
-    command => '/opt/cisecurity/scripts/remediate_home_directories.sh',
-    user    => 'root',
-    hour    => $remediate_home_directories_start_hour,
-    minute  => $remediate_home_directories_start_minute,
-    require => File['/opt/cisecurity/scripts/remediate_home_directories.sh'],
+  if $facts['os']['family'] == undef or $facts['os']['release']['major'] == undef {
+    notice ('Cannot remediate home directories because required external facts are unavailable. This may be transient.')
+  } else {
+    $osrelease = downcase("${facts['os']['family']}${facts['os']['release']['major']}")
+    file { '/opt/cisecurity':
+      ensure => directory,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0555',
+    }
+    file { '/opt/cisecurity/scripts':
+      ensure  => directory,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0555',
+      require => File['/opt/cisecurity'],
+    }
+    file { '/opt/cisecurity/scripts/remediate_home_directories.sh':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0555',
+      content => epp("cisecurity/${osrelease}__remediate_home_directories.sh.epp"),
+      require => File['/opt/cisecurity/scripts'],
+    }
+    cron { 'remediate_home_directories.sh':
+      ensure  => present,
+      command => '/opt/cisecurity/scripts/remediate_home_directories.sh',
+      user    => 'root',
+      hour    => $remediate_home_directories_start_hour,
+      minute  => $remediate_home_directories_start_minute,
+      require => File['/opt/cisecurity/scripts/remediate_home_directories.sh'],
+    }
   }
 
 }

@@ -60,15 +60,19 @@ class cisecurity::redhat7::filesystem (
     'udf',
     'vfat',
   ]
-  $filesystem_list.each | String $filesystem | {
-    if getvar($filesystem) == 'disabled' {
-      if $facts['cisecurity']['efi'] == true and $filesystem == 'vfat' {
-        # Do nothing... EFI systems must have vfat enabled!
-      } else {
-        file_line { $filesystem:
-          ensure => present,
-          path   => '/etc/modprobe.d/CIS.conf',
-          line   => "install ${filesystem} /bin/true",
+  if $facts['cisecurity']['efi'] == undef {
+    notice ('Cannot configure filesystems because required external facts are unavailable. This may be transient.')
+  } else {
+    $filesystem_list.each | String $filesystem | {
+      if getvar($filesystem) == 'disabled' {
+        if $facts['cisecurity']['efi'] == true and $filesystem == 'vfat' {
+          # Do nothing... EFI systems must have vfat enabled!
+        } else {
+          file_line { $filesystem:
+            ensure => present,
+            path   => '/etc/modprobe.d/CIS.conf',
+            line   => "install ${filesystem} /bin/true",
+          }
         }
       }
     }
