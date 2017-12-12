@@ -1,3 +1,12 @@
+## Release 0.6.2
+### Summary
+Contains more bug fixes.  Advice on module dependencies from Release 0.6.1 still apply.
+
+#### Bug Fixes
+* Fixed custom facts to not try to run subscription-manager on a CentOS system.
+* Fixed logic problem trying to enable services that do not exist on the system.
+* Added logic to check for undef custom facts that do not exist on first run.
+
 ## Release 0.6.1
 ### Summary
 Contains more bug fixes.  Pay close attention to the module dependencies as they have changed!

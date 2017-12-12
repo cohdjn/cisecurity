@@ -222,9 +222,11 @@ class cisecurity::redhat7::filesystem (
   if $remediate_unowned_files == 'enabled' {
     if $facts['cisecurity']['unowned_files'] != undef {
       $facts['cisecurity']['unowned_files'].each | String $file | {
-        file { $file:
-          ensure => file,
-          owner  => $unowned_files_replacement_owner,
+        unless File[$file] {
+          file { $file:
+            ensure => file,
+            owner  => $unowned_files_replacement_owner,
+          }
         }
       }
     } else {
@@ -235,9 +237,11 @@ class cisecurity::redhat7::filesystem (
   if $remediate_ungrouped_files == 'enabled' {
     if $facts['cisecurity']['ungrouped_files'] != undef {
       $facts['cisecurity']['ungrouped_files'].each | String $file | {
-        file { $file:
-          ensure => file,
-          gid    => $ungrouped_files_replacement_group,
+        unless File[$file] {
+          file { $file:
+            ensure => file,
+            gid    => $ungrouped_files_replacement_group,
+          }
         }
       }
     } else {
