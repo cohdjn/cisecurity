@@ -1,4 +1,4 @@
-## Release 0.6.2
+## Release 0.6.5
 ### Summary
 Contains more bug fixes.  Advice on module dependencies from Release 0.6.1 still apply.
 
@@ -6,6 +6,7 @@ Contains more bug fixes.  Advice on module dependencies from Release 0.6.1 still
 * Fixed custom facts to not try to run subscription-manager on a CentOS system.
 * Fixed logic problem trying to enable services that do not exist on the system.
 * Added logic to check for undef custom facts that do not exist on first run.
+* Fixed bug where duplicate resources are created when remediating a file that has multiple ownership, group ownership, or world writable issues.
 
 ## Release 0.6.1
 ### Summary
