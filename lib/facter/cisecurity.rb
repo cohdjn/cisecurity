@@ -92,18 +92,23 @@ Facter.add("cisecurity") do
     next if fs =~ /^Filesystem/ # header line
     root_path = fs.split[5]
     %x{find #{root_path} -xdev -nouser}.split(/$/).each do |line|
+      next if line = ""
       cisecurity['unowned_files'].push(line.split[-1])
     end
     %x{find #{root_path} -xdev -nogroup}.split(/$/).each do |line|
+      next if line = ""
       cisecurity['ungrouped_files'].push(line.split[-1])
     end
     %x{find #{root_path} -xdev -type f \\( -perm -4000 -o -perm -2000 \\)}.split(/$/).each do |line|
-      cisecurity['suid_sgid_files'].push(line.split[-1])
+      next if line = ""
+      cisecurity['suid_sgid_files'].push(line.split[-1])
     end
-    %x{find #{root_path} -xdev -type f -perm -0002}.split(/$/).each do |line|
-      cisecurity['world_writable_files'].push(line.split[-1])
+    %x{find #{root_path} -xdev -type f -perm -0002}.split(/$/).each do |line|
+      next if line = ""
+      cisecurity['world_writable_files'].push(line.split[-1])
     end
     %x{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)}.split(/$/).each do |line|
+      next if line = ""
       cisecurity['world_writable_dirs'].push(line.split[-1])
     end
   end
