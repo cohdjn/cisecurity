@@ -3,7 +3,7 @@
 # Custom facts needed for cisecurity.
 # Original script courtesy jorhett
 #
-
+require 'facter'
 Facter.add("cisecurity") do
   require 'etc'
 
@@ -146,7 +146,7 @@ Facter.add("cisecurity") do
       next if line =~ /^repo id *repo name / # column header
       next if line =~ /^ \* / # mirror list
       next if line =~ /^repolist: / # footer
-      if line.split[0] != "" && line.split[0] != ":"
+      if line.split[0] != '' && line.split[0] != ':'
         cisecurity['yum_enabled_repos'].push(line.split[0])
       end
     end
