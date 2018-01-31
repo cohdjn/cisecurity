@@ -62,9 +62,9 @@ Facter.add("cisecurity") do
 
   # root_path
   cisecurity['root_path'] = []
-  #ENV['PATH'].split(/:/).each do |path|
-  #  cisecurity['root_path'].push(path)
-  #end
+  ENV['PATH'].split(/:/).each do |path|
+    cisecurity['root_path'].push(path)
+  end
 
   # subscriptions
   cisecurity['subscriptions'] = {}
