@@ -36,10 +36,10 @@ Facter.add("cisecurity") do
   # installed_packages
   cisecurity['installed_packages'] = {}
   packages = %x{rpm -qa --queryformat '[%{NAME}===%{VERSION}-%{RELEASE}\n]'}.split(/$/)
-  #packages.each do |pkg|
-  #  name, version = pkg.lstrip.split('===')
-  #  cisecurity['installed_packages'][name] = version
-  #end
+  packages.each do |pkg|
+    name, version = pkg.lstrip.split('===')
+    cisecurity['installed_packages'][name] = version
+  end
 
   # package_system_file_variances
   cisecurity['package_system_file_variances'] = {}
