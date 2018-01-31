@@ -140,7 +140,7 @@ class cisecurity::redhat6::packages (
     }
 
     if $facts['cisecurity']['subscriptions'] != undef {
-      if $facts['cisecurity']['subscriptions']['status'] != 'Subscribed' {
+      if $facts['cisecurity']['subscriptions'] != 'current' {
         notice ('No valid entitlement subscriptions were found.')
       }
     } else {

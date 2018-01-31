@@ -80,7 +80,7 @@ Facter.add("cisecurity") do
     subs = %x{subscription-manager status | grep 'Overall Status'}
     unless subs.nil? || subs == ''
       name, value = subs.split(/:/)
-      cisecurity['subscriptions'] = value.downcase
+      cisecurity['subscriptions'] = value.downcase.gsub(/\s+/, '').chomp
     end
   end
 
