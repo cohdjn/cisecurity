@@ -50,6 +50,10 @@ class cisecurity::redhat6::filesystem (
     group  => 'root',
   }
 
+  file { '/etc/puppetlabs/facter/facts.d/cisecurity.yaml':
+    ensure => absent,
+  }
+
   $filesystem_list = [
     'cramfs',
     'freevxfs',
