@@ -70,10 +70,10 @@ Facter.add("cisecurity") do
   cisecurity['subscriptions'] = {}
   if File.exists?('/usr/bin/subscription-manager')
     subs = %x{subscription-manager list}.split(/$/)[4,-1]
-    #subs.each do |subscription|
-    #  name, value = suscription.split(/:/)
-    #  cisecurity['subscriptions'][ name.downcase.gsub(/\s/,'') ] = value.lstrip
-    #end
+    subs.each do |subscription|
+      name, value = suscription.split(/:/)
+      cisecurity['subscriptions'][ name.downcase.gsub(/\s/,'') ] = value.lstrip
+    end
   end
 
   # suid_sgid_files and ungrouped_files
