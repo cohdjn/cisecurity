@@ -71,7 +71,7 @@ Facter.add("cisecurity") do
   if File.exists?('/usr/bin/subscription-manager')
     subs = %x{subscription-manager list}.split(/$/)[4,-1]
     subs.each do |subscription|
-      name, value = suscription.split(/:/)
+      name, value = subscription.split(/:/)
       cisecurity['subscriptions'][ name.downcase.gsub(/\s/,'') ] = value.lstrip
     end
   end
