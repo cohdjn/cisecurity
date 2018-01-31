@@ -91,11 +91,21 @@ Facter.add("cisecurity") do
   %x{df -l --exclude-type=tmpfs -P}.split(/$/).each do |fs|
     next if fs =~ /^Filesystem/ # header line
     root_path = fs.split[5]
-    cisecurity['unowned_files'] += %x{find #{root_path} -xdev -nouser}.split(/$/)
-    cisecurity['ungrouped_files'] += %x{find #{root_path} -xdev -nogroup}.split(/$/)
-    cisecurity['suid_sgid_files'] += %x{find #{root_path} -xdev -type f \\( -perm -4000 -o -perm -2000 \\)}.split(/$/)
-    cisecurity['world_writable_files'] = %x{find #{root_path} -xdev -type f -perm -0002}
-    cisecurity['world_writable_dirs'] = %x{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)}
+    %x{find #{root_path} -xdev -nouser}.split(/$/).each do |line|
+      cisecurity['unowned_files'].push(line.split[-1])
+    end
+    %x{find #{root_path} -xdev -nogroup}.split(/$/).each do |line|
+      cisecurity['ungrouped_files'].push(line.split[-1])
+    end
+    %x{find #{root_path} -xdev -type f \\( -perm -4000 -o -perm -2000 \\)}.split(/$/).each do |line|
+      cisecurity['suid_sgid_files'].push(line.split[-1])
+    end
+    %x{find #{root_path} -xdev -type f -perm -0002}.split(/$/).each do |line|
+      cisecurity['world_writable_files'].push(line.split[-1])
+    end
+    %x{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)}.split(/$/).each do |line|
+      cisecurity['world_writable_dirs'].push(line.split[-1])
+    end
   end
 
   # unconfined_daemons
