@@ -114,6 +114,6 @@ Facter.add("cisecurity") do
   cisecurity['yum_repos_gpgcheck_consistent'] = disabled_gpg ? false : true
 
   setcode do
-    return cisecurity
+    cisecurity
   end
 end
