@@ -44,11 +44,11 @@ Facter.add("cisecurity") do
   # package_system_file_variances
   cisecurity['package_system_file_variances'] = {}
   variances = %x{rpm -Va --nomtime --nosize --nomd5 --nolinkto}.split(/$/)
-  #variances.each do |line|
-  #  if( line =~ /^(\S+)\s+(c?)\s*(\/[\w\/\-\.]+)$/ )
-  #    cisecurity['package_system_file_variances'][$3] = $1 if $2 != 'c'
-  #  end
-  #end
+  variances.each do |line|
+    if( line =~ /^(\S+)\s+(c?)\s*(\/[\w\/\-\.]+)$/ )
+      cisecurity['package_system_file_variances'][$3] = $1 if $2 != 'c'
+    end
+  end
 
   # redhat_gpg_key_present
   gpg_keys = %x{rpm -q gpg-pubkey --qf '%{SUMMARY}\n' | grep 'release key'}
