@@ -1,7 +1,9 @@
-# == Fact: cisecurity
+# lib/facter/cisecurity.rb
 #
-# A custom fact that sets values needed by cisecurity
+# Custom facts needed for cisecurity.
+# Original script courtesy jorhett
 #
+
 Facter.add("cisecurity") do
   require 'etc'
 
@@ -36,7 +38,7 @@ Facter.add("cisecurity") do
   # installed_packages
   cisecurity['installed_packages'] = {}
   packages = %x{rpm -qa --queryformat '[%{NAME}===%{VERSION}-%{RELEASE}\n]'}.split(/$/)
-  if packages
+  unless packages.nil? || packages == []
     packages.each do |pkg|
       name, version = pkg.lstrip.split('===')
       cisecurity['installed_packages'][name] = version
@@ -46,9 +48,9 @@ Facter.add("cisecurity") do
   # package_system_file_variances
   cisecurity['package_system_file_variances'] = {}
   variances = %x{rpm -Va --nomtime --nosize --nomd5 --nolinkto}.split(/$/)
-  if variances
+  unless variances.nil? || variances == []
     variances.each do |line|
-       if( line =~ /^(\S+)\s+(c?)\s*(\/[\w\/\-\.]+)$/ )
+      if( line =~ /^(\S+)\s+(c?)\s*(\/[\w\/\-\.]+)$/ )
         cisecurity['package_system_file_variances'][$3] = $1 if $2 != 'c'
       end
     end
@@ -57,11 +59,11 @@ Facter.add("cisecurity") do
   # redhat_gpg_key_present
   gpg_keys = %x{rpm -q gpg-pubkey --qf '%{SUMMARY}\n' | grep 'release key'}
   gpgkey_mail = case os_name
-  when 'CentOS'
-    'security@centos.org'
-  else
-    'security@redhat.com'
-  end
+    when 'CentOS'
+      'security@centos.org'
+    else
+      'security@redhat.com'
+    end
   cisecurity['redhat_gpg_key_present'] = gpg_keys.match(gpgkey_mail) ? true : false
 
   # root_path
@@ -74,7 +76,7 @@ Facter.add("cisecurity") do
   cisecurity['subscriptions'] = {}
   if File.exists?('/usr/bin/subscription-manager')
     subs = %x{subscription-manager list}.split(/$/)[4,-1]
-    if subs
+    unless subs.nil? || subs == []
       subs.each do |subscription|
         name, value = subscription.split(/:/)
         cisecurity['subscriptions'][ name.downcase.gsub(/\s/,'') ] = value.lstrip
@@ -91,25 +93,40 @@ Facter.add("cisecurity") do
   %x{df -l --exclude-type=tmpfs -P}.split(/$/).each do |fs|
     next if fs =~ /^Filesystem/ # header line
     root_path = fs.split[5]
-    %x{find #{root_path} -xdev -nouser}.split(/$/).each do |line|
-      next if line == ""
-      cisecurity['unowned_files'].push(line.split[-1])
+
+    unowned_files = %x{find #{root_path} -xdev -nouser}.split(/\n/)
+    unless unowned_files.nil? || unowned_files == ""
+      unowned_files.each do |line|
+        cisecurity['unowned_files'].push(line)
+      end
     end
-    %x{find #{root_path} -xdev -nogroup}.split(/$/).each do |line|
-      next if line == ""
-      cisecurity['ungrouped_files'].push(line.split[-1])
+
+    ungrouped_files = %x{find #{root_path} -xdev -nogroup}.split(/\n/)
+    unless ungrouped_files.nil? || ungrouped_files == ""
+      ungrouped_files.each do |line|
+        cisecurity['ungrouped_files'].push(line)
+      end
     end
-    %x{find #{root_path} -xdev -type f \\( -perm -4000 -o -perm -2000 \\)}.split(/$/).each do |line|
-      next if line == ""
-      cisecurity['suid_sgid_files'].push(line.split[-1])
+
+    suid_sgid_files = %x{find #{root_path} -xdev -type f \\( -perm -4000 -o -perm -2000 \\)}.split(/\n/)
+    unless suid_sgid_files.nil? || suid_sgid_files == ""
+      suid_sgid_files.each do |line|
+        cisecurity['suid_sgid_files'].push(line)
+      end
     end
-    %x{find #{root_path} -xdev -type f -perm -0002}.split(/$/).each do |line|
-      next if line == ""
-      cisecurity['world_writable_files'].push(line.split[-1])
+
+    world_writable_files = %x{find #{root_path} -xdev -type f -perm -0002}.split(/\n/)
+    unless world_writable_files.nil? || world_writable_files == ""
+      world_writable_files.each do |line|
+        cisecurity['world_writable_files'].push(line)
+      end
     end
-    %x{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)}.split(/$/).each do |line|
-      next if line == ""
-      cisecurity['world_writable_dirs'].push(line.split[-1])
+
+    world_writable_dirs = %x{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)}.split(/\n/)
+    unless world_writable_dirs.nil? || world_writable_dirs == ""
+      world_writable_dirs.each do |line|
+        cisecurity['world_writable_dirs'].push(line)
+      end
     end
   end
 
@@ -122,12 +139,15 @@ Facter.add("cisecurity") do
 
   # yum_enabled_repos
   cisecurity['yum_enabled_repos'] = []
-  %x{yum repolist enabled}.split(/$/).each do |line|
-    next if line =~ /^Loaded / || line =~ /^Loading / # headers
-    next if line =~ /^repo id *repo name / # column header
-    next if line =~ /^ \* / # mirror list
-    next if line =~ /^repolist: / # footer
-    cisecurity['yum_enabled_repos'].push(line.split[0])
+  yum_repos = %x{yum repolist enabled}.split(/$/)
+  unless yum_repos.nil? || yum_repos == []
+    yum_repos.each do |line|
+      next if line =~ /^Loaded / || line =~ /^Loading / # headers
+      next if line =~ /^repo id *repo name / # column header
+      next if line =~ /^ \* / # mirror list
+      next if line =~ /^repolist: / # footer
+      cisecurity['yum_enabled_repos'].push(line.split[0])
+    end
   end
 
   # yum_repos_gpg_check_consistent
