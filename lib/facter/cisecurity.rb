@@ -41,7 +41,9 @@ Facter.add("cisecurity") do
   unless packages.nil? || packages == []
     packages.each do |pkg|
       name, version = pkg.lstrip.split('===')
-      cisecurity['installed_packages'][name] = version
+      unless name == '' || version == ''
+        cisecurity['installed_packages'][name] = version
+      end
     end
   end
 
@@ -75,12 +77,10 @@ Facter.add("cisecurity") do
   # subscriptions
   cisecurity['subscriptions'] = {}
   if File.exists?('/usr/bin/subscription-manager')
-    subs = %x{subscription-manager list}.split(/$/)[4,-1]
-    unless subs.nil? || subs == []
-      subs.each do |subscription|
-        name, value = subscription.split(/:/)
-        cisecurity['subscriptions'][ name.downcase.gsub(/\s/,'') ] = value.lstrip
-      end
+    subs = %x{subscription-manager status | grep 'Overall Status'}
+    unless subs.nil? || subs == ''
+      name, value = subs.split(/:/)
+      cisecurity['subscriptions'] = value.downcase
     end
   end
 
@@ -146,7 +146,9 @@ Facter.add("cisecurity") do
       next if line =~ /^repo id *repo name / # column header
       next if line =~ /^ \* / # mirror list
       next if line =~ /^repolist: / # footer
-      cisecurity['yum_enabled_repos'].push(line.split[0])
+      unless line.split[0] == '' || line.split[0] == ':'
+        cisecurity['yum_enabled_repos'].push(line.split[0])
+      end
     end
   end
 
