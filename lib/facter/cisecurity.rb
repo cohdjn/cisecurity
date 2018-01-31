@@ -93,9 +93,9 @@ Facter.add("cisecurity") do
     root_path = fs.split[5]
     cisecurity['unowned_files'] += %x{find #{root_path} -xdev -nouser}.split(/$/)
     cisecurity['ungrouped_files'] += %x{find #{root_path} -xdev -nogroup}.split(/$/)
-    cisecurity['suid_sgid_files'] += %x{find #{root_path} -xdev -type f \( -perm -4000 -o -perm -2000 \)}.split(/$/)
+    cisecurity['suid_sgid_files'] += %x{find #{root_path} -xdev -type f \\( -perm -4000 -o -perm -2000 \\)}.split(/$/)
     cisecurity['world_writable_files'] = %x{find #{root_path} -xdev -type f -perm -0002}
-    cisecurity['world_writable_dirs'] = %x{find #{root_path} -xdev -type d \( -perm -0002 -a ! -perm -1000 \)}
+    cisecurity['world_writable_dirs'] = %x{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)}
   end
 
   # unconfined_daemons
