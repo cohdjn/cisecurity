@@ -41,7 +41,7 @@ Facter.add("cisecurity") do
   unless packages.nil? || packages == []
     packages.each do |pkg|
       name, version = pkg.lstrip.split('===')
-      unless name == '' || version == ''
+      if name != "" && version != ""
         cisecurity['installed_packages'][name] = version
       end
     end
@@ -146,7 +146,7 @@ Facter.add("cisecurity") do
       next if line =~ /^repo id *repo name / # column header
       next if line =~ /^ \* / # mirror list
       next if line =~ /^repolist: / # footer
-      unless line.split[0] == '' || line.split[0] == ':'
+      if line.split[0] != "" && line.split[0] != ":"
         cisecurity['yum_enabled_repos'].push(line.split[0])
       end
     end
