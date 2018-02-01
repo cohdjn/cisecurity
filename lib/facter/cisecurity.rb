@@ -49,7 +49,7 @@ Facter.add('cisecurity') do
 
   # package_system_file_variances
   cisecurity['package_system_file_variances'] = {}
-  variances = `rpm -Va --nomtime --nosize --nomd5 --nolinkto}`.split(%r{\n})
+  variances = `rpm -Va --nomtime --nosize --nomd5 --nolinkto`.split(%r{\n})
   unless variances.nil? || variances == []
     variances.each do |line|
       if line =~ %r{^(\S+)\s+(c?)\s*(\/[\w\/\-\.]+)$}
@@ -122,7 +122,7 @@ Facter.add('cisecurity') do
       end
     end
 
-    world_writable_dirs = `{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)`.split(%r{\n})
+    world_writable_dirs = `find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)`.split(%r{\n})
     next unless world_writable_dirs.nil? || world_writable_dirs == ''
     world_writable_dirs.each do |line|
       cisecurity['world_writable_dirs'].push(line)
