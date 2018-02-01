@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/cohdjn/cisecurity.svg?branch=master)](https://travis-ci.org/cohdjn/cisecurity)
+[![Coverage Status](https://coveralls.io/repos/github/cohdjn/cisecurity/badge.svg)](https://coveralls.io/github/cohdjn/cisecurity)
 
 # cisecurity
 
