@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cohdjn/cisecurity.svg?branch=master)](https://travis-ci.org/cohdjn/cisecurity)
+
 # cisecurity
 
 ## Table of Contents

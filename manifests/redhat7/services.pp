@@ -314,31 +314,27 @@ class cisecurity::redhat7::services (
       value  => $sshd_banner_file,
     }
     if !empty($sshd_allowed_users) {
-      $flattened_ausers = join($sshd_allowed_users, ' ')
       sshd_config { 'AllowUsers':
         ensure => present,
-        value  => $flattened_ausers,
+        value  => $sshd_allowed_users,
       }
     }
     if !empty($sshd_allowed_groups) {
-      $flattened_agroups = join($sshd_allowed_groups, ' ')
       sshd_config { 'AllowGroups':
         ensure => present,
-        value  => $flattened_agroups,
+        value  => $sshd_allowed_groups,
       }
     }
     if !empty($sshd_denied_users) {
-      $flattened_dusers = join($sshd_denied_users, ' ')
       sshd_config { 'DenyUsers':
         ensure => present,
-        value  => $flattened_dusers,
+        value  => $sshd_denied_users,
       }
     }
     if !empty($sshd_denied_groups) {
-      $flattened_dgroups = join($sshd_denied_groups, ' ')
       sshd_config { 'DenyGroups':
         ensure => present,
-        value  => $flattened_dgroups,
+        value  => $sshd_denied_groups,
       }
     }
   }
