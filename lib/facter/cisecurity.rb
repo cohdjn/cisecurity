@@ -142,7 +142,7 @@ Facter.add('cisecurity') do
   yum_repos = `yum repolist enabled`.split(%r{\n})
   unless yum_repos.nil? || yum_repos == []
     yum_repos.each do |line|
-      next if line =~ %r{^Loaded} } || line =~ %r{^Loading } # headers
+      next if line =~ %r{^Loaded } || line =~ %r{^Loading } # headers
       next if line =~ %r{^repo id *repo name } # column header
       next if line =~ %r{^ \* } # mirror list
       next if line =~ %r{^repolist: } # footer
