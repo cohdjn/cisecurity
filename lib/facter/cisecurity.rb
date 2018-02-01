@@ -153,7 +153,7 @@ Facter.add('cisecurity') do
 
   # yum_repos_gpg_check_consistent
   disabled_gpg = `grep gpgcheck /etc/yum.repos.d/*.repo | grep 0 > /dev/null`
-  cisecurity['yum_repos_gpgcheck_consistent'] = disabled_gpg ? false : true
+  cisecurity['yum_repos_gpgcheck_consistent'] = disabled_gpg ? true : false
 
   setcode do
     cisecurity
