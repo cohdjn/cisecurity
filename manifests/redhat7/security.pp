@@ -120,7 +120,7 @@ class cisecurity::redhat7::security (
       mode   => '0644',
     }
     $bannerconfig = {
-      'banner-message-enable' => 'true',
+      'banner-message-enable' => true,
       'banner_message_text'   => $banner_message_text,
     }
     $bannerconfig.each | String $setting, String $value | {
