@@ -1,0 +1,23 @@
+---
+fixtures:
+  forge_modules:
+     stdlib: "puppetlabs/stdlib"
+     concat: "puppetlabs/concat"
+     firewalld: "crayfishx/firewalld"
+     augeasproviders_core: "herculesteam/augeasproviders_core"
+     augeasproviders_grub: "herculesteam/augeasproviders_grub"
+     augeasproviders_pam: "herculesteam/augeasproviders_pam"
+     augeasproviders_ssh: "herculesteam/augeasproviders_ssh"
+     augeasproviders_sysctl: "herculesteam/augeasproviders_sysctl"
+     selinux: "puppet/selinux"
+     yum_autoupdate: "aco/yum_autoupdate"
+     ntp: "puppetlabs/ntp"
+     chrony: "aboe/chrony"
+     postfix: "camptocamp/postfix"
+     augeas: "camptocamp/augeas"
+     auditd: "kemra102/auditd"
+     rsyslog: "saz/rsyslog"
+     epel: "stahnma/epel"
+     systemd: "justin8/systemd"
+     aide: "warrenpnz/aide"
+     firewall: "puppetlabs/firewall"
