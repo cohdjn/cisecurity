@@ -30,7 +30,7 @@ Facter.add('cisecurity') do
   cisecurity['accounts_with_uid_zero'] = []
   Etc.passwd do |entry|
     cisecurity['accounts_with_uid_zero'].push(entry.name) if entry.uid.zero?
-    unless entry.uid >= 1000 || %w[root sync shutdown halt].include?(entry.name) || ['/sbin/nologin','/bin/false'].include?(entry.shell)
+    unless entry.uid >= 1000 || %w[root sync shutdown halt].include?(entry.name) || ['/sbin/nologin', '/bin/false'].include?(entry.shell)
       cisecurity['system_accounts_with_valid_shell'].push(entry.name)
     end
   end
@@ -123,10 +123,9 @@ Facter.add('cisecurity') do
     end
 
     world_writable_dirs = `{find #{root_path} -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\)`.split(%r{\n})
-    unless world_writable_dirs.nil? || world_writable_dirs == ''
-      world_writable_dirs.each do |line|
-        cisecurity['world_writable_dirs'].push(line)
-      end
+    next unless world_writable_dirs.nil? || world_writable_dirs == ''
+    world_writable_dirs.each do |line|
+      cisecurity['world_writable_dirs'].push(line)
     end
   end
 
