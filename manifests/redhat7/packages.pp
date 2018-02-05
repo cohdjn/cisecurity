@@ -17,7 +17,7 @@ class cisecurity::redhat7::packages (
   Enum['installed','uninstalled','ignored'] $talk,
   Enum['installed','uninstalled','ignored'] $tcp_wrappers,
   Enum['installed','uninstalled','ignored'] $telnet,
-  Enum['installed','uninstalled','ignored'] $x11_org,
+  Enum['installed','uninstalled','ignored'] $xorg_x11,
   Enum['installed','uninstalled','ignored'] $ypbind,
   Enum['installed','uninstalled','ignored'] $yum_auto_update,
   Enum['check','download','apply'] $yum_auto_update_action,
