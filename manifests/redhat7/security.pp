@@ -296,7 +296,7 @@ class cisecurity::redhat7::security (
       owner  => 'root',
       group  => 'root',
       mode   => '0644',
-      content => "export TMOUT=${shell_timeout}\nreadonly TMOUT",
+      content => "export TMOUT=${shell_timeout}\nreadonly TMOUT\n",
     }
   }
 
