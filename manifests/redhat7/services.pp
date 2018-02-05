@@ -62,7 +62,7 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $inetd,
   Enum['enabled','disabled'] $named,
   Enum['enabled','disabled'] $nfs,
-  Enum['enabled','disabled'] $nfs-server,
+  Enum['enabled','disabled'] $nfs_server,
   Enum['enabled','disabled'] $ntalk,
   Array[String] $ntp_service_restrictions,
   Enum['enabled','disabled'] $rexec,

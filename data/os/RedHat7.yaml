@@ -208,7 +208,7 @@ cisecurity::redhat7::services::httpd: 'disabled'
 cisecurity::redhat7::services::inetd: 'disabled'
 cisecurity::redhat7::services::named: 'disabled'
 cisecurity::redhat7::services::nfs: 'disabled'
-cisecurity::redhat7::services::nfs-server: 'disabled'
+cisecurity::redhat7::services::nfs_server: 'disabled'
 cisecurity::redhat7::services::ntalk: 'disabled'
 cisecurity::redhat7::services::ntp_service_restrictions:
   - '-4 default kod nomodify notrap nopeer noquery'
