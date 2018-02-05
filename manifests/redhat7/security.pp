@@ -8,6 +8,7 @@ class cisecurity::redhat7::security (
   String $banner_message_text,
   String $bootloader_password,
   String $bootloader_user,
+  Enum['enabled','disabled'] $configure_shell_timeout,
   Enum['enabled','disabled'] $configure_system_acct_nologin,
   String $home_directories_perm,
   String $issue,
@@ -31,10 +32,11 @@ class cisecurity::redhat7::security (
   Enum['enabled','disabled'] $remediate_uid_zero_accounts,
   Enum['enabled','disabled'] $restricted_core_dumps,
   Array[String] $root_path,
-  Enum['enabled','disabled'] $single_user_authentication,
   Enum['enforcing','permissive','disabled'] $selinux,
   Enum['targeted','minimum','mls'] $selinux_type,
   Array[String] $secure_terminals,
+  Integer $shell_timeout,
+  Enum['enabled','disabled'] $single_user_authentication,
   String $syslog_facility,
   String $syslog_severity,
   Enum['enabled','disabled'] $verify_user_groups_exist,
@@ -285,6 +287,16 @@ class cisecurity::redhat7::security (
       }
     } else {
       notice ('Cannot validate if there are duplicate UID 0 accounts because required external facts are unavailable.')
+    }
+  }
+
+  if $configure_shell_timeout == 'enabled' {
+    file { '/etc/profile.d/tmout.sh':
+      ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
+      content => "export TMOUT=${shell_timeout}\nreadonly TMOUT",
     }
   }
 

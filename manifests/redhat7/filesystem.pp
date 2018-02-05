@@ -283,6 +283,18 @@ class cisecurity::redhat7::filesystem (
   }
 
   if $harden_system_file_perms == 'enabled' {
+    file { '/boot/grub2/grub.cfg':
+      ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0600',
+    }
+    file { '/boot/grub2/user.cfg':
+      ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0600',
+    }
     file { '/etc/passwd':
       ensure => file,
       owner  => 'root',
@@ -305,31 +317,31 @@ class cisecurity::redhat7::filesystem (
       ensure => file,
       owner  => 'root',
       group  => 'root',
-      mode   => '0600',
+      mode   => '0000',
     }
     file { '/etc/passwd-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
-      mode   => '0600',
+      mode   => '0644',
     }
     file { '/etc/shadow-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
-      mode   => '0600',
+      mode   => '0000',
     }
     file { '/etc/group-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
-      mode   => '0600',
+      mode   => '0644',
     }
     file { '/etc/gshadow-':
       ensure => file,
       owner  => 'root',
       group  => 'root',
-      mode   => '0600',
+      mode   => '0000',
     }
     file { '/etc/crontab':
       ensure => file,

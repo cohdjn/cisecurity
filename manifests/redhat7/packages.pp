@@ -60,14 +60,15 @@ class cisecurity::redhat7::packages (
     'firewalld',
     'logrotate',
     'mcstrans',
+    'libselinux',
     'openldap-clients',
     'prelink',
     'rsh',
     'setroubleshoot',
     'talk',
-    'tcp-wrappers',
+    'tcp_wrappers',
     'telnet',
-    'x11-org',
+    'xorg-x11',
     'ypbind',
   ]
   $package_list.each | String $package | {

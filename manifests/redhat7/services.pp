@@ -44,6 +44,7 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $configure_cron_allow,
   Enum['enabled','disabled'] $configure_postfix,
   Enum['enabled','disabled'] $configure_rsyslog,
+  Enum['enabled','disabled'] $configure_rsyslog_host,
   Enum['enabled','disabled'] $configure_sshd,
   Enum['enabled','disabled'] $configure_time,
   Enum['enabled','disabled'] $cron,
@@ -61,6 +62,7 @@ class cisecurity::redhat7::services (
   Enum['enabled','disabled'] $inetd,
   Enum['enabled','disabled'] $named,
   Enum['enabled','disabled'] $nfs,
+  Enum['enabled','disabled'] $nfs-server,
   Enum['enabled','disabled'] $ntalk,
   Array[String] $ntp_service_restrictions,
   Enum['enabled','disabled'] $rexec,
@@ -152,12 +154,14 @@ class cisecurity::redhat7::services (
     auditd::rule { '-w /etc/issue.net -p wa -k system-locale': }
     auditd::rule { '-w /etc/hosts -p wa -k system-locale': }
     auditd::rule { '-w /etc/sysconfig/network -p wa -k system-locale': }
+    auditd::rule { '-w /etc/sysconfig/network-scripts/ -p wa -k system-locale': }
     auditd::rule { '-w /etc/selinux/ -p wa -k MAC-policy': }
+    auditd::rule { '-w /usr/share/selinux/ -p wa -k MAC-policy': }
     auditd::rule { '-w /var/log/lastlog -p wa -k logins': }
     auditd::rule { '-w /var/run/faillock/ -p wa -k logins': }
     auditd::rule {'-w /var/run/utmp -p wa -k session': }
-    auditd::rule {'-w /var/run/wtmp -p wa -k session': }
-    auditd::rule {'-w /var/run/btmp -p wa -k session': }
+    auditd::rule {'-w /var/run/wtmp -p wa -k logins': }
+    auditd::rule {'-w /var/run/btmp -p wa -k logins': }
     auditd::rule {'-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod': }
     auditd::rule {'-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod': }
     auditd::rule {'-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod': }
@@ -193,7 +197,7 @@ class cisecurity::redhat7::services (
 
   if $configure_postfix == 'enabled' {
     class { 'postfix':
-      inet_interfaces => 'localhost',
+      inet_interfaces => 'loopback-only',
     }
   }
 
@@ -246,6 +250,10 @@ class cisecurity::redhat7::services (
       mode   => '0644',
       source => $rsyslog_conf,
     }
+  }
+
+  if $configure_rsyslog_host == 'enabled' {
+    class { 'rsyslog::server': }
   }
 
   if $configure_sshd == 'enabled' {
@@ -386,13 +394,24 @@ class cisecurity::redhat7::services (
   }
 
   $service_list = [
+    'autofs.service',
     'avahi-daemon.service',
+    'chargen-dgram',
+    'chargen-stream',
     'cups.service',
+    'daytime-dgram',
+    'daytime-stream',
     'dhcpd.service',
+    'discard-dgram',
+    'discard-stream',
     'dovecot.service',
+    'echo-dgram',
+    'echo-stream',
     'httpd.service',
+    'inetd.service',
     'named.service',
     'nfs.service',
+    'nfs-server.service',
     'ntalk.service',
     'rexec.socket',
     'rhnsd.service',
@@ -406,6 +425,9 @@ class cisecurity::redhat7::services (
     'squid.service',
     'telnet.socket',
     'tftp.socket',
+    'time-dgram',
+    'time-stream',
+    'xinetd.service',
     'vsftpd.service',
     'ypserv.service',
   ]

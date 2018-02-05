@@ -3,8 +3,8 @@
 # Custom facts needed for cisecurity.
 # Original script courtesy jorhett
 #
-require 'facter'
 Facter.add('cisecurity') do
+  require 'time'
   require 'etc'
 
   # Figure out os-specific stuff up top
@@ -16,6 +16,16 @@ Facter.add('cisecurity') do
 
   cisecurity = {}
   cisecurity['efi'] = File.directory?('/sys/firmware/efi') ? true : false
+
+  # accounts with last password change date in future
+  cisecurity['accounts_with_last_password_change_in_future'] = []
+  days_since_epoch = Date.today.to_time.to_i / (60 * 60 * 24)
+  File.readlines('/etc/shadow').map do |line|
+    args = line.split(':')
+    if args[2].to_i > days_since_epoch
+      cisecurity['accounts_with_last_password_change_in_future'].push(args[0])
+    end
+  end
 
   # accounts_with_blank_passwords
   cisecurity['accounts_with_blank_passwords'] = []

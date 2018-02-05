@@ -178,10 +178,9 @@ class cisecurity::redhat7::network (
   }
 
   if $ipv6 == 'disabled' {
-    file_line { 'ipv6':
+    kernel_parameter { 'ipv6.disable':
       ensure => present,
-      path   => '/etc/modprobe.d/CIS.conf',
-      line   => 'options ipv6 disable=1',
+      value  => '1',
     }
   }
 
