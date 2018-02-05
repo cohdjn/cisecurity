@@ -7,6 +7,7 @@ class cisecurity::redhat7::packages (
   String $aide_cron_start_hour,
   String $aide_cron_start_minute,
   Enum['installed','uninstalled','ignored'] $firewalld,
+  Enum['installed','uninstalled','ignored'] $libselinux,
   Enum['installed','uninstalled','ignored'] $logrotate,
   Enum['installed','uninstalled','ignored'] $mcstrans,
   Enum['installed','uninstalled','ignored'] $openldap_clients,
