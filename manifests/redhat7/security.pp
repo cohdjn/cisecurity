@@ -292,10 +292,10 @@ class cisecurity::redhat7::security (
 
   if $configure_shell_timeout == 'enabled' {
     file { '/etc/profile.d/tmout.sh':
-      ensure => file,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
       content => "export TMOUT=${shell_timeout}\nreadonly TMOUT\n",
     }
   }
