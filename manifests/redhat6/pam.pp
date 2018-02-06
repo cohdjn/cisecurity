@@ -1,4 +1,4 @@
-# redhat6/pam
+# cisecurity::redhat6::pam
 #
 # Implements Center of Internet Security PAM controls.
 

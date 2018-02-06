@@ -1,4 +1,4 @@
-# redhat7/services
+# cisecurity::redhat7::services
 #
 # Implements Center of Internet Security service controls.
 

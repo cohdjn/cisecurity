@@ -1,4 +1,4 @@
-# redhat6/services
+# cisecurity::redhat6::services
 #
 # Implements Center of Internet Security service controls.
 

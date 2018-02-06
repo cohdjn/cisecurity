@@ -1,4 +1,4 @@
-# redhat6/network
+# cisecurity::redhat6::network
 #
 # Implements Center of Internet Security network controls.
 

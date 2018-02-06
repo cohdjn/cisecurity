@@ -1,4 +1,4 @@
-# redhat6/security
+# cisecurity::redhat6::security
 #
 # Implements Center of Internet Security security controls.
 

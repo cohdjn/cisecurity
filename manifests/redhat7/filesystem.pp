@@ -1,4 +1,4 @@
-# redhat7/filesystem
+# cisecurity::redhat7::filesystem
 #
 # Implements Center of Internet Security filesystem controls.
 

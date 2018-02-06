@@ -1,4 +1,4 @@
-# redhat7/pam
+# cisecurity::redhat7::pam
 #
 # Implements Center of Internet Security PAM controls.
 

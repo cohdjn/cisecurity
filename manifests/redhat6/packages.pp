@@ -1,4 +1,4 @@
-# redhat6/packages
+# cisecurity::redhat6::packages
 #
 # Implements Center of Internet Security package controls.
 

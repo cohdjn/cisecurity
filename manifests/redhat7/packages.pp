@@ -1,4 +1,4 @@
-# redhat7/packages
+# cisecurity::redhat7::packages
 #
 # Implements Center of Internet Security package controls.
 
