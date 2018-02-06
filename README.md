@@ -476,6 +476,13 @@ A cron-styled minute when AIDE will run its daily check.
 
 Determines if firewalld will be installed.
 
+##### `libselinux`
+* Default value: `'installed'`
+* Data type: `Enum['installed','uninstalled','ignored']`
+* Implements: Control 1.6.2
+
+Determines if libselinux will be installed.
+
 ##### `logrotate`
 * Default value: `'installed'`
 * Data type: `Enum['installed','uninstalled','ignored']`
@@ -539,7 +546,7 @@ Determines if the TCP Wrappers will be installed.
 
 Determines if the telnet client will be installed.
 
-##### `x11_org`
+##### `xorg_x11`
 * Default value: `'uninstalled'`
 * Data type: `Enum['installed','uninstalled','ignored']`
 * Implements: Control 2.2.2
@@ -659,14 +666,7 @@ Specifies the amount of time (in seconds) when an account will be automatically 
 
 Specifies whether inactive accounts should be locked by the system.
 
-##### `root_user_settings`
-* Default value: '`{ gid => 'root' }`
-* Data Type: `Hash`
-* Implements: Control 5.4.3
-
-Specifies settings for the root user.  The minimum setting needed is for ensuring the primary group but this can be extended to include managing root passwords.
- 
-##### `account_lockout_days`
+##### `inactive_account_lockout_days`
 * Default value: `30`
 * Data Type: `Integer`
 * Implements: Control 5.4.1.4
@@ -674,6 +674,13 @@ Specifies settings for the root user.  The minimum setting needed is for ensurin
 
 Specifies the number of days when an account is considered inactive.
 
+##### `root_user_settings`
+* Default value: '`{ gid => 'root' }`
+* Data Type: `Hash`
+* Implements: Control 5.4.3
+
+Specifies settings for the root user.  The minimum setting needed is for ensuring the primary group but this can be extended to include managing root passwords.
+ 
 ##### `password_aging`
 * Default value: `'enabled'`
 * Data Type: `Enum['enabled','disabled']`
@@ -799,7 +806,7 @@ Banner message text to be displayed when a GNOME-based graphical login occurs.
 * Data type: `String`
 * Implements: Control 1.4.2
 
-A grub SHA512 encrypted password string used as the bootloader password.  The encrypted password in `Redhat7.yaml` is `password`.  To change the bootloader password, use `grub2-mkpasswd-pbkdf2` as shown below:
+For Red Hat 7, a grub SHA512 encrypted password string used as the bootloader password.  The encrypted password in `RedHat7.yaml` is `password`.  To change the bootloader password, use `grub2-mkpasswd-pbkdf2` as shown below:
 ```
 $ grub2-mkpasswd-pbkdf2
 Enter password: <new password>
@@ -808,12 +815,29 @@ PBKDF2 hash of your password is grub.pbkdf2.sha512.10000.D70F1...
 ```
 Copy and paste the entire string into the parameter.
 
+For Red Hat 6, a grub MD5 encrypted password string used as the bootloader password.  The encrypted password in `RedHat6.yaml` is `password`.  To change the bootloader password, use `grub-md5-crypt` as shown below:
+```
+$ grub-md5-crypt
+Password: <new password>
+Retype password: <confirm new password>
+$1$L.MZi/$6i6ZtU/e8WRKfujZac44t.
+```
+Copy and paste the entire string into the parameter.  Be sure to precede the salted password with the `--md5` moniker as the default shows.
+
 ##### `bootloader_user`
 * Default value: `'rescue'`
 * Data type: `String`
 * Implements: Control 1.4.2
 
 Specifies a username to be created with superuser privileges in grub.
+
+##### `configure_shell_timeout`
+* Default value: `'enabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 5.4.5
+* Related: `shell_timeout`
+
+Determines whether to implement shell timeouts.
 
 ##### `configure_system_acct_nologin`
 * Default value: `'enabled'`
@@ -979,13 +1003,6 @@ Determines whether core dumps are allowed.
 
 The path that will be configured in `/root/.bash_profile`.
 
-##### `single_user_authentication`
-* Default value: `'enabled'`
-* Data type: `Enum['enabled','disabled']`
-* Implements: Control 1.4.3
-
-Determines whether authentication will be required when the system runs in single-user mode.
-
 ##### `selinux`
 * Default value: `'enforcing'`
 * Data type: `Enum['enforcing','permissive','disabled']`
@@ -1007,6 +1024,13 @@ Determines how SELinux will be configured.
 
 Provides a list of devices where root is permitted to directly log in.
 
+##### `single_user_authentication`
+* Default value: `'enabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 1.4.3
+
+Determines whether authentication will be required when the system runs in single-user mode.
+
 ##### `syslog_facility`
 * Default value: `'auth'`
 * Data type: `String`
@@ -1024,39 +1048,47 @@ Provides the syslog severity that warning messages will be logged to.
 ##### `verify_user_groups_exist`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
-* Implements: Controls 6.2.15
+* Implements: Control 6.2.15
 
 Verifies all groups in /etc/passwd exist in /etc/group.  If a group doesn't exist, a message is written via syslog.
 
 ##### `verify_duplicate_gids_notexist`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
-* Implements: Controls 6.2.17
+* Implements: Control 6.2.17
 
 Verifies no duplicate GIDs exist.  If a duplicate GID is found, a message is written via syslog.
 
 ##### `verify_duplicate_groupnames_notexist`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
-* Implements: Controls 6.2.19
+* Implements: Control 6.2.19
 
 Verifies no duplicate group names exist.  If a duplicate group name is found, a message is written via syslog.
 
 ##### `verify_duplicate_uids_notexist`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
-* Implements: Controls 6.2.16
+* Implements: Control 6.2.16
 
 Verifies no duplicate UIDs exist.  If a duplicate UID is found, a message is written via syslog.
 
 ##### `verify_duplicate_usernames_notexist`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
-* Implements: Controls 6.2.18
+* Implements: Control 6.2.18
 
 Verifies no duplicate usernames exist.  If a duplicate username is found, a message is written via syslog.
 
 #### Class cisecurity::services
+
+##### `at_allowed_users`
+* Default value: `[ 'root' ]`
+* Data type: `Array[String]`
+* Implements: Control 5.1.8
+* Related: `configure_at_allow`
+
+Provides a list of users allowed to use at.
 
 ##### `auditd_action_mail_root`
 * Default value: `'root'`
@@ -1082,7 +1114,7 @@ Value (in megabytes) that tells the audit daemon when to perform a configurable 
 
 Action to take when the system has detected that it is low on disk space. If set to ignore, the audit daemon does nothing. Syslog means that it will issue a warning to syslog. Email means that it will send a warning to the email account specified in `auditd_action_mail_acct` as well as sending the message to syslog. Suspend will cause the audit daemon to stop writing records to the disk. The daemon will still be alive. The single option will cause the audit daemon to put the computer system in single user mode.
 
-##### `configure_boot_auditing`
+##### `auditd_configure_boot_auditing`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
 * Implements: Control 4.1.3
@@ -1098,7 +1130,7 @@ Determines if process auditing will happen prior to auditd is enabled.
 Determines whether the rules defined in the benchmark are applied.
 
 ##### `auditd_max_log_file`
-* Default value: `'8'`
+* Default value: `8`
 * Data type: `Integer`
 * Implements: Control 4.1.1.1
 * Related: `configure_auditd`
@@ -1115,7 +1147,7 @@ Action to take when the system has detected that the max file size limit has bee
 
 ##### `auditd_num_logs`
 * Default value: `5`
-* Data type: `Integer[0-999]`
+* Data type: `Integer[0,999]`
 * Implements: None.
 * Related: `configure_auditd`
 
@@ -1167,6 +1199,14 @@ Enables or disables chargen services.
 
 Enables or disables chargen services.
 
+##### `configure_at_allow`
+* Default value: `enabled`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 5.1.8
+* Related: `at_allowed_users`
+
+Determines whether to configure at.allow.
+
 ##### `configure_auditd`
 * Default value: `'enabled'`
 * Data type: `Enum['enabled','disabled']`
@@ -1174,6 +1214,14 @@ Enables or disables chargen services.
 * Related: `auditd_action_mail_acct`, `auditd_admin_space_left_action`, `auditd_configure_rules`, `auditd_max_log_file`, `auditd_max_log_file_action`, `audit_space_left_action`
 
 Determines whether the auditing subsystem will be configured.
+
+##### `configure_cron_allow`
+* Default value: `'enabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 5.1.8
+* Related: `cron_allowed_users`
+
+Determines whether to configure cron.allow.
 
 ##### `configure_postfix`
 * Default value: `'enabled'`
@@ -1189,6 +1237,13 @@ Determines whether postfix will be configured to only listen on localhost interf
 * Related: `rsyslog_conf`, `rsyslog_remote_servers`
 
 Determines whether rsyslog will be configured.
+
+##### `configure_rsyslog_host`
+* Default value: `'disabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 4.2.1.5
+
+Determines whether rsyslog will be configured to be an rsyslog host.
 
 ##### `configure_sshd`
 * Default value: `'enabled'`
@@ -1212,6 +1267,14 @@ Determines whether time services (ntpd or chrony) will be configured.
 * Implements: Control 2.1.1
 
 Enables or disables cron.
+
+##### `cron_allowed_users`
+* Default value: `[ 'root' ]`
+* Data type: `Array[String]`
+* Implements: Control 5.1.8
+* Related: `configure_cron_allow`
+
+Provides a list of users allowed to use cron.
 
 ##### `cups`
 * Default value: `'disabled'`
@@ -1251,11 +1314,11 @@ Enables or disables DHCP services.
 
 Enables or disables discard services.
 
-##### `inetd`
+##### `discard_stream`
 * Default value: `'disabled'`
 * Data type: `Enum['enabled','disabled']`
 * Implements: Control 2.1.3
-* Related: `discard_dgram`
+* Related: `inetd`
 
 Enables or disables discard services.
 
@@ -1312,6 +1375,14 @@ Enables or disables DNS services.
 
 Enables or disables NFS services.
 
+##### `nfs_server`
+* Default value: `'disabled'`
+* Data type: `Enum['enabled','disabled']`
+* Implements: Control 2.2.7
+* Related: `rpcbind`
+
+Enabled or disables NFS Server services.
+
 ##### `ntalk`
 * Default value: `'disabled'`
 * Data type: `Enum['enabled','disabled']`
@@ -1352,7 +1423,7 @@ Enables or disables rlogin services.
 * Default value: `'disabled'`
 * Data type: `Enum['enabled','disabled']`
 * Implements: Control 2.2.7
-* Related: `nfs`
+* Related: `nfs`,`nfs_server`
 
 Enables or disables RPC portmapper service.
 
@@ -1406,6 +1477,22 @@ Enables or disables Samba services.
 
 Enables or disables SNMP services.
 
+##### `sshd_allowed_groups`
+* Default value: `[ ]`
+* Data type: `Array[String]`
+* Implements: Control 5.2.14
+* Related: `configure_sshd`
+
+Login is allowed only for users whose primary group or supplementary group list matches one of the patterns.  Only group names are valid; a numerical group ID is not recognized.
+
+##### `sshd_allowed_users`
+* Default value: `'[ ]'`
+* Data type: `Array[String]`
+* Implements: Control 5.2.14
+* Related: `configure_sshd`
+
+Login is allowed only for user names that match one of the patterns.  Only user names are valid; a numerical user ID is not recognized.
+
 ##### `sshd_banner_file`
 * Default value: `'/etc/issue.net'`
 * Data type: `String`
@@ -1429,6 +1516,22 @@ Sets the number of client alive messages sshd will send without receiving messag
 * Related: `configure_sshd`
 
 Sets the timeout interval (in seconds) after which if no data has been received from the client will force sshd to send a message through the encrypted channel to request a response from the client.
+
+##### `sshd_denied_groups`
+* Default value: `'[ ]'`
+* Data type: `Array[String]`
+* Implements: Control 5.2.14
+* Related: `configure_sshd`
+
+Login is disallowed for users whose primary group or supplementary group list matches one of the patterns.  Only group names are valid; a numerical group ID is not recognized.
+
+##### `sshd_denied_users`
+* Default value: `'[ ]'`
+* Data type: `Array[String]`
+* Implements: Control 5.2.14
+* Related: `configure_sshd`
+
+Login is disallowed for user names that match one of the patterns.  Only user names are valid; a numerical user ID is not recognized.
 
 ##### `sshd_hostbased_authenticaton`
 * Default value: `'no'`

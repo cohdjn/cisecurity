@@ -13,15 +13,20 @@ Contains bug fixes and updates for new release of the CISecurity benchmarks.  Ne
 #### Hiera Changes for Red Hat 7
 * `nfs-server` has been renamed to `nfs_server` due to syntax error thrown during Puppet compile.
 * `x11_org` has been renamed to `xorg_x11` due to change in the benchmark.
+* New variable `libselinux` added to support Control 1.6.2.
+* New variable `configure_rsyslog_host` added to support Control 4.2.1.5.
 * New variable `configure_shell_timeout` and `shell_timeout` added to support Control 5.4.5.
 
 #### Hiera Changes for Red Hat 6
 `x11_org` has been renamed to `xorg_x11` due to change in the benchmark.
+* New variable `libselinux` added to support Control 1.6.2.
 * New variable `configure_shell_timeout` and `shell_timeout` added to support Control 5.4.5.
 
 #### Bug Fixes
 * Fixed problem when trying to add multiple users to AllowUsers in sshd (#3).
 * Fixed problem when using chrony and disabling ntp (#5).
+* Fixed wrong permissions applied to system files when `harden_system_file_perms` is enabled.
+* Fixed wrong default value for `bootloader_password` on Red Hat 6.
 
 ## Release 0.6.5
 ### Summary
