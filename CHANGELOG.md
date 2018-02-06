@@ -18,7 +18,7 @@ Contains bug fixes and updates for new release of the CISecurity benchmarks.  Ne
 * New variable `configure_shell_timeout` and `shell_timeout` added to support Control 5.4.5.
 
 #### Hiera Changes for Red Hat 6
-`x11_org` has been renamed to `xorg_x11` due to change in the benchmark.
+* `x11_org` has been renamed to `xorg_x11` due to change in the benchmark.
 * New variable `libselinux` added to support Control 1.6.2.
 * New variable `configure_shell_timeout` and `shell_timeout` added to support Control 5.4.5.
 
