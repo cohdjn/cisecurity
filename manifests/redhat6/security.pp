@@ -7,6 +7,7 @@ class cisecurity::redhat6::security (
   Enum['enabled','disabled'] $aslr,
   String $banner_message_text,
   String $bootloader_password,
+  Enum['enabled','disabled'] $configure_shell_timeout,
   Enum['enabled','disabled'] $configure_system_acct_nologin,
   String $home_directories_perm,
   Enum['enabled','disabled'] $interactive_boot,
@@ -31,6 +32,7 @@ class cisecurity::redhat6::security (
   Enum['enabled','disabled'] $remediate_uid_zero_accounts,
   Enum['enabled','disabled'] $restricted_core_dumps,
   Array[String] $root_path,
+  Integer $shell_timeout,
   Enum['enabled','disabled'] $single_user_authentication,
   Enum['enforcing','permissive','disabled'] $selinux,
   Enum['targeted','minimum','mls'] $selinux_type,
@@ -43,6 +45,13 @@ class cisecurity::redhat6::security (
   Enum['enabled','disabled'] $verify_duplicate_uids_notexist,
   Enum['enabled','disabled'] $verify_duplicate_usernames_notexist,
 ) {
+
+  if $bootloader_password != '' {
+    grub_config { 'password':
+      ensure => present,
+      value  => $bootloader_password,
+    }
+  }
 
   if $interactive_boot == 'disabled' {
     file_line { 'InteractiveBoot':
@@ -278,6 +287,16 @@ class cisecurity::redhat6::security (
       }
     } else {
       notice ('Cannot validate if there are duplicate UID 0 accounts because required external facts are unavailable.')
+    }
+  }
+
+  if $configure_shell_timeout == 'enabled' {
+    file { '/etc/profile.d/tmout.sh':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => "export TMOUT=${shell_timeout}\nreadonly TMOUT\n",
     }
   }
 

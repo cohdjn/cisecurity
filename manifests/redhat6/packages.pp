@@ -7,6 +7,7 @@ class cisecurity::redhat6::packages (
   String $aide_cron_start_hour,
   String $aide_cron_start_minute,
   Enum['installed','uninstalled','ignored'] $iptables,
+  Enum['installed','uninstalled','ignored'] $libselinux,
   Enum['installed','uninstalled','ignored'] $logrotate,
   Enum['installed','uninstalled','ignored'] $mcstrans,
   Enum['installed','uninstalled','ignored'] $openldap_clients,
@@ -16,7 +17,7 @@ class cisecurity::redhat6::packages (
   Enum['installed','uninstalled','ignored'] $talk,
   Enum['installed','uninstalled','ignored'] $tcp_wrappers,
   Enum['installed','uninstalled','ignored'] $telnet,
-  Enum['installed','uninstalled','ignored'] $x11_org,
+  Enum['installed','uninstalled','ignored'] $xorg_x11,
   Enum['installed','uninstalled','ignored'] $ypbind,
   Enum['installed','uninstalled','ignored'] $yum_auto_update,
   Enum['check','download','apply'] $yum_auto_update_action,
@@ -58,6 +59,7 @@ class cisecurity::redhat6::packages (
 
   $package_list = [
     'iptables',
+    'libselinux',
     'logrotate',
     'mcstrans',
     'openldap-clients',
@@ -67,7 +69,7 @@ class cisecurity::redhat6::packages (
     'talk',
     'tcp-wrappers',
     'telnet',
-    'x11-org',
+    'xorg-x11',
     'ypbind',
   ]
   $package_list.each | String $package | {

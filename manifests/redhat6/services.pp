@@ -44,6 +44,7 @@ class cisecurity::redhat6::services (
   Enum['enabled','disabled'] $configure_cron_allow,
   Enum['enabled','disabled'] $configure_postfix,
   Enum['enabled','disabled'] $configure_rsyslog,
+  Enum['enabled','disabled'] $configure_rsyslog_host,
   Enum['enabled','disabled'] $configure_sshd,
   Enum['enabled','disabled'] $configure_time,
   Enum['enabled','disabled'] $cron,
@@ -68,7 +69,7 @@ class cisecurity::redhat6::services (
   Enum['enabled','disabled','ignored'] $rlogin,
   Enum['enabled','disabled','ignored'] $rpcbind,
   Enum['enabled','disabled','ignored'] $rsh,
-  Enum['enabled','disabled','ignored'] $rsyncd,
+  Enum['enabled','disabled','ignored'] $rsync,
   String $rsyslog_conf,
   $rsyslog_remote_servers,
   Enum['enabled','disabled','ignored'] $slapd,
@@ -110,6 +111,7 @@ class cisecurity::redhat6::services (
   Array[String] $time_service_servers,
   Enum['enabled','disabled'] $time_stream,
   Enum['enabled','disabled','ignored'] $vsftpd,
+  Enum['enabled','disabled','ignored'] $xinetd,
   Enum['enabled','disabled','ignored'] $ypserv,
 ) {
 
@@ -152,7 +154,9 @@ class cisecurity::redhat6::services (
     auditd::rule { '-w /etc/issue.net -p wa -k system-locale': }
     auditd::rule { '-w /etc/hosts -p wa -k system-locale': }
     auditd::rule { '-w /etc/sysconfig/network -p wa -k system-locale': }
+    auditd::rule { '-w /etc/sysconfig/network-scripts/ -p wa -k system-locale': }
     auditd::rule { '-w /etc/selinux/ -p wa -k MAC-policy': }
+    auditd::rule { '-w /usr/share/selinux/ -p wa -k MAC-policy': }
     auditd::rule { '-w /var/log/lastlog -p wa -k logins': }
     auditd::rule { '-w /var/run/faillock/ -p wa -k logins': }
     auditd::rule {'-w /var/run/utmp -p wa -k session': }
@@ -193,7 +197,7 @@ class cisecurity::redhat6::services (
 
   if $configure_postfix == 'enabled' {
     class { 'postfix':
-      inet_interfaces => 'localhost',
+      inet_interfaces => 'loopback-only',
     }
   }
 
@@ -260,6 +264,10 @@ class cisecurity::redhat6::services (
       mode   => '0644',
       source => $rsyslog_conf,
     }
+  }
+
+  if $configure_rsyslog_host == 'enabled' {
+    class { 'rsyslog:;server': }
   }
 
   if $configure_sshd == 'enabled' {
@@ -413,7 +421,7 @@ class cisecurity::redhat6::services (
     'rlogin',
     'rpcbind',
     'rsh',
-    'rsyncd',
+    'rsync',
     'slapd',
     'smb',
     'snmpd',
@@ -421,6 +429,7 @@ class cisecurity::redhat6::services (
     'telnet',
     'tftp',
     'vsftpd',
+    'xinetd',
     'ypserv',
   ]
   $service_list.each | String $service | {
