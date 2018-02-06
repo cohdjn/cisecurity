@@ -17,6 +17,14 @@ class cisecurity {
       include 'cisecurity::redhat7::pam'
       include 'cisecurity::redhat7::network'
     }
+    'redhat6': {
+      include 'cisecurity::redhat6::filesystem'
+      include 'cisecurity::redhat6::services'
+      include 'cisecurity::redhat6::packages'
+      include 'cisecurity::redhat6::security'
+      include 'cisecurity::redhat6::pam'
+      include 'cisecurity::redhat6::network'
+    }
     default: {
       fail ("${osrelease} is not supported by cisecurity module.")
     }
