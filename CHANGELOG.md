@@ -1,3 +1,28 @@
+## Release 0.7.0
+### Summary
+Contains bug fixes and updates for new release of the CISecurity benchmarks.  New and modified variables exist in Hiera so you may need to adjust your settings.
+
+#### Module Dependencies
+* `herculesteam/augeasproviders_grub` still has not been updated on the Forge from the PR they merged back in October.  I recommend you continue using my GitHub site (https://github.com/cohdjn/augeasproviders_grub) in your Puppetfile or install the module from there depending on your environment.  Future release will point back to the Forge once the fix has been merged and uploaded.
+
+#### Enhancements
+* The awk script that has been used for external facts has been replaced with a Ruby version provided by jorhett.  The manifest has been modified to delete the YAML file that was produced by the awk script so you will have to run the agent twice for the updated facts to be relevant.
+* Added Travis CI to provide build verification.
+* Updated compatibility to work with Puppet 5 (#4).
+
+#### Hiera Changes for Red Hat 7
+* `nfs-server` has been renamed to `nfs_server` due to syntax error thrown during Puppet compile.
+* `x11_org` has been renamed to `xorg_x11` due to change in the benchmark.
+* New variable `configure_shell_timeout` and `shell_timeout` added to support Control 5.4.5.
+
+#### Hiera Changes for Red Hat 6
+`x11_org` has been renamed to `xorg_x11` due to change in the benchmark.
+* New variable `configure_shell_timeout` and `shell_timeout` added to support Control 5.4.5.
+
+#### Bug Fixes
+* Fixed problem when trying to add multiple users to AllowUsers in sshd (#3).
+* Fixed problem when using chrony and disabling ntp (#5).
+
 ## Release 0.6.5
 ### Summary
 Contains more bug fixes.  Advice on module dependencies from Release 0.6.1 still apply.
