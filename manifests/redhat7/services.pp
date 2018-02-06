@@ -382,7 +382,7 @@ class cisecurity::redhat7::services (
           content => 'OPTIONS="-u chrony"',
         }
 
-        class { '::ntpd':
+        class { '::ntp':
           service_ensure => stopped,
           service_enable => false,
         }
