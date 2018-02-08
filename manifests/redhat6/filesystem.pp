@@ -264,14 +264,14 @@ class cisecurity::redhat6::filesystem (
     if $facts['cisecurity']['efi'] == undef {
       notice ('Cannot configure filesystems because required external facts are unavailable. This may be transient.')
     } else {
-        if $facts['cisecurity']['efi'] == false {
-          file { '/boot/grub/grub.conf':
-            ensure => file,
-            owner  => 'root',
-            group  => 'root',
-            mode   => '0600',
-          }
-       }
+      if $facts['cisecurity']['efi'] == false {
+        file { '/boot/grub/grub.conf':
+          ensure => file,
+          owner  => 'root',
+          group  => 'root',
+          mode   => '0600',
+        }
+      }
     }
     file { '/etc/passwd':
       ensure => file,
