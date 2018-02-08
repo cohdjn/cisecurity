@@ -278,85 +278,104 @@ class cisecurity::redhat6::services (
     sshd_config { 'Protocol':
       ensure => present,
       value  => $sshd_protocol,
+      notify => Service['sshd'],
     }
     sshd_config { 'LogLevel':
       ensure => present,
       value  => $sshd_log_level,
+      notify => Service['sshd'],
     }
     sshd_config { 'X11Forwarding':
       ensure => present,
       value  => $sshd_x11_forwarding,
+      notify => Service['sshd'],
     }
     sshd_config { 'MaxAuthTries':
       ensure => present,
       value  => $sshd_max_auth_tries,
+      notify => Service['sshd'],
     }
     sshd_config { 'IgnoreRhosts':
       ensure => present,
       value  => $sshd_ignore_rhosts,
+      notify => Service['sshd'],
     }
     sshd_config { 'HostbasedAuthentication':
       ensure => present,
       value  => $sshd_hostbased_authentication,
+      notify => Service['sshd'],
     }
     sshd_config { 'PermitRootLogin':
       ensure => present,
       value  => $sshd_permit_root_login,
+      notify => Service['sshd'],
     }
     sshd_config { 'PermitEmptyPasswords':
       ensure => present,
       value  => $sshd_permit_empty_passwords,
+      notify => Service['sshd'],
     }
     sshd_config { 'PermitUserEnvironment':
       ensure => present,
       value  => $sshd_permit_user_environment,
+      notify => Service['sshd'],
     }
     sshd_config { 'Ciphers':
       ensure => present,
       value  => $sshd_permitted_ciphers,
+      notify => Service['sshd'],
     }
     sshd_config { 'MACs':
       ensure => present,
       value  => $sshd_permitted_macs,
+      notify => Service['sshd'],
     }
     sshd_config { 'ClientAliveInterval':
       ensure => present,
       value  => $sshd_client_alive_interval,
+      notify => Service['sshd'],
     }
     sshd_config { 'ClientAliveCountMax':
       ensure => present,
       value  => $sshd_client_alive_count_max,
+      notify => Service['sshd'],
     }
     sshd_config { 'LoginGraceTime':
       ensure => present,
       value  => $sshd_login_grace_time,
+      notify => Service['sshd'],
     }
     sshd_config { 'Banner':
       ensure => present,
       value  => $sshd_banner_file,
+      notify => Service['sshd'],
     }
     if !empty($sshd_allowed_users) {
       sshd_config { 'AllowUsers':
         ensure => present,
         value  => $sshd_allowed_users,
+        notify => Service['sshd'],
       }
     }
     if !empty($sshd_allowed_groups) {
       sshd_config { 'AllowGroups':
         ensure => present,
         value  => $sshd_allowed_groups,
+        notify => Service['sshd'],
       }
     }
     if !empty($sshd_denied_users) {
       sshd_config { 'DenyUsers':
         ensure => present,
         value  => $sshd_denied_users,
+        notify => Service['sshd'],
       }
     }
     if !empty($sshd_denied_groups) {
       sshd_config { 'DenyGroups':
         ensure => present,
         value  => $sshd_denied_groups,
+        notify => Service['sshd'],
       }
     }
   }
