@@ -1,3 +1,12 @@
+## Release 0.7.1
+### Summary
+Contains minor bug fixes.  Advice on module dependencies from Release 0.6.1 still apply.
+
+#### Bug Fixes
+* Fixed creating /boot/grub/grub.conf on an EFI system when none should exist.
+* Added service notification from changes made to sshd_config.
+* Fixed a lint issue that was causing Travis build to fail.
+
 ## Release 0.7.0
 ### Summary
 Contains bug fixes and updates for new release of the CISecurity benchmarks.  New and modified variables exist in Hiera so you may need to adjust your settings.
