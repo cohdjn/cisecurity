@@ -1,6 +1,6 @@
 {
   "name": "cohdjn-cisecurity",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "author": "David Nelson",
   "summary": "Configures Linux systems to Center for Internet Security Linux hardening standard.",
   "license": "Apache-2.0",

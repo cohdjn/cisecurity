@@ -1,3 +1,7 @@
+## Release 0.7.2
+### Summary
+Fixes network module not honoring ipv4_forwarding enabled.
+
 ## Release 0.7.1
 ### Summary
 Contains minor bug fixes.  Advice on module dependencies from Release 0.6.1 still apply.
