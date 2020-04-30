@@ -47,6 +47,12 @@ class cisecurity::redhat7::network (
       value   => '0',
       comment => 'Setting managed by Puppet.',
     }
+  } else {
+    sysctl { 'net.ipv4.ip_forward':
+      ensure  => present,
+      value   => '1',
+      comment => 'Setting managed by Puppet.',
+    }
   }
 
   if $ipv4_ignore_icmp_bogus_responses == 'enabled' {
